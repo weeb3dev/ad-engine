@@ -1,0 +1,138 @@
+[
+  {
+    "id": "cal_01",
+    "primary_text": "You're not imagining it. The score doesn't match the student.\n\nThe digital SAT isn't a knowledge test — it's a strategy test on a laptop. Your child needs a tutor who knows the difference.\n\nJessica's score jumped from 1180 to 1410 in 16 sessions. Hers can too.",
+    "headline": "Your Child Is Smarter Than Their SAT Score",
+    "description": "Expert-matched 1:1 SAT tutoring. Cancel anytime.",
+    "cta_button": "Book a Tutor",
+    "expected_quality": "high",
+    "expected_score_range": [9, 10],
+    "dimension_expectations": {
+      "clarity": 10,
+      "value_proposition": 10,
+      "call_to_action": 9,
+      "brand_voice": 10,
+      "emotional_resonance": 10
+    },
+    "notes": "Modeled on the generated 10/10 reference ad. 52 words — entire message visible above the fold on mobile. 'You're not imagining it' validates parent instinct (emotional_resonance 10). Reframe from knowledge to strategy is the strongest hook in the catalog (clarity 10). Jessica case study with specific numbers — no unsourced claims (value_proposition 10). 'Book a Tutor' is specific, action-oriented, low-friction (call_to_action 9 — lacks urgency to reach 10). Every line passes brand voice test: empowering, knowledgeable, approachable, results-driven (brand_voice 10)."
+  },
+  {
+    "id": "cal_02",
+    "primary_text": "Your child isn't struggling with the material — they're struggling with the test.\n\nJessica had a 3.8 GPA and a 1180 SAT. Her mom thought more practice problems would fix it. They didn't.\n\nThe real problem? Jessica was prepping on paper for a test taken on a laptop. In 16 sessions, her matched tutor trained her on the actual digital SAT interface — the same built-in tools, the same adaptive format, the same time pressure.\n\nShe walked into test day confident. She walked out with a 1390.\n\nYour child already knows the content. They just need someone who knows the test.",
+    "headline": "1180 → 1390. 8 Weeks. One Tutor.",
+    "description": "1:1 digital SAT tutoring — matched to how your child learns.",
+    "cta_button": "Match With a Top 5% Tutor",
+    "expected_quality": "high",
+    "expected_score_range": [8, 10],
+    "dimension_expectations": {
+      "clarity": 9,
+      "value_proposition": 10,
+      "call_to_action": 8,
+      "brand_voice": 9,
+      "emotional_resonance": 10
+    },
+    "notes": "Modeled on the generated 9/10 reference ad. Story-driven narrative arc: problem → false solution → real solution → result. The reframe hook ('not struggling with the material — struggling with the test') is the #1 proven performer from the real library (clarity 9 — not 10 because ~95 words will require 'See more' on mobile). Jessica case study stacks three proof points: named student, specific score jump, digital SAT training angle (value_proposition 10). 'She walked into test day confident' is emotionally resonant without being manipulative (emotional_resonance 10). 'Match With a Top 5% Tutor' implies curation and exclusivity (call_to_action 8 — strong but no urgency). One slightly pointed line about mom's past approach keeps brand_voice at 9 rather than 10."
+  },
+  {
+    "id": "cal_03",
+    "primary_text": "Your child is smart. The score just doesn't show it yet.\n\nWith the May SAT 8 weeks away, there's still time. Sarah started at 1180 with a 3.9 GPA. After 16 focused sessions targeting her specific gaps, she scored 1380.\n\nHer mom said: \"Finally, a score that matches who my daughter actually is.\"\n\nWe don't teach all SAT content from scratch. We run a digital diagnostic, find the 3–4 gaps costing your child points, and close them. For what Princeton Review charges for group classes, we provide 1:1 attention.\n\nStart this week.",
+    "headline": "May SAT: 8 Weeks to Close the Gap",
+    "description": "1:1 diagnostic-driven SAT tutoring. Perfect tutor match guaranteed.",
+    "cta_button": "Start Your Free Assessment",
+    "expected_quality": "high",
+    "expected_score_range": [8, 9],
+    "dimension_expectations": {
+      "clarity": 9,
+      "value_proposition": 10,
+      "call_to_action": 8,
+      "brand_voice": 9,
+      "emotional_resonance": 9
+    },
+    "notes": "Modeled on real Ad #12 (highest-scoring real ad at 8.0) with CTA fix. Warm validation opener ('Your child is smart') is peak brand voice (brand_voice 9). Sarah case study with parent quote adds narrative proof (value_proposition 10 — specific score, named student, pricing comparison). 'Start this week' creates urgency. Key improvement over the real ad: CTA button is 'Start Your Free Assessment' instead of 'Learn More' (call_to_action 8 — specific and low-friction). Clarity 9 because it's ~100 words and will truncate on mobile, burying the pricing comparison. Emotional_resonance 9 — the parent quote is strong but it's brand-narrated rather than a real testimonial voice."
+  },
+  {
+    "id": "cal_04",
+    "primary_text": "The SAT is fully digital now. Your child takes it on a laptop, not paper.\n\nThat changes how they should prepare. Built-in calculator. Digital tools. Adaptive sections that adjust based on performance.\n\nMost tutors still use whiteboards and worksheets. Our tutors train your child on the actual SAT interface so they're ready for exactly what they'll face on test day.\n\nAverage improvement: 200+ points in 8 weeks with 2 sessions per week.",
+    "headline": "SAT Prep That Matches the Actual Test",
+    "description": "Digital-First SAT Tutoring",
+    "cta_button": "Learn More",
+    "expected_quality": "medium",
+    "expected_score_range": [6, 7],
+    "dimension_expectations": {
+      "clarity": 8,
+      "value_proposition": 7,
+      "call_to_action": 2,
+      "brand_voice": 7,
+      "emotional_resonance": 5
+    },
+    "notes": "Generic digital SAT differentiation angle — correct information but emotionally flat. Clarity is decent (8) because the paper-vs-digital argument is logical and scannable. Value_proposition 7 — '200+ points in 8 weeks' is specific but no named student or case study behind it. Call_to_action 2 — 'Learn More' is the Nerdy rubric's literal example of a bad CTA, with no embedded action step. Brand_voice 7 — informative and knowledgeable but lacks the warmth and empowerment of top ads; could be any tutoring brand. Emotional_resonance 5 — purely rational, no parent worry or student ambition tapped. This is a competent ad that fails to connect."
+  },
+  {
+    "id": "cal_05",
+    "primary_text": "Remember when a good SAT score opened every door? It still does — but the test has changed.\n\nThe SAT is now fully digital. Taken on a laptop, not paper. If your child is preparing with outdated methods, they're at a disadvantage before they even start.\n\nIn just 16 sessions, our expert tutors help students gain 200+ points by training on the exact digital platform used on test day.\n\nSmart students need smart test strategy.",
+    "headline": "Class of '93 Parents — The SAT Has Changed",
+    "description": "Digital SAT Tutoring for Today's Test",
+    "cta_button": "Learn More",
+    "expected_quality": "medium",
+    "expected_score_range": [5, 7],
+    "dimension_expectations": {
+      "clarity": 7,
+      "value_proposition": 6,
+      "call_to_action": 2,
+      "brand_voice": 7,
+      "emotional_resonance": 8
+    },
+    "notes": "Nostalgia angle modeled on real Ads #9/#10. The hook burns 3 sentences on emotion before mentioning the SAT — in a feed where you have <3 seconds to communicate, that's too slow (clarity 7). Emotional_resonance 8 because targeting 'Class of '93 parents' is clever audience segmentation and the generational connection is genuine. Value_proposition 6 — '200+ points in 16 sessions' is generic and appears in many other ads; not specific to the nostalgia angle. 'Class of '93' in the headline will confuse many readers. Description 'Digital SAT Tutoring for Today's Test' is generic filler. Call_to_action 2 — bare 'Learn More' with no embedded action. Brand_voice 7 — warm but the nostalgia frame is disconnected from the product in a meaningful way."
+  },
+  {
+    "id": "cal_06",
+    "primary_text": "Khan Academy not cutting it for your child's SAT score?\n\nThe problem with self-study is your child doesn't know what to focus on. They waste hours on topics they've already mastered while missing the gaps that actually cost them points.\n\nOur 1:1 SAT tutoring starts with a diagnostic that identifies exactly where your child loses points — then builds a study plan around closing those gaps.\n\n✅ Expert tutor matched to your child\n✅ Digital SAT interface training\n✅ 2.6x better results than group courses\n✅ Cancel anytime",
+    "headline": "Stop Wasting Time on Khan Academy",
+    "description": "1:1 SAT Tutoring — Diagnostic-Driven",
+    "cta_button": "Learn More",
+    "expected_quality": "medium",
+    "expected_score_range": [5, 6],
+    "dimension_expectations": {
+      "clarity": 7,
+      "value_proposition": 8,
+      "call_to_action": 2,
+      "brand_voice": 5,
+      "emotional_resonance": 7
+    },
+    "notes": "Aggressive competitor-attack ad modeled on real Ad #5. The problem-agitation-solution structure is sound and the diagnostic positioning is clear (clarity 7). Value_proposition 8 because the insight about wasting time on mastered topics is specific and relatable. BUT: 'Stop Wasting Time on Khan Academy' is the most off-brand headline — it's condescending, not confident. It talks down to parents who chose Khan Academy, violating both 'confident but not arrogant' and 'meet people where they are' (brand_voice 5). The unsourced '2.6x' claim will trigger skepticism in educated parents. Call_to_action 2 — bare 'Learn More'. Description is boilerplate jargon. Emotional_resonance 7 — parents frustrated with Khan will feel seen, but the aggressive tone alienates the comparison shoppers it's targeting."
+  },
+  {
+    "id": "cal_07",
+    "primary_text": "SAT Tutoring to raise their score and unblock their dreams.\n\nThe SAT should never jeopardize your child's athletic dreams. If this test is the only thing standing between them and a scholarship, don't wait until it's too late.\n\nThe recruiting window is closing fast, and coaches want to see results. Your athlete is working hard on the field; let's ensure their SAT score reflects that effort.\n\nDon't let a number become a barrier to opportunity. Varsity Tutors specializes in personalized tutoring for high school athletes. We improve their SAT score fast — because every point matters when it comes to funding their future.",
+    "headline": "SAT Tutoring to raise their score and unblock their dreams.",
+    "description": "SAT Tutoring to raise their score and unblock their dreams.",
+    "cta_button": "Learn More",
+    "expected_quality": "low",
+    "expected_score_range": [2, 4],
+    "dimension_expectations": {
+      "clarity": 4,
+      "value_proposition": 3,
+      "call_to_action": 1,
+      "brand_voice": 3,
+      "emotional_resonance": 5
+    },
+    "notes": "Production-error ad modeled on real Ads #20/#21 (scored 3.2). The headline, description, and opening of primary text are the SAME SENTENCE — three identical text fields means zero information density (clarity 4). Value_proposition 3 because the ad is entirely feature-free: no diagnostic, no digital SAT angle, no score improvement numbers, no timeframe, no guarantee, no pricing. 'We improve their SAT score fast' is as close to the rubric's Score 1 example ('we have tutors') as possible. Brand_voice 3 — 'unblock their dreams' is generic motivational ad-speak that could be any education brand; doesn't sound like Varsity Tutors. Call_to_action 1 — 'Learn More' button with no embedded action step, combined with repetitive text, means there is effectively no call to action. Emotional_resonance 5 — the athlete-scholarship angle has real potential but is entirely abstract with no named athlete, no specific score, no real story."
+  },
+  {
+    "id": "cal_08",
+    "primary_text": "3.7 GPA. 1240 SAT. Your child is smarter than their score shows. 🧠\n\nThe May SAT is their final shot before college apps. But here's what most parents don't realize...\n\n**BEFORE:** Your child studies hard but keeps hitting the same score ceiling. Khan Academy isn't cutting it. Princeton Review group classes move too slow.\n\n**AFTER:** Imagine your child walking into May SAT having practiced 200+ real questions on the exact digital interface. They know every shortcut, every built-in tool. Score jumps 100+ points. ✨\n\n**THE BRIDGE:** 1-on-1 digital SAT tutoring that targets their specific gaps.\n\nReal human tutor who gets them. Cancel anytime.\n\nFor what Kaplan charges $1,500+ for group classes, we deliver personalized 1-on-1 starting at $349/month.\n\nYour child deserves their real score.",
+    "headline": "May SAT: Only 8 Weeks Left",
+    "description": "Last chance. Real results.",
+    "cta_button": "Learn More",
+    "expected_quality": "low",
+    "expected_score_range": [3, 5],
+    "dimension_expectations": {
+      "clarity": 5,
+      "value_proposition": 7,
+      "call_to_action": 2,
+      "brand_voice": 3,
+      "emotional_resonance": 6
+    },
+    "notes": "BEFORE/AFTER/BRIDGE framework labels left visible in live ad copy — modeled on real Ads #13/#18 (scored 4.6-5.2). This is a production error: readers see 'BEFORE:', 'AFTER:', and 'THE BRIDGE:' as literal text, which looks like a copywriting template that was never edited (brand_voice 3). Bold markdown formatting (**text**) will render as literal asterisks on most Meta placements. Clarity 5 because the ad tries to deliver 6 competing messages simultaneously (GPA/SAT gap + urgency + competitive attack on 3 brands + price comparison + digital SAT + feature list). The 3.7 GPA / 1240 SAT numbers feel randomly generated compared to the established 3.8/1260 pattern. Description 'Last chance. Real results.' is cliché. Call_to_action 2 — bare 'Learn More' with no embedded action. Value_proposition 7 because the underlying information (pricing comparison, diagnostic approach) is solid — it's the delivery that fails. Emotional_resonance 6 — the urgency angle has weight but is buried under formatting noise."
+  }
+]
