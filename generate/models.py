@@ -48,8 +48,8 @@ class AdBrief(BaseModel):
 class GeneratedAd(BaseModel):
     """A single generated Meta (Facebook/Instagram) ad."""
 
-    primary_text: str = Field(..., max_length=300)
-    headline: str = Field(..., max_length=40)
+    primary_text: str = Field(..., max_length=600)
+    headline: str = Field(..., max_length=60)
     description: str = Field(..., max_length=125)
     cta_button: Literal[
         "Learn More", "Sign Up", "Get Started", "Book Now", "Try Free"
