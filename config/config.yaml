@@ -1,0 +1,55 @@
+# Autonomous Ad Engine Configuration
+
+models:
+  generator: "gemini-3.1-pro-preview"
+  evaluator: "gemini-3.1-pro-preview"
+
+quality:
+  threshold: 7.0
+  max_regeneration_attempts: 3
+
+dimensions:
+  clarity:
+    weight: 0.25
+    description: "Is the message immediately understandable in under 3 seconds?"
+    score_1: "Confusing, multiple messages competing for attention"
+    score_10: "Crystal clear single takeaway"
+  value_proposition:
+    weight: 0.25
+    description: "Does it communicate a compelling, specific benefit?"
+    score_1: "Generic, feature-focused (e.g., 'we have tutors')"
+    score_10: "Specific, differentiated benefit (e.g., 'raise your SAT score 200+ points')"
+  call_to_action:
+    weight: 0.20
+    description: "Is the next step clear, compelling, and low-friction?"
+    score_1: "No CTA or vague ('learn more')"
+    score_10: "Specific, urgent, low-friction ('Start your free practice test')"
+  brand_voice:
+    weight: 0.15
+    description: "Does it sound like Varsity Tutors?"
+    score_1: "Generic, could be any brand"
+    score_10: "Distinctly empowering, knowledgeable, approachable"
+  emotional_resonance:
+    weight: 0.15
+    description: "Does it connect with real emotional motivation?"
+    score_1: "Flat, purely rational"
+    score_10: "Taps into parent worry, student ambition, or test anxiety"
+
+brand:
+  name: "Varsity Tutors"
+  parent_company: "Nerdy"
+  voice: "Empowering, knowledgeable, approachable, results-focused"
+  guidelines:
+    - "Lead with outcomes, not features"
+    - "Confident but not arrogant"
+    - "Expert but not elitist"
+    - "Meet people where they are"
+  audience_segments:
+    - id: "anxious_parents"
+      label: "Parents anxious about college admissions"
+    - id: "stressed_students"
+      label: "High school students stressed about SAT scores"
+    - id: "comparison_shoppers"
+      label: "Families comparing prep options (Princeton Review, Kaplan, Khan Academy)"
+
+seed: 42
