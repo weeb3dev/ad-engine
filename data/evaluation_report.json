@@ -1,0 +1,42 @@
+{
+  "total_ads": 53,
+  "passed": 53,
+  "pass_rate": 1.0,
+  "avg_score": 7.59,
+  "min_score": 7.0,
+  "max_score": 8.85,
+  "per_dimension": {
+    "clarity": {
+      "avg": 8.42,
+      "stdev": 0.99
+    },
+    "value_proposition": {
+      "avg": 7.7,
+      "stdev": 0.77
+    },
+    "call_to_action": {
+      "avg": 6.98,
+      "stdev": 1.69
+    },
+    "brand_voice": {
+      "avg": 7.91,
+      "stdev": 0.88
+    },
+    "emotional_resonance": {
+      "avg": 6.51,
+      "stdev": 1.56
+    }
+  },
+  "per_segment_pass_rate": {
+    "anxious_parents": 1.0,
+    "comparison_shoppers": 1.0,
+    "stressed_students": 1.0
+  },
+  "total_cost_usd": 2.3512,
+  "cost_per_ad": 0.0444,
+  "cost_per_passing_ad": 0.0444,
+  "quality_improvement": {
+    "cycle_1_avg": 7.36,
+    "final_cycle_avg": 8.07
+  }
+}
