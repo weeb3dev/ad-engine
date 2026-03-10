@@ -1,0 +1,320 @@
+{
+  "timestamp": "2026-03-09T22:02:48.832557+00:00",
+  "overall_pass": true,
+  "tier_pass_rate": "8/8",
+  "total_cost_usd": 0.151508,
+  "results": [
+    {
+      "ad_id": "cal_01",
+      "expected_quality": "high",
+      "expected_score_range": [
+        9,
+        10
+      ],
+      "aggregate_score": 9.0,
+      "tier_pass": true,
+      "passes_threshold": true,
+      "weakest_dimension": "call_to_action",
+      "dimension_details": {
+        "clarity": {
+          "actual": 10,
+          "expected": 10,
+          "delta": 0
+        },
+        "value_proposition": {
+          "actual": 10,
+          "expected": 10,
+          "delta": 0
+        },
+        "call_to_action": {
+          "actual": 5,
+          "expected": 9,
+          "delta": -4
+        },
+        "brand_voice": {
+          "actual": 10,
+          "expected": 10,
+          "delta": 0
+        },
+        "emotional_resonance": {
+          "actual": 10,
+          "expected": 10,
+          "delta": 0
+        }
+      }
+    },
+    {
+      "ad_id": "cal_02",
+      "expected_quality": "high",
+      "expected_score_range": [
+        8,
+        10
+      ],
+      "aggregate_score": 9.0,
+      "tier_pass": true,
+      "passes_threshold": true,
+      "weakest_dimension": "call_to_action",
+      "dimension_details": {
+        "clarity": {
+          "actual": 10,
+          "expected": 9,
+          "delta": 1
+        },
+        "value_proposition": {
+          "actual": 10,
+          "expected": 10,
+          "delta": 0
+        },
+        "call_to_action": {
+          "actual": 5,
+          "expected": 8,
+          "delta": -3
+        },
+        "brand_voice": {
+          "actual": 10,
+          "expected": 9,
+          "delta": 1
+        },
+        "emotional_resonance": {
+          "actual": 10,
+          "expected": 10,
+          "delta": 0
+        }
+      }
+    },
+    {
+      "ad_id": "cal_03",
+      "expected_quality": "high",
+      "expected_score_range": [
+        8,
+        9
+      ],
+      "aggregate_score": 9.35,
+      "tier_pass": true,
+      "passes_threshold": true,
+      "weakest_dimension": "clarity",
+      "dimension_details": {
+        "clarity": {
+          "actual": 9,
+          "expected": 9,
+          "delta": 0
+        },
+        "value_proposition": {
+          "actual": 9,
+          "expected": 10,
+          "delta": -1
+        },
+        "call_to_action": {
+          "actual": 10,
+          "expected": 8,
+          "delta": 2
+        },
+        "brand_voice": {
+          "actual": 9,
+          "expected": 9,
+          "delta": 0
+        },
+        "emotional_resonance": {
+          "actual": 10,
+          "expected": 9,
+          "delta": 1
+        }
+      }
+    },
+    {
+      "ad_id": "cal_04",
+      "expected_quality": "medium",
+      "expected_score_range": [
+        6,
+        7
+      ],
+      "aggregate_score": 6.1,
+      "tier_pass": true,
+      "passes_threshold": false,
+      "weakest_dimension": "call_to_action",
+      "dimension_details": {
+        "clarity": {
+          "actual": 9,
+          "expected": 8,
+          "delta": 1
+        },
+        "value_proposition": {
+          "actual": 8,
+          "expected": 7,
+          "delta": 1
+        },
+        "call_to_action": {
+          "actual": 1,
+          "expected": 2,
+          "delta": -1
+        },
+        "brand_voice": {
+          "actual": 8,
+          "expected": 7,
+          "delta": 1
+        },
+        "emotional_resonance": {
+          "actual": 3,
+          "expected": 5,
+          "delta": -2
+        }
+      }
+    },
+    {
+      "ad_id": "cal_05",
+      "expected_quality": "medium",
+      "expected_score_range": [
+        5,
+        7
+      ],
+      "aggregate_score": 7.25,
+      "tier_pass": true,
+      "passes_threshold": true,
+      "weakest_dimension": "call_to_action",
+      "dimension_details": {
+        "clarity": {
+          "actual": 9,
+          "expected": 7,
+          "delta": 2
+        },
+        "value_proposition": {
+          "actual": 9,
+          "expected": 6,
+          "delta": 3
+        },
+        "call_to_action": {
+          "actual": 1,
+          "expected": 2,
+          "delta": -1
+        },
+        "brand_voice": {
+          "actual": 8,
+          "expected": 7,
+          "delta": 1
+        },
+        "emotional_resonance": {
+          "actual": 9,
+          "expected": 8,
+          "delta": 1
+        }
+      }
+    },
+    {
+      "ad_id": "cal_06",
+      "expected_quality": "medium",
+      "expected_score_range": [
+        5,
+        6
+      ],
+      "aggregate_score": 5.2,
+      "tier_pass": true,
+      "passes_threshold": false,
+      "weakest_dimension": "call_to_action",
+      "dimension_details": {
+        "clarity": {
+          "actual": 9,
+          "expected": 7,
+          "delta": 2
+        },
+        "value_proposition": {
+          "actual": 5,
+          "expected": 8,
+          "delta": -3
+        },
+        "call_to_action": {
+          "actual": 1,
+          "expected": 2,
+          "delta": -1
+        },
+        "brand_voice": {
+          "actual": 2,
+          "expected": 5,
+          "delta": -3
+        },
+        "emotional_resonance": {
+          "actual": 8,
+          "expected": 7,
+          "delta": 1
+        }
+      }
+    },
+    {
+      "ad_id": "cal_07",
+      "expected_quality": "low",
+      "expected_score_range": [
+        2,
+        4
+      ],
+      "aggregate_score": 2.2,
+      "tier_pass": true,
+      "passes_threshold": false,
+      "weakest_dimension": "call_to_action",
+      "dimension_details": {
+        "clarity": {
+          "actual": 2,
+          "expected": 4,
+          "delta": -2
+        },
+        "value_proposition": {
+          "actual": 3,
+          "expected": 3,
+          "delta": 0
+        },
+        "call_to_action": {
+          "actual": 1,
+          "expected": 1,
+          "delta": 0
+        },
+        "brand_voice": {
+          "actual": 2,
+          "expected": 3,
+          "delta": -1
+        },
+        "emotional_resonance": {
+          "actual": 3,
+          "expected": 5,
+          "delta": -2
+        }
+      }
+    },
+    {
+      "ad_id": "cal_08",
+      "expected_quality": "low",
+      "expected_score_range": [
+        3,
+        5
+      ],
+      "aggregate_score": 4.45,
+      "tier_pass": true,
+      "passes_threshold": false,
+      "weakest_dimension": "call_to_action",
+      "dimension_details": {
+        "clarity": {
+          "actual": 3,
+          "expected": 5,
+          "delta": -2
+        },
+        "value_proposition": {
+          "actual": 6,
+          "expected": 7,
+          "delta": -1
+        },
+        "call_to_action": {
+          "actual": 2,
+          "expected": 2,
+          "delta": 0
+        },
+        "brand_voice": {
+          "actual": 3,
+          "expected": 3,
+          "delta": 0
+        },
+        "emotional_resonance": {
+          "actual": 9,
+          "expected": 6,
+          "delta": 3
+        }
+      }
+    }
+  ]
+}

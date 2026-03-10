@@ -1,0 +1,380 @@
+[
+  {
+    "audience_segment": "anxious_parents",
+    "product": "sat_prep",
+    "campaign_goal": "awareness",
+    "tone": "urgent",
+    "specific_offer": "Free SAT practice test"
+  },
+  {
+    "audience_segment": "anxious_parents",
+    "product": "sat_prep",
+    "campaign_goal": "awareness",
+    "tone": "empathetic",
+    "specific_offer": "Free SAT practice test"
+  },
+  {
+    "audience_segment": "anxious_parents",
+    "product": "sat_prep",
+    "campaign_goal": "awareness",
+    "tone": "confident",
+    "specific_offer": "Free SAT practice test"
+  },
+  {
+    "audience_segment": "anxious_parents",
+    "product": "sat_prep",
+    "campaign_goal": "awareness",
+    "tone": "urgent",
+    "specific_offer": "1-on-1 expert tutoring"
+  },
+  {
+    "audience_segment": "anxious_parents",
+    "product": "sat_prep",
+    "campaign_goal": "awareness",
+    "tone": "empathetic",
+    "specific_offer": "1-on-1 expert tutoring"
+  },
+  {
+    "audience_segment": "anxious_parents",
+    "product": "sat_prep",
+    "campaign_goal": "awareness",
+    "tone": "confident",
+    "specific_offer": "1-on-1 expert tutoring"
+  },
+  {
+    "audience_segment": "anxious_parents",
+    "product": "sat_prep",
+    "campaign_goal": "awareness",
+    "tone": "urgent",
+    "specific_offer": "Score improvement guarantee"
+  },
+  {
+    "audience_segment": "anxious_parents",
+    "product": "sat_prep",
+    "campaign_goal": "awareness",
+    "tone": "empathetic",
+    "specific_offer": "Score improvement guarantee"
+  },
+  {
+    "audience_segment": "anxious_parents",
+    "product": "sat_prep",
+    "campaign_goal": "awareness",
+    "tone": "confident",
+    "specific_offer": "Score improvement guarantee"
+  },
+  {
+    "audience_segment": "anxious_parents",
+    "product": "sat_prep",
+    "campaign_goal": "conversion",
+    "tone": "urgent",
+    "specific_offer": "Free SAT practice test"
+  },
+  {
+    "audience_segment": "anxious_parents",
+    "product": "sat_prep",
+    "campaign_goal": "conversion",
+    "tone": "empathetic",
+    "specific_offer": "Free SAT practice test"
+  },
+  {
+    "audience_segment": "anxious_parents",
+    "product": "sat_prep",
+    "campaign_goal": "conversion",
+    "tone": "confident",
+    "specific_offer": "Free SAT practice test"
+  },
+  {
+    "audience_segment": "anxious_parents",
+    "product": "sat_prep",
+    "campaign_goal": "conversion",
+    "tone": "urgent",
+    "specific_offer": "1-on-1 expert tutoring"
+  },
+  {
+    "audience_segment": "anxious_parents",
+    "product": "sat_prep",
+    "campaign_goal": "conversion",
+    "tone": "empathetic",
+    "specific_offer": "1-on-1 expert tutoring"
+  },
+  {
+    "audience_segment": "anxious_parents",
+    "product": "sat_prep",
+    "campaign_goal": "conversion",
+    "tone": "confident",
+    "specific_offer": "1-on-1 expert tutoring"
+  },
+  {
+    "audience_segment": "anxious_parents",
+    "product": "sat_prep",
+    "campaign_goal": "conversion",
+    "tone": "urgent",
+    "specific_offer": "Score improvement guarantee"
+  },
+  {
+    "audience_segment": "anxious_parents",
+    "product": "sat_prep",
+    "campaign_goal": "conversion",
+    "tone": "empathetic",
+    "specific_offer": "Score improvement guarantee"
+  },
+  {
+    "audience_segment": "anxious_parents",
+    "product": "sat_prep",
+    "campaign_goal": "conversion",
+    "tone": "confident",
+    "specific_offer": "Score improvement guarantee"
+  },
+  {
+    "audience_segment": "comparison_shoppers",
+    "product": "sat_prep",
+    "campaign_goal": "awareness",
+    "tone": "urgent",
+    "specific_offer": "Free SAT practice test"
+  },
+  {
+    "audience_segment": "comparison_shoppers",
+    "product": "sat_prep",
+    "campaign_goal": "awareness",
+    "tone": "empathetic",
+    "specific_offer": "Free SAT practice test"
+  },
+  {
+    "audience_segment": "comparison_shoppers",
+    "product": "sat_prep",
+    "campaign_goal": "awareness",
+    "tone": "confident",
+    "specific_offer": "Free SAT practice test"
+  },
+  {
+    "audience_segment": "comparison_shoppers",
+    "product": "sat_prep",
+    "campaign_goal": "awareness",
+    "tone": "urgent",
+    "specific_offer": "1-on-1 expert tutoring"
+  },
+  {
+    "audience_segment": "comparison_shoppers",
+    "product": "sat_prep",
+    "campaign_goal": "awareness",
+    "tone": "empathetic",
+    "specific_offer": "1-on-1 expert tutoring"
+  },
+  {
+    "audience_segment": "comparison_shoppers",
+    "product": "sat_prep",
+    "campaign_goal": "awareness",
+    "tone": "confident",
+    "specific_offer": "1-on-1 expert tutoring"
+  },
+  {
+    "audience_segment": "comparison_shoppers",
+    "product": "sat_prep",
+    "campaign_goal": "awareness",
+    "tone": "urgent",
+    "specific_offer": "Score improvement guarantee"
+  },
+  {
+    "audience_segment": "comparison_shoppers",
+    "product": "sat_prep",
+    "campaign_goal": "awareness",
+    "tone": "empathetic",
+    "specific_offer": "Score improvement guarantee"
+  },
+  {
+    "audience_segment": "comparison_shoppers",
+    "product": "sat_prep",
+    "campaign_goal": "awareness",
+    "tone": "confident",
+    "specific_offer": "Score improvement guarantee"
+  },
+  {
+    "audience_segment": "comparison_shoppers",
+    "product": "sat_prep",
+    "campaign_goal": "conversion",
+    "tone": "urgent",
+    "specific_offer": "Free SAT practice test"
+  },
+  {
+    "audience_segment": "comparison_shoppers",
+    "product": "sat_prep",
+    "campaign_goal": "conversion",
+    "tone": "empathetic",
+    "specific_offer": "Free SAT practice test"
+  },
+  {
+    "audience_segment": "comparison_shoppers",
+    "product": "sat_prep",
+    "campaign_goal": "conversion",
+    "tone": "confident",
+    "specific_offer": "Free SAT practice test"
+  },
+  {
+    "audience_segment": "comparison_shoppers",
+    "product": "sat_prep",
+    "campaign_goal": "conversion",
+    "tone": "urgent",
+    "specific_offer": "1-on-1 expert tutoring"
+  },
+  {
+    "audience_segment": "comparison_shoppers",
+    "product": "sat_prep",
+    "campaign_goal": "conversion",
+    "tone": "empathetic",
+    "specific_offer": "1-on-1 expert tutoring"
+  },
+  {
+    "audience_segment": "comparison_shoppers",
+    "product": "sat_prep",
+    "campaign_goal": "conversion",
+    "tone": "confident",
+    "specific_offer": "1-on-1 expert tutoring"
+  },
+  {
+    "audience_segment": "comparison_shoppers",
+    "product": "sat_prep",
+    "campaign_goal": "conversion",
+    "tone": "urgent",
+    "specific_offer": "Score improvement guarantee"
+  },
+  {
+    "audience_segment": "comparison_shoppers",
+    "product": "sat_prep",
+    "campaign_goal": "conversion",
+    "tone": "empathetic",
+    "specific_offer": "Score improvement guarantee"
+  },
+  {
+    "audience_segment": "comparison_shoppers",
+    "product": "sat_prep",
+    "campaign_goal": "conversion",
+    "tone": "confident",
+    "specific_offer": "Score improvement guarantee"
+  },
+  {
+    "audience_segment": "stressed_students",
+    "product": "sat_prep",
+    "campaign_goal": "awareness",
+    "tone": "urgent",
+    "specific_offer": "Free SAT practice test"
+  },
+  {
+    "audience_segment": "stressed_students",
+    "product": "sat_prep",
+    "campaign_goal": "awareness",
+    "tone": "empathetic",
+    "specific_offer": "Free SAT practice test"
+  },
+  {
+    "audience_segment": "stressed_students",
+    "product": "sat_prep",
+    "campaign_goal": "awareness",
+    "tone": "confident",
+    "specific_offer": "Free SAT practice test"
+  },
+  {
+    "audience_segment": "stressed_students",
+    "product": "sat_prep",
+    "campaign_goal": "awareness",
+    "tone": "urgent",
+    "specific_offer": "1-on-1 expert tutoring"
+  },
+  {
+    "audience_segment": "stressed_students",
+    "product": "sat_prep",
+    "campaign_goal": "awareness",
+    "tone": "empathetic",
+    "specific_offer": "1-on-1 expert tutoring"
+  },
+  {
+    "audience_segment": "stressed_students",
+    "product": "sat_prep",
+    "campaign_goal": "awareness",
+    "tone": "confident",
+    "specific_offer": "1-on-1 expert tutoring"
+  },
+  {
+    "audience_segment": "stressed_students",
+    "product": "sat_prep",
+    "campaign_goal": "awareness",
+    "tone": "urgent",
+    "specific_offer": "Score improvement guarantee"
+  },
+  {
+    "audience_segment": "stressed_students",
+    "product": "sat_prep",
+    "campaign_goal": "awareness",
+    "tone": "empathetic",
+    "specific_offer": "Score improvement guarantee"
+  },
+  {
+    "audience_segment": "stressed_students",
+    "product": "sat_prep",
+    "campaign_goal": "awareness",
+    "tone": "confident",
+    "specific_offer": "Score improvement guarantee"
+  },
+  {
+    "audience_segment": "stressed_students",
+    "product": "sat_prep",
+    "campaign_goal": "conversion",
+    "tone": "urgent",
+    "specific_offer": "Free SAT practice test"
+  },
+  {
+    "audience_segment": "stressed_students",
+    "product": "sat_prep",
+    "campaign_goal": "conversion",
+    "tone": "empathetic",
+    "specific_offer": "Free SAT practice test"
+  },
+  {
+    "audience_segment": "stressed_students",
+    "product": "sat_prep",
+    "campaign_goal": "conversion",
+    "tone": "confident",
+    "specific_offer": "Free SAT practice test"
+  },
+  {
+    "audience_segment": "stressed_students",
+    "product": "sat_prep",
+    "campaign_goal": "conversion",
+    "tone": "urgent",
+    "specific_offer": "1-on-1 expert tutoring"
+  },
+  {
+    "audience_segment": "stressed_students",
+    "product": "sat_prep",
+    "campaign_goal": "conversion",
+    "tone": "empathetic",
+    "specific_offer": "1-on-1 expert tutoring"
+  },
+  {
+    "audience_segment": "stressed_students",
+    "product": "sat_prep",
+    "campaign_goal": "conversion",
+    "tone": "confident",
+    "specific_offer": "1-on-1 expert tutoring"
+  },
+  {
+    "audience_segment": "stressed_students",
+    "product": "sat_prep",
+    "campaign_goal": "conversion",
+    "tone": "urgent",
+    "specific_offer": "Score improvement guarantee"
+  },
+  {
+    "audience_segment": "stressed_students",
+    "product": "sat_prep",
+    "campaign_goal": "conversion",
+    "tone": "empathetic",
+    "specific_offer": "Score improvement guarantee"
+  },
+  {
+    "audience_segment": "stressed_students",
+    "product": "sat_prep",
+    "campaign_goal": "conversion",
+    "tone": "confident",
+    "specific_offer": "Score improvement guarantee"
+  }
+]

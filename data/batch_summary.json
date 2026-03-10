@@ -1,0 +1,23 @@
+{
+  "total_ads": 53,
+  "passed": 53,
+  "pass_rate": 1.0,
+  "avg_score": 7.59,
+  "min_score": 7.0,
+  "max_score": 8.85,
+  "avg_iterations": 2.23,
+  "total_cost_usd": 2.3512,
+  "cost_per_ad": 0.0444,
+  "per_segment_pass_rate": {
+    "anxious_parents": 1.0,
+    "comparison_shoppers": 1.0,
+    "stressed_students": 1.0
+  },
+  "per_dimension_avg": {
+    "brand_voice": 7.91,
+    "call_to_action": 6.98,
+    "clarity": 8.42,
+    "emotional_resonance": 6.51,
+    "value_proposition": 7.7
+  }
+}
