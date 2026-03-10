@@ -17,6 +17,7 @@ from rich.console import Console
 from rich.table import Table
 
 from config.loader import get_config, get_gemini_client
+from config.observability import get_langfuse, observe
 from evaluate.dimensions import get_all_rubrics
 from generate.models import AdEvaluation, DimensionScore, GeneratedAd
 
@@ -79,6 +80,7 @@ def _estimate_cost(input_tokens: int, output_tokens: int) -> float:
     return (input_tokens * _INPUT_COST_PER_M + output_tokens * _OUTPUT_COST_PER_M) / 1_000_000
 
 
+@observe(name="evaluate-dimension")
 def evaluate_dimension(
     ad_fields: dict[str, str],
     dimension_name: str,
@@ -142,6 +144,12 @@ def evaluate_dimension(
                 f"[bold]{score.score}[/bold]/10 "
                 f"({score.confidence} confidence)"
             )
+            try:
+                get_langfuse().update_current_span(
+                    metadata={"dimension": dimension_name, "score": score.score, "confidence": score.confidence},
+                )
+            except Exception:
+                pass
             return score, usage_info
 
         except (json.JSONDecodeError, KeyError, ValueError) as exc:
@@ -166,6 +174,7 @@ def evaluate_dimension(
     return fallback, usage_info
 
 
+@observe(name="evaluate-ad")
 def evaluate_ad(
     ad: GeneratedAd | dict[str, str],
     config: None = None,
@@ -249,5 +258,16 @@ def evaluate_ad(
         f"{total_usage['output_tokens']:,} out | "
         f"Est. cost: ${total_usage['cost_usd']:.4f}"
     )
+
+    try:
+        get_langfuse().update_current_span(
+            metadata={
+                "aggregate_score": agg,
+                "passes_threshold": evaluation.passes_threshold,
+                "weakest_dimension": evaluation.weakest_dimension,
+            },
+        )
+    except Exception:
+        pass
 
     return evaluation, total_usage

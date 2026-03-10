@@ -16,6 +16,7 @@ from rich.console import Console
 from rich.panel import Panel
 
 from config.loader import get_config, get_gemini_client
+from config.observability import get_langfuse, observe
 from generate.models import AdBrief, Config, GeneratedAd
 
 console = Console()
@@ -102,6 +103,7 @@ def load_few_shot_examples(dimension: str | None = None) -> str:
     return "\n".join(lines)
 
 
+@observe(name="generate-ad")
 def generate_ad(
     brief: AdBrief,
     config: Config,
@@ -165,6 +167,17 @@ def generate_ad(
                 f"  Tokens: {input_tokens:,} in / {output_tokens:,} out | "
                 f"Est. cost: ${usage['cost_usd']:.4f}"
             )
+
+            try:
+                get_langfuse().update_current_span(
+                    metadata={
+                        "hook_style": hook_style,
+                        "audience_segment": brief.audience_segment,
+                        "campaign_goal": brief.campaign_goal,
+                    },
+                )
+            except Exception:
+                pass
 
             return ad, usage
 

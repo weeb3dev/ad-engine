@@ -18,6 +18,7 @@ from rich.panel import Panel
 from rich.table import Table
 
 from config.loader import get_config, get_gemini_client
+from config.observability import get_langfuse, observe, propagate_attributes
 from evaluate.judge import evaluate_ad
 from generate.generator import generate_ad
 from generate.models import AdBrief, AdEvaluation, AdRecord, Config, GeneratedAd
@@ -48,6 +49,7 @@ def _estimate_cost(input_tokens: int, output_tokens: int) -> float:
     return (input_tokens * _INPUT_COST_PER_M + output_tokens * _OUTPUT_COST_PER_M) / 1_000_000
 
 
+@observe(name="improve-ad")
 def improve_ad(
     ad: GeneratedAd,
     evaluation: AdEvaluation,
@@ -63,6 +65,13 @@ def improve_ad(
     weak_dim = evaluation.weakest_dimension
     dim_score = getattr(evaluation, weak_dim)
     strategy = get_strategy_name(attempt)
+
+    try:
+        get_langfuse().update_current_span(
+            metadata={"strategy": strategy, "weak_dimension": weak_dim, "attempt": attempt},
+        )
+    except Exception:
+        pass
 
     display_dim = weak_dim.replace("_", " ").title()
     console.print(
@@ -128,118 +137,129 @@ def improve_ad(
     raise ValueError("Unreachable — improve loop exited without return")
 
 
+@observe(name="run-pipeline")
 def run_pipeline(brief: AdBrief, config: Config) -> AdRecord:
     """Run the full generate -> evaluate -> improve loop for a single brief.
 
     Returns the best AdRecord produced within max_regeneration_attempts.
     """
-    max_attempts = config.quality.max_regeneration_attempts
-    total_gen_cost = 0.0
-    total_eval_cost = 0.0
+    with propagate_attributes(
+        tags=["pipeline"],
+        metadata={
+            "audience_segment": brief.audience_segment,
+            "campaign_goal": brief.campaign_goal,
+        },
+    ):
+        max_attempts = config.quality.max_regeneration_attempts
+        total_gen_cost = 0.0
+        total_eval_cost = 0.0
 
-    # Step 1: initial generation
-    console.rule("[bold blue]Pipeline — Initial Generation")
-    ad, gen_usage = generate_ad(brief, config)
-    total_gen_cost += gen_usage["cost_usd"]
+        # Step 1: initial generation
+        console.rule("[bold blue]Pipeline — Initial Generation")
+        ad, gen_usage = generate_ad(brief, config)
+        total_gen_cost += gen_usage["cost_usd"]
 
-    # Step 2: initial evaluation
-    evaluation, eval_usage = evaluate_ad(ad)
-    total_eval_cost += eval_usage["cost_usd"]
+        # Step 2: initial evaluation
+        evaluation, eval_usage = evaluate_ad(ad)
+        total_eval_cost += eval_usage["cost_usd"]
 
-    initial_score = evaluation.aggregate_score
+        initial_score = evaluation.aggregate_score
 
-    # Track the best version seen
-    best_ad = ad
-    best_eval = evaluation
-    best_strategy: str | None = None
-    cycle = 1
+        # Track the best version seen
+        best_ad = ad
+        best_eval = evaluation
+        best_strategy: str | None = None
+        cycle = 1
 
-    _print_cycle_summary(cycle, evaluation, strategy=None)
+        _print_cycle_summary(cycle, evaluation, strategy=None)
 
-    # Step 3: improvement loop
-    for attempt in range(1, max_attempts + 1):
-        if best_eval.passes_threshold:
-            console.print(
-                f"\n[bold green]Passed threshold ({best_eval.aggregate_score:.2f} >= 7.0) "
-                f"after {cycle} cycle(s)[/bold green]"
-            )
-            break
+        # Step 3: improvement loop
+        for attempt in range(1, max_attempts + 1):
+            if best_eval.passes_threshold:
+                console.print(
+                    f"\n[bold green]Passed threshold ({best_eval.aggregate_score:.2f} >= 7.0) "
+                    f"after {cycle} cycle(s)[/bold green]"
+                )
+                break
 
-        console.rule(f"[bold yellow]Pipeline — Improvement Cycle {attempt}")
+            console.rule(f"[bold yellow]Pipeline — Improvement Cycle {attempt}")
 
-        try:
-            improved_ad, imp_usage = improve_ad(
-                ad=best_ad,
-                evaluation=best_eval,
-                brief=brief,
-                config=config,
-                attempt=attempt,
-            )
-        except ValueError as exc:
-            console.print(f"  [red]✗[/red] Improvement attempt {attempt} failed: {exc}")
-            break
+            try:
+                improved_ad, imp_usage = improve_ad(
+                    ad=best_ad,
+                    evaluation=best_eval,
+                    brief=brief,
+                    config=config,
+                    attempt=attempt,
+                )
+            except ValueError as exc:
+                console.print(f"  [red]✗[/red] Improvement attempt {attempt} failed: {exc}")
+                break
 
-        total_gen_cost += imp_usage["cost_usd"]
+            total_gen_cost += imp_usage["cost_usd"]
 
-        re_eval, re_eval_usage = evaluate_ad(improved_ad)
-        total_eval_cost += re_eval_usage["cost_usd"]
+            re_eval, re_eval_usage = evaluate_ad(improved_ad)
+            total_eval_cost += re_eval_usage["cost_usd"]
 
-        cycle += 1
-        strategy_name = get_strategy_name(attempt)
-        _print_cycle_summary(cycle, re_eval, strategy=strategy_name)
+            cycle += 1
+            strategy_name = get_strategy_name(attempt)
+            _print_cycle_summary(cycle, re_eval, strategy=strategy_name)
 
-        if re_eval.aggregate_score > best_eval.aggregate_score:
-            best_ad = improved_ad
-            best_eval = re_eval
-            best_strategy = strategy_name
+            if re_eval.aggregate_score > best_eval.aggregate_score:
+                best_ad = improved_ad
+                best_eval = re_eval
+                best_strategy = strategy_name
 
-    else:
-        if not best_eval.passes_threshold:
-            console.print(
-                f"\n[bold red]Max attempts reached. Best score: "
-                f"{best_eval.aggregate_score:.2f} (below threshold)[/bold red]"
-            )
+        else:
+            if not best_eval.passes_threshold:
+                console.print(
+                    f"\n[bold red]Max attempts reached. Best score: "
+                    f"{best_eval.aggregate_score:.2f} (below threshold)[/bold red]"
+                )
 
-    record = AdRecord(
-        ad_id=uuid.uuid4().hex[:12],
-        brief=brief,
-        generated_ad=best_ad,
-        evaluation=best_eval,
-        iteration_cycle=cycle,
-        improved_from=initial_score if cycle > 1 else None,
-        improvement_strategy=best_strategy,
-        generation_cost_usd=total_gen_cost,
-        evaluation_cost_usd=total_eval_cost,
-        timestamp=datetime.utcnow(),
-    )
+        record = AdRecord(
+            ad_id=uuid.uuid4().hex[:12],
+            brief=brief,
+            generated_ad=best_ad,
+            evaluation=best_eval,
+            iteration_cycle=cycle,
+            improved_from=initial_score if cycle > 1 else None,
+            improvement_strategy=best_strategy,
+            generation_cost_usd=total_gen_cost,
+            evaluation_cost_usd=total_eval_cost,
+            timestamp=datetime.utcnow(),
+        )
 
-    console.rule("[bold blue]Pipeline — Result")
-    console.print(
-        f"  Final score: [bold]{record.evaluation.aggregate_score:.2f}[/bold]  "
-        f"Passed: {'[green]Yes' if record.evaluation.passes_threshold else '[red]No'}[/]  "
-        f"Cycles: {record.iteration_cycle}  "
-        f"Cost: ${record.generation_cost_usd + record.evaluation_cost_usd:.4f}"
-    )
+        console.rule("[bold blue]Pipeline — Result")
+        console.print(
+            f"  Final score: [bold]{record.evaluation.aggregate_score:.2f}[/bold]  "
+            f"Passed: {'[green]Yes' if record.evaluation.passes_threshold else '[red]No'}[/]  "
+            f"Cycles: {record.iteration_cycle}  "
+            f"Cost: ${record.generation_cost_usd + record.evaluation_cost_usd:.4f}"
+        )
 
-    return record
+        return record
 
 
+@observe(name="run-batch")
 def run_batch(briefs: list[AdBrief], config: Config) -> list[AdRecord]:
     """Run the full pipeline for a list of briefs and save results."""
+    batch_id = uuid.uuid4().hex[:12]
     records: list[AdRecord] = []
 
-    console.print(f"\n[bold]Starting batch run: {len(briefs)} brief(s)[/bold]\n")
+    with propagate_attributes(session_id=batch_id, tags=["batch"]):
+        console.print(f"\n[bold]Starting batch run: {len(briefs)} brief(s)  session={batch_id}[/bold]\n")
 
-    for i, brief in enumerate(briefs, 1):
-        console.rule(
-            f"[bold magenta]Brief {i}/{len(briefs)} — "
-            f"{brief.audience_segment} / {brief.campaign_goal}"
-        )
-        try:
-            record = run_pipeline(brief, config)
-            records.append(record)
-        except Exception as exc:
-            console.print(f"  [red]✗ Pipeline failed for brief {i}: {exc}[/red]")
+        for i, brief in enumerate(briefs, 1):
+            console.rule(
+                f"[bold magenta]Brief {i}/{len(briefs)} — "
+                f"{brief.audience_segment} / {brief.campaign_goal}"
+            )
+            try:
+                record = run_pipeline(brief, config)
+                records.append(record)
+            except Exception as exc:
+                console.print(f"  [red]✗ Pipeline failed for brief {i}: {exc}[/red]")
 
     # Batch summary
     _print_batch_summary(records)
@@ -251,6 +271,12 @@ def run_batch(briefs: list[AdBrief], config: Config) -> list[AdRecord]:
     with open(output_path, "w") as f:
         json.dump(serialised, f, indent=2, default=str)
     console.print(f"\n[dim]Saved {len(records)} record(s) to {output_path}[/dim]")
+
+    # Flush traces to Langfuse before returning
+    try:
+        get_langfuse().flush()
+    except Exception:
+        pass
 
     return records
 

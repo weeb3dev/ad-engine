@@ -14,9 +14,11 @@ from pathlib import Path
 from dotenv import load_dotenv
 from google import genai
 
+from config.observability import init_observability
 from generate.models import Config
 
 load_dotenv()
+init_observability()
 
 _PROJECT_ROOT = Path(__file__).resolve().parent.parent
 _DEFAULT_CONFIG_PATH = _PROJECT_ROOT / "config" / "config.yaml"
