@@ -157,7 +157,7 @@ def generate_ad(
 
             console.print(Panel(
                 f"[bold]{ad.headline}[/bold]\n"
-                f"{ad.primary_text[:120]}{'…' if len(ad.primary_text) > 120 else ''}\n"
+                f"{ad.primary_text[:200]}{'…' if len(ad.primary_text) > 200 else ''}\n"
                 f"[dim]{ad.description}[/dim]\n"
                 f"[[ {ad.cta_button} ]]",
                 title=f"Generated Ad (hook={hook_style})",

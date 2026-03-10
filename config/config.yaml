@@ -1,8 +1,8 @@
 # Autonomous Ad Engine Configuration
 
 models:
-  generator: "gemini-3.1-pro-preview"
-  evaluator: "gemini-3.1-pro-preview"
+  generator: "gemini-3.1-flash-lite-preview"
+  evaluator: "gemini-3.1-flash-lite-preview"
 
 quality:
   threshold: 7.0

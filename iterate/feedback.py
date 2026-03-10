@@ -114,7 +114,7 @@ def improve_ad(
 
             console.print(Panel(
                 f"[bold]{improved.headline}[/bold]\n"
-                f"{improved.primary_text[:120]}{'…' if len(improved.primary_text) > 120 else ''}\n"
+                f"{improved.primary_text[:200]}{'…' if len(improved.primary_text) > 200 else ''}\n"
                 f"[dim]{improved.description}[/dim]\n"
                 f"[[ {improved.cta_button} ]]",
                 title=f"Improved Ad (strategy={strategy})",

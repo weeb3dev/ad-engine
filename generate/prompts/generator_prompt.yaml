@@ -36,10 +36,15 @@ user: |
   {few_shot_examples}
 
   HARD CHARACTER LIMITS:
-  - primary_text: max 500 characters (aim for 100-300 for best engagement)
-  - headline: max 50 characters (5-8 words)
-  - description: max 120 characters
+  - primary_text: max 800 characters
+  - headline: max 70 characters (5-10 words)
+  - description: max 150 characters
   - cta_button: exactly one of "Learn More", "Sign Up", "Get Started", "Book Now", "Try Free"
+
+  LENGTH GUIDANCE — vary ad length based on the hook style and audience:
+  - Short (50-150 chars primary): Best for punchy question hooks and mobile-first impressions. The entire message should be visible without "See more."
+  - Medium (150-350 chars primary): Good for stat hooks and single-benefit stories. First line hooks, supporting proof follows.
+  - Long (350-800 chars primary): Use for detailed story hooks with testimonials or before/after narratives. Put the strongest hook in the first line since mobile truncates after ~125 chars.
 
   Respond with ONLY a JSON object:
   {{
