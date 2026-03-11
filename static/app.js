@@ -7,6 +7,34 @@ let genRadarChart = null;
 let libRadarChart = null;
 let _libraryCache = [];
 
+// ── SSE helpers ──────────────────────────────────────────────────────────
+
+function parseSSEStream(reader, decoder, callback) {
+  let buffer = "";
+  return (async () => {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+
+      const parts = buffer.split("\n\n");
+      buffer = parts.pop();
+
+      for (const part of parts) {
+        for (const line of part.split("\n")) {
+          if (!line.startsWith("data: ")) continue;
+          try {
+            const data = JSON.parse(line.slice(6));
+            callback(data);
+          } catch (e) {
+            console.warn("SSE parse error:", e, line);
+          }
+        }
+      }
+    }
+  })();
+}
+
 // ── Tab switching ────────────────────────────────────────────────────────
 
 function switchTab(name) {
@@ -22,7 +50,22 @@ $$("#tab-nav .tab").forEach((btn) => {
   btn.addEventListener("click", () => switchTab(btn.dataset.tab));
 });
 
-// ── Generate ─────────────────────────────────────────────────────────────
+// ── Generate (streaming) ─────────────────────────────────────────────────
+
+function setGenStep(stepName) {
+  const steps = $$("#gen-steps .step");
+  let reached = false;
+  const order = ["generate", "evaluate", "improve", "done"];
+  const targetIdx = order.indexOf(stepName);
+
+  steps.forEach((el, idx) => {
+    if (idx <= targetIdx) {
+      el.classList.add("step-primary");
+    } else {
+      el.classList.remove("step-primary");
+    }
+  });
+}
 
 async function generateAd() {
   const segment = $("#gen-segment").value;
@@ -33,8 +76,20 @@ async function generateAd() {
   $("#gen-placeholder").classList.add("hidden");
   $("#gen-ad-card").classList.add("hidden");
   $("#gen-error").classList.add("hidden");
-  $("#gen-loading").classList.remove("hidden");
+  $("#gen-streaming").classList.remove("hidden");
   $("#gen-btn").disabled = true;
+
+  setGenStep("generate");
+  $("#gen-status").textContent = "Starting pipeline...";
+
+  const tbody = $("#gen-scores-body");
+  tbody.innerHTML = "";
+  const badge = $("#gen-score-badge");
+  badge.textContent = "—";
+  badge.className = "badge badge-lg font-mono";
+  $("#gen-meta").textContent = "";
+
+  let currentScores = {};
 
   try {
     const res = await fetch("/api/generate", {
@@ -53,10 +108,78 @@ async function generateAd() {
       throw new Error(err.detail || JSON.stringify(err));
     }
 
-    const record = await res.json();
-    renderGenerateResult(record);
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+
+    await parseSSEStream(reader, decoder, (data) => {
+      switch (data.type) {
+        case "status":
+          $("#gen-status").textContent = data.message;
+          break;
+
+        case "ad_copy":
+          setGenStep("evaluate");
+          $("#gen-status").textContent = "Ad generated — starting evaluation...";
+          $("#gen-ad-card").classList.remove("hidden");
+          $("#gen-primary-text").textContent = data.ad.primary_text;
+          $("#gen-headline").textContent = data.ad.headline;
+          $("#gen-description").textContent = data.ad.description;
+          $("#gen-cta").textContent = data.ad.cta_button;
+          if (data.cycle && data.cycle > 1) {
+            setGenStep("improve");
+            $("#gen-status").textContent = `Improved ad (cycle ${data.cycle}) — re-evaluating...`;
+          }
+          break;
+
+        case "eval_start": {
+          const msg = data.cycle
+            ? `Re-evaluating ${data.label} (${data.index}/${data.total})...`
+            : `Evaluating ${data.label} (${data.index}/${data.total})...`;
+          $("#gen-status").textContent = msg;
+          break;
+        }
+
+        case "eval_progress": {
+          currentScores[data.dimension] = data.score;
+          const tr = document.createElement("tr");
+          tr.id = `gen-score-${data.dimension}`;
+          tr.className = "fade-in";
+          tr.innerHTML = `<td>${data.label}</td><td class="font-mono">${data.score.score}/10</td><td><span class="badge badge-sm badge-ghost">${data.score.confidence}</span></td>`;
+
+          const existing = $(`#gen-score-${data.dimension}`);
+          if (existing) {
+            existing.replaceWith(tr);
+          } else {
+            tbody.appendChild(tr);
+          }
+
+          renderPartialRadar(currentScores);
+          break;
+        }
+
+        case "improving":
+          setGenStep("improve");
+          $("#gen-status").textContent =
+            `Improving — targeting ${data.weakest} (cycle ${data.cycle}, strategy: ${data.strategy})...`;
+          currentScores = {};
+          tbody.innerHTML = "";
+          break;
+
+        case "complete":
+          setGenStep("done");
+          $("#gen-streaming").classList.add("hidden");
+          renderGenerateResult(data.record);
+          break;
+
+        case "error":
+          $("#gen-streaming").classList.add("hidden");
+          $("#gen-error").classList.remove("hidden");
+          $("#gen-error-msg").textContent = data.message;
+          break;
+      }
+    });
   } catch (err) {
-    $("#gen-loading").classList.add("hidden");
+    $("#gen-streaming").classList.add("hidden");
     $("#gen-error").classList.remove("hidden");
     $("#gen-error-msg").textContent = String(err.message || err);
   } finally {
@@ -64,8 +187,52 @@ async function generateAd() {
   }
 }
 
+function renderPartialRadar(scores) {
+  const dims = CONFIG.dimensions;
+  const labels = dims.map((d) => CONFIG.dimension_labels[d]);
+  const data = dims.map((d) => (scores[d] ? scores[d].score : 0));
+
+  if (genRadarChart) genRadarChart.destroy();
+
+  const canvas = document.getElementById("gen-radar");
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+  genRadarChart = new Chart(ctx, {
+    type: "radar",
+    data: {
+      labels,
+      datasets: [
+        {
+          label: "Score",
+          data,
+          fill: true,
+          backgroundColor: "rgba(75, 107, 251, 0.15)",
+          borderColor: "rgb(75, 107, 251)",
+          pointBackgroundColor: "rgb(75, 107, 251)",
+          pointRadius: 4,
+          borderWidth: 2,
+        },
+      ],
+    },
+    options: {
+      scales: {
+        r: {
+          min: 0,
+          max: 10,
+          ticks: { stepSize: 2, backdropColor: "transparent", font: { size: 10 } },
+          pointLabels: { font: { size: 11 } },
+          grid: { color: "rgba(0,0,0,0.06)" },
+          angleLines: { color: "rgba(0,0,0,0.06)" },
+        },
+      },
+      plugins: { legend: { display: false } },
+      responsive: false,
+      animation: { duration: 300 },
+    },
+  });
+}
+
 function renderGenerateResult(record) {
-  $("#gen-loading").classList.add("hidden");
   const card = $("#gen-ad-card");
   card.classList.remove("hidden");
 
@@ -100,7 +267,7 @@ function renderGenerateResult(record) {
   renderRadar("gen-radar", ev, (c) => (genRadarChart = c), genRadarChart);
 }
 
-// ── Batch ────────────────────────────────────────────────────────────────
+// ── Batch (streaming with progressive stats) ─────────────────────────────
 
 async function runBatch() {
   const num = parseInt($("#batch-num").value);
@@ -109,6 +276,13 @@ async function runBatch() {
   $("#batch-results").classList.add("hidden");
   const prog = $("#batch-progress");
   prog.classList.remove("hidden");
+  const liveStats = $("#batch-live-stats");
+  liveStats.classList.remove("hidden");
+
+  $("#bl-total").textContent = "0";
+  $("#bl-pass-rate").textContent = "—";
+  $("#bl-avg-score").textContent = "—";
+  $("#bl-cost").textContent = "—";
 
   try {
     const res = await fetch("/api/batch", {
@@ -119,37 +293,37 @@ async function runBatch() {
 
     const reader = res.body.getReader();
     const decoder = new TextDecoder();
-    let buffer = "";
 
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      buffer += decoder.decode(value, { stream: true });
-
-      const parts = buffer.split("\n\n");
-      buffer = parts.pop();
-
-      for (const part of parts) {
-        for (const line of part.split("\n")) {
-          if (!line.startsWith("data: ")) continue;
-          const data = JSON.parse(line.slice(6));
-
-          if (data.type === "progress") {
-            const pct = Math.round((data.current / data.total) * 100);
-            $("#batch-progress-bar").value = pct;
-            $("#batch-progress-pct").textContent = pct + "%";
-            $("#batch-progress-label").textContent = `Generating ${data.current + 1} of ${data.total} — ${data.label}`;
-          }
-
-          if (data.type === "complete") {
-            prog.classList.add("hidden");
-            renderBatchResults(data.summary);
-          }
-        }
+    await parseSSEStream(reader, decoder, (data) => {
+      if (data.type === "progress") {
+        const pct = Math.round((data.current / data.total) * 100);
+        $("#batch-progress-bar").value = pct;
+        $("#batch-progress-pct").textContent = pct + "%";
+        $("#batch-progress-label").textContent =
+          `Generating ${data.current + 1} of ${data.total} — ${data.label}`;
       }
-    }
+
+      if (data.type === "ad_complete") {
+        const s = data.summary;
+        const pct = Math.round(((data.index + 1) / data.total) * 100);
+        $("#batch-progress-bar").value = pct;
+        $("#batch-progress-pct").textContent = pct + "%";
+
+        $("#bl-total").textContent = s.total;
+        $("#bl-pass-rate").textContent = s.pass_rate + "%";
+        $("#bl-avg-score").textContent = s.avg_score.toFixed(2);
+        $("#bl-cost").textContent = "$" + s.total_cost.toFixed(4);
+      }
+
+      if (data.type === "complete") {
+        prog.classList.add("hidden");
+        liveStats.classList.add("hidden");
+        renderBatchResults(data.summary);
+      }
+    });
   } catch (err) {
     prog.classList.add("hidden");
+    liveStats.classList.add("hidden");
     alert("Batch failed: " + err.message);
   } finally {
     $("#batch-btn").disabled = false;

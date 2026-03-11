@@ -104,12 +104,20 @@
             </div>
           </div>
 
-          <!-- Loading -->
-          <div id="gen-loading" class="card bg-base-100 shadow-sm hidden">
-            <div class="card-body items-center text-center py-16">
-              <span class="loading loading-spinner loading-lg text-primary"></span>
-              <p class="mt-4 text-sm text-base-content/60">Running pipeline — generate, evaluate, improve&hellip;</p>
-              <p class="text-xs text-base-content/40">This typically takes 10–30 seconds</p>
+          <!-- Streaming status -->
+          <div id="gen-streaming" class="card bg-base-100 shadow-sm hidden">
+            <div class="card-body">
+              <div class="flex items-center gap-3 mb-3">
+                <span class="loading loading-spinner loading-sm text-primary"></span>
+                <span id="gen-status" class="text-sm font-medium text-base-content/70">Starting pipeline...</span>
+              </div>
+              <!-- Pipeline steps indicator -->
+              <ul class="steps steps-horizontal text-xs w-full" id="gen-steps">
+                <li class="step step-primary" data-step="generate">Generate</li>
+                <li class="step" data-step="evaluate">Evaluate</li>
+                <li class="step" data-step="improve">Improve</li>
+                <li class="step" data-step="done">Done</li>
+              </ul>
             </div>
           </div>
 
@@ -188,6 +196,28 @@
               <span id="batch-progress-pct">0%</span>
             </div>
             <progress id="batch-progress-bar" class="progress progress-primary w-full" value="0" max="100"></progress>
+          </div>
+
+          <!-- Live cumulative stats (shown during batch) -->
+          <div id="batch-live-stats" class="mt-4 hidden">
+            <div class="stats stats-vertical lg:stats-horizontal shadow w-full bg-base-100 opacity-80">
+              <div class="stat py-2">
+                <div class="stat-title text-xs">Completed</div>
+                <div class="stat-value text-lg" id="bl-total">0</div>
+              </div>
+              <div class="stat py-2">
+                <div class="stat-title text-xs">Pass Rate</div>
+                <div class="stat-value text-lg" id="bl-pass-rate">—</div>
+              </div>
+              <div class="stat py-2">
+                <div class="stat-title text-xs">Avg Score</div>
+                <div class="stat-value text-lg" id="bl-avg-score">—</div>
+              </div>
+              <div class="stat py-2">
+                <div class="stat-title text-xs">Cost</div>
+                <div class="stat-value text-lg" id="bl-cost">—</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -10,8 +10,11 @@ Usage:
 
 import asyncio
 import json
+import uuid
 from collections import defaultdict
+from datetime import datetime
 from pathlib import Path
+from typing import Any
 
 import matplotlib
 
@@ -24,9 +27,12 @@ from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 
 from config.loader import get_config
+from evaluate.judge import evaluate_dimension, get_evaluation_context
 from generate.briefs import TONES, generate_brief_matrix, load_briefs
-from generate.models import AdBrief, AdRecord
-from iterate.feedback import run_pipeline
+from generate.generator import generate_ad
+from generate.models import AdBrief, AdEvaluation, AdRecord, GeneratedAd
+from iterate.feedback import improve_ad, run_pipeline
+from iterate.strategies import get_strategy_name
 from output.batch_runner import load_ad_library
 from output.generate_report import DIMENSION_LABELS, SEGMENT_LABELS
 
@@ -78,10 +84,190 @@ async def index(request: Request):
 # ── API ───────────────────────────────────────────────────────────────────
 
 
+def _ad_fields(ad: GeneratedAd) -> dict[str, str]:
+    return {
+        "primary_text": ad.primary_text,
+        "headline": ad.headline,
+        "description": ad.description,
+        "cta_button": ad.cta_button,
+    }
+
+
 @app.post("/api/generate")
-def generate_endpoint(brief: AdBrief):
-    record = run_pipeline(brief, get_config())
-    return record.model_dump(mode="json")
+async def generate_endpoint(brief: AdBrief):
+    """SSE streaming endpoint: emits per-stage events as the pipeline runs."""
+
+    async def stream():
+        try:
+            cfg = get_config()
+            max_attempts = cfg.quality.max_regeneration_attempts
+            total_gen_cost = 0.0
+            total_eval_cost = 0.0
+
+            # Stage 1: Generate
+            yield _sse({"type": "status", "message": "Generating initial ad copy..."})
+            ad, gen_usage = await asyncio.to_thread(generate_ad, brief, cfg)
+            total_gen_cost += gen_usage["cost_usd"]
+
+            ad_data = _ad_fields(ad)
+            yield _sse({"type": "ad_copy", "ad": ad_data})
+
+            # Stage 2: Evaluate per dimension
+            rubrics, high_ref, low_ref, dimension_names = await asyncio.to_thread(
+                get_evaluation_context
+            )
+            fields = _ad_fields(ad)
+            scores: dict[str, Any] = {}
+            eval_cost = 0.0
+
+            for i, dim_name in enumerate(dimension_names):
+                label = DIMENSION_LABELS.get(dim_name, dim_name.replace("_", " ").title())
+                yield _sse({
+                    "type": "eval_start",
+                    "dimension": dim_name,
+                    "label": label,
+                    "index": i + 1,
+                    "total": len(dimension_names),
+                })
+
+                score, usage = await asyncio.to_thread(
+                    evaluate_dimension,
+                    ad_fields=fields,
+                    dimension_name=dim_name,
+                    rubric=rubrics[dim_name],
+                    high_ref=high_ref,
+                    low_ref=low_ref,
+                )
+                scores[dim_name] = score
+                eval_cost += usage["cost_usd"]
+
+                yield _sse({
+                    "type": "eval_progress",
+                    "dimension": dim_name,
+                    "label": label,
+                    "index": i + 1,
+                    "total": len(dimension_names),
+                    "score": {
+                        "score": score.score,
+                        "confidence": score.confidence,
+                        "rationale": score.rationale,
+                    },
+                })
+
+            total_eval_cost += eval_cost
+            evaluation = AdEvaluation(**scores)
+            initial_score = evaluation.aggregate_score
+
+            best_ad = ad
+            best_eval = evaluation
+            best_strategy: str | None = None
+            cycle = 1
+
+            # Stage 3: Improvement loop
+            for attempt in range(1, max_attempts + 1):
+                if best_eval.passes_threshold:
+                    break
+
+                strategy = get_strategy_name(attempt)
+                weak_dim = best_eval.weakest_dimension
+                display_weak = DIMENSION_LABELS.get(weak_dim, weak_dim.replace("_", " ").title())
+
+                yield _sse({
+                    "type": "improving",
+                    "cycle": attempt + 1,
+                    "strategy": strategy,
+                    "weakest": display_weak,
+                })
+
+                try:
+                    improved_ad, imp_usage = await asyncio.to_thread(
+                        improve_ad,
+                        ad=best_ad,
+                        evaluation=best_eval,
+                        brief=brief,
+                        config=cfg,
+                        attempt=attempt,
+                    )
+                except ValueError:
+                    break
+
+                total_gen_cost += imp_usage["cost_usd"]
+                improved_data = _ad_fields(improved_ad)
+                yield _sse({"type": "ad_copy", "ad": improved_data, "cycle": attempt + 1})
+
+                # Re-evaluate improved ad
+                improved_fields = _ad_fields(improved_ad)
+                re_scores: dict[str, Any] = {}
+                re_eval_cost = 0.0
+
+                for i, dim_name in enumerate(dimension_names):
+                    label = DIMENSION_LABELS.get(dim_name, dim_name.replace("_", " ").title())
+                    yield _sse({
+                        "type": "eval_start",
+                        "dimension": dim_name,
+                        "label": label,
+                        "index": i + 1,
+                        "total": len(dimension_names),
+                        "cycle": attempt + 1,
+                    })
+
+                    score, usage = await asyncio.to_thread(
+                        evaluate_dimension,
+                        ad_fields=improved_fields,
+                        dimension_name=dim_name,
+                        rubric=rubrics[dim_name],
+                        high_ref=high_ref,
+                        low_ref=low_ref,
+                    )
+                    re_scores[dim_name] = score
+                    re_eval_cost += usage["cost_usd"]
+
+                    yield _sse({
+                        "type": "eval_progress",
+                        "dimension": dim_name,
+                        "label": label,
+                        "index": i + 1,
+                        "total": len(dimension_names),
+                        "score": {
+                            "score": score.score,
+                            "confidence": score.confidence,
+                            "rationale": score.rationale,
+                        },
+                        "cycle": attempt + 1,
+                    })
+
+                total_eval_cost += re_eval_cost
+                re_eval = AdEvaluation(**re_scores)
+                cycle += 1
+
+                if re_eval.aggregate_score > best_eval.aggregate_score:
+                    best_ad = improved_ad
+                    best_eval = re_eval
+                    best_strategy = strategy
+
+            # Final result
+            record = AdRecord(
+                ad_id=uuid.uuid4().hex[:12],
+                brief=brief,
+                generated_ad=best_ad,
+                evaluation=best_eval,
+                iteration_cycle=cycle,
+                improved_from=initial_score if cycle > 1 else None,
+                improvement_strategy=best_strategy,
+                generation_cost_usd=total_gen_cost,
+                evaluation_cost_usd=total_eval_cost,
+                timestamp=datetime.utcnow(),
+            )
+
+            yield _sse({"type": "complete", "record": record.model_dump(mode="json")})
+
+        except Exception as exc:
+            import traceback
+            tb = traceback.format_exc()
+            print(f"[generate_endpoint] ERROR:\n{tb}")
+            yield _sse({"type": "error", "message": str(exc)})
+
+    return StreamingResponse(stream(), media_type="text/event-stream")
 
 
 class BatchRequest(BaseModel):
@@ -106,6 +292,12 @@ async def batch_endpoint(req: BatchRequest):
             try:
                 record = await asyncio.to_thread(run_pipeline, brief, cfg)
                 records.append(record)
+                yield _sse({
+                    "type": "ad_complete",
+                    "index": i,
+                    "total": len(briefs),
+                    "summary": _batch_summary(records, errors),
+                })
             except Exception as exc:
                 errors.append(f"Brief {i + 1}: {exc}")
 
@@ -147,7 +339,7 @@ def health():
 
 
 def _sse(data: dict) -> str:
-    return f"data: {json.dumps(data)}\n\n"
+    return f"data: {json.dumps(data, default=str)}\n\n"
 
 
 def _batch_summary(records: list[AdRecord], errors: list[str]) -> dict:
