@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="corporate">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ad Engine — Autonomous Ad Copy</title>
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <style>
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-in { animation: fadeIn 0.3s ease-out; }
+    .ad-preview { border-left: 4px solid oklch(var(--p)); }
+  </style>
+</head>
+<body class="min-h-screen bg-base-200">
+
+  <!-- Config injected from server -->
+  <script>const CONFIG = {{ config_json | safe }};</script>
+
+  <!-- Navbar -->
+  <div class="navbar bg-base-100 shadow-sm px-4 lg:px-8">
+    <div class="flex-1 gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" /></svg>
+      <div>
+        <span class="text-lg font-bold">Autonomous Ad Engine</span>
+        <span class="text-xs text-base-content/50 block -mt-1">Varsity Tutors SAT Prep</span>
+      </div>
+    </div>
+    <div class="flex-none text-xs text-base-content/40">Powered by Gemini</div>
+  </div>
+
+  <!-- Main -->
+  <div class="max-w-7xl mx-auto px-4 lg:px-8 py-6">
+
+    <!-- Tab Navigation -->
+    <div class="tabs tabs-bordered mb-6" id="tab-nav">
+      <button class="tab tab-active tab-lg" data-tab="generate">Generate</button>
+      <button class="tab tab-lg" data-tab="batch">Batch</button>
+      <button class="tab tab-lg" data-tab="library">Library</button>
+    </div>
+
+    <!-- ═══════════ GENERATE TAB ═══════════ -->
+    <div id="tab-generate" class="tab-panel active">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Brief Form -->
+        <div class="card bg-base-100 shadow-sm">
+          <div class="card-body">
+            <h2 class="card-title text-base">Ad Brief</h2>
+
+            <div class="form-control">
+              <label class="label"><span class="label-text">Audience Segment</span></label>
+              <select id="gen-segment" class="select select-bordered select-sm">
+                {% for seg in segments %}
+                <option value="{{ seg.id }}">{{ seg.label }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="form-control">
+              <label class="label"><span class="label-text">Campaign Goal</span></label>
+              <div class="flex gap-4">
+                <label class="label cursor-pointer gap-2">
+                  <input type="radio" name="gen-goal" value="awareness" class="radio radio-sm radio-primary" checked>
+                  <span class="label-text">Awareness</span>
+                </label>
+                <label class="label cursor-pointer gap-2">
+                  <input type="radio" name="gen-goal" value="conversion" class="radio radio-sm radio-primary">
+                  <span class="label-text">Conversion</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="form-control">
+              <label class="label"><span class="label-text">Tone</span></label>
+              <select id="gen-tone" class="select select-bordered select-sm">
+                {% for tone in tones %}
+                <option value="{{ tone }}">{{ tone|capitalize }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="form-control">
+              <label class="label"><span class="label-text">Specific Offer</span></label>
+              <input id="gen-offer" type="text" class="input input-bordered input-sm"
+                     placeholder="e.g., Free SAT practice test" value="Free SAT practice test">
+            </div>
+
+            <button id="gen-btn" class="btn btn-primary mt-4" onclick="generateAd()">
+              Generate Ad
+            </button>
+          </div>
+        </div>
+
+        <!-- Results -->
+        <div class="lg:col-span-2 space-y-4" id="gen-results">
+          <!-- Placeholder -->
+          <div id="gen-placeholder" class="card bg-base-100 shadow-sm">
+            <div class="card-body items-center text-center text-base-content/40 py-16">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+              <p>Configure a brief and click <strong>Generate Ad</strong></p>
+            </div>
+          </div>
+
+          <!-- Loading -->
+          <div id="gen-loading" class="card bg-base-100 shadow-sm hidden">
+            <div class="card-body items-center text-center py-16">
+              <span class="loading loading-spinner loading-lg text-primary"></span>
+              <p class="mt-4 text-sm text-base-content/60">Running pipeline — generate, evaluate, improve&hellip;</p>
+              <p class="text-xs text-base-content/40">This typically takes 10–30 seconds</p>
+            </div>
+          </div>
+
+          <!-- Ad Card -->
+          <div id="gen-ad-card" class="card bg-base-100 shadow-sm hidden fade-in">
+            <div class="card-body">
+              <!-- Score badge -->
+              <div class="flex items-center justify-between">
+                <h2 class="card-title text-base">Generated Ad</h2>
+                <div class="flex items-center gap-3">
+                  <span id="gen-meta" class="text-xs text-base-content/50"></span>
+                  <div class="badge badge-lg font-mono" id="gen-score-badge">—</div>
+                </div>
+              </div>
+
+              <!-- Ad preview -->
+              <div class="ad-preview bg-base-200/50 rounded-lg p-4 mt-2 space-y-2">
+                <p id="gen-primary-text" class="text-sm leading-relaxed"></p>
+                <div class="border-t border-base-300 pt-2 mt-2">
+                  <p id="gen-headline" class="font-bold text-base"></p>
+                  <p id="gen-description" class="text-xs text-base-content/60"></p>
+                </div>
+                <button id="gen-cta" class="btn btn-primary btn-sm mt-1"></button>
+              </div>
+
+              <!-- Scores + Radar side by side -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                <div>
+                  <h3 class="font-semibold text-sm mb-2">Dimension Scores</h3>
+                  <div class="overflow-x-auto">
+                    <table class="table table-xs">
+                      <thead>
+                        <tr><th>Dimension</th><th>Score</th><th>Confidence</th></tr>
+                      </thead>
+                      <tbody id="gen-scores-body"></tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="flex items-center justify-center">
+                  <canvas id="gen-radar" width="280" height="280"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Error -->
+          <div id="gen-error" class="alert alert-error hidden">
+            <span id="gen-error-msg"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════ BATCH TAB ═══════════ -->
+    <div id="tab-batch" class="tab-panel">
+      <div class="card bg-base-100 shadow-sm mb-6">
+        <div class="card-body">
+          <div class="flex flex-wrap items-end gap-6">
+            <div class="form-control w-64">
+              <label class="label"><span class="label-text">Number of Ads</span></label>
+              <input id="batch-num" type="range" min="1" max="54" value="5"
+                     class="range range-primary range-sm" oninput="document.getElementById('batch-num-val').textContent=this.value">
+              <div class="flex justify-between text-xs text-base-content/40 mt-1">
+                <span>1</span>
+                <span class="font-semibold text-base-content" id="batch-num-val">5</span>
+                <span>54</span>
+              </div>
+            </div>
+            <button id="batch-btn" class="btn btn-primary" onclick="runBatch()">Run Batch</button>
+          </div>
+
+          <!-- Progress -->
+          <div id="batch-progress" class="mt-4 hidden">
+            <div class="flex justify-between text-sm mb-1">
+              <span id="batch-progress-label">Starting&hellip;</span>
+              <span id="batch-progress-pct">0%</span>
+            </div>
+            <progress id="batch-progress-bar" class="progress progress-primary w-full" value="0" max="100"></progress>
+          </div>
+        </div>
+      </div>
+
+      <!-- Batch placeholder -->
+      <div id="batch-placeholder" class="text-center text-base-content/40 py-12">
+        <p>Run a batch to see results here.</p>
+      </div>
+
+      <!-- Batch results -->
+      <div id="batch-results" class="space-y-6 hidden fade-in">
+        <!-- Summary stats -->
+        <div class="stats stats-vertical lg:stats-horizontal shadow w-full bg-base-100">
+          <div class="stat">
+            <div class="stat-title">Total Ads</div>
+            <div class="stat-value text-2xl" id="bs-total">—</div>
+          </div>
+          <div class="stat">
+            <div class="stat-title">Pass Rate</div>
+            <div class="stat-value text-2xl text-success" id="bs-pass-rate">—</div>
+          </div>
+          <div class="stat">
+            <div class="stat-title">Avg Score</div>
+            <div class="stat-value text-2xl" id="bs-avg-score">—</div>
+          </div>
+          <div class="stat">
+            <div class="stat-title">Score Range</div>
+            <div class="stat-value text-2xl" id="bs-range">—</div>
+          </div>
+          <div class="stat">
+            <div class="stat-title">Total Cost</div>
+            <div class="stat-value text-2xl" id="bs-cost">—</div>
+          </div>
+          <div class="stat">
+            <div class="stat-title">Cost / Ad</div>
+            <div class="stat-value text-2xl" id="bs-cost-per">—</div>
+          </div>
+        </div>
+
+        <!-- Segment + Dimension tables -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="card bg-base-100 shadow-sm">
+            <div class="card-body">
+              <h3 class="card-title text-sm">Per-Segment Pass Rate</h3>
+              <table class="table table-sm">
+                <thead><tr><th>Segment</th><th>Pass Rate</th><th>Count</th></tr></thead>
+                <tbody id="bs-seg-body"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card bg-base-100 shadow-sm">
+            <div class="card-body">
+              <h3 class="card-title text-sm">Per-Dimension Averages</h3>
+              <table class="table table-sm">
+                <thead><tr><th>Dimension</th><th>Avg Score</th></tr></thead>
+                <tbody id="bs-dim-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Errors -->
+        <div id="batch-errors" class="alert alert-warning hidden">
+          <span id="batch-errors-msg"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════ LIBRARY TAB ═══════════ -->
+    <div id="tab-library" class="tab-panel">
+      <!-- Filters -->
+      <div class="card bg-base-100 shadow-sm mb-6">
+        <div class="card-body">
+          <div class="flex flex-wrap items-end gap-6">
+            <div class="form-control">
+              <label class="label"><span class="label-text">Segment</span></label>
+              <select id="lib-segment" class="select select-bordered select-sm">
+                <option value="all">All Segments</option>
+                {% for seg in segments %}
+                <option value="{{ seg.id }}">{{ seg.label }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="form-control w-48">
+              <label class="label"><span class="label-text">Min Score</span></label>
+              <input id="lib-min" type="range" min="1" max="10" step="0.5" value="1"
+                     class="range range-sm" oninput="document.getElementById('lib-min-val').textContent=this.value">
+              <span class="text-xs text-base-content/50 text-center" id="lib-min-val">1</span>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="loadLibrary()">Load / Filter</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Library placeholder -->
+      <div id="lib-placeholder" class="text-center text-base-content/40 py-12">
+        <p>Click <strong>Load / Filter</strong> to browse the ad library.</p>
+      </div>
+
+      <!-- Library table -->
+      <div id="lib-table-wrap" class="card bg-base-100 shadow-sm hidden">
+        <div class="card-body">
+          <div class="flex items-center justify-between mb-2">
+            <h3 class="card-title text-sm">Ad Library</h3>
+            <span id="lib-count" class="badge badge-ghost text-xs"></span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="table table-sm table-zebra">
+              <thead>
+                <tr>
+                  <th>ID</th><th>Segment</th><th>Goal</th>
+                  <th>Headline</th><th>Score</th><th>Cycles</th>
+                </tr>
+              </thead>
+              <tbody id="lib-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ad detail panel -->
+      <div id="lib-detail" class="card bg-base-100 shadow-sm mt-6 hidden fade-in">
+        <div class="card-body">
+          <div class="flex items-center justify-between">
+            <h3 class="card-title text-sm">Ad Detail</h3>
+            <button class="btn btn-ghost btn-xs" onclick="hideLibDetail()">Close</button>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-5 gap-6 mt-2">
+            <div class="md:col-span-3 space-y-3">
+              <div class="ad-preview bg-base-200/50 rounded-lg p-4 space-y-2">
+                <p id="lib-primary-text" class="text-sm leading-relaxed"></p>
+                <div class="border-t border-base-300 pt-2">
+                  <p id="lib-headline" class="font-bold"></p>
+                  <p id="lib-description" class="text-xs text-base-content/60"></p>
+                </div>
+                <button id="lib-cta" class="btn btn-primary btn-sm mt-1"></button>
+              </div>
+              <div id="lib-meta" class="text-xs text-base-content/50"></div>
+              <table class="table table-xs">
+                <thead><tr><th>Dimension</th><th>Score</th><th>Confidence</th><th>Rationale</th></tr></thead>
+                <tbody id="lib-scores-body"></tbody>
+              </table>
+            </div>
+            <div class="md:col-span-2 flex items-start justify-center">
+              <canvas id="lib-radar" width="280" height="280"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <footer class="text-center text-xs text-base-content/30 py-6">
+    Autonomous Ad Engine &middot; GauntletAI Partner Project
+  </footer>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
