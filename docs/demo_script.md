@@ -39,15 +39,15 @@ The pipeline has four stages.
 
 ---
 
-## 4. LIVE DEMO — GENERATING ADS IN GRADIO (~60s)
+## 4. LIVE DEMO — GENERATING ADS (~60s)
 
-> [SCREEN: Switch to the running Gradio app — Generate tab]
+> [SCREEN: Open the web app in the browser — Generate tab]
 
-Here's the dashboard. We're on the Generate tab. I'll pick an audience segment — let's start with "Parents anxious about college admissions," set the campaign goal to awareness, tone to empathetic, and the offer is a free SAT practice test.
+Here's the dashboard, deployed on Railway with a persistent URL. We're on the Generate tab. I'll pick an audience segment — let's start with "Parents anxious about college admissions," set the campaign goal to awareness, tone to empathetic, and the offer is a free SAT practice test.
 
 > [SCREEN: Click "Generate Ad" — wait for results to populate]
 
-There's the generated ad — headline, primary text, description, CTA. Below that we get the aggregate score and a full breakdown table showing each dimension's score, confidence level, and the judge's written rationale for that score. And here's the radar chart visualizing the five dimensions.
+There's the generated ad — headline, primary text, description, CTA. Below that we get the aggregate score and a full breakdown table showing each dimension's score, confidence level, and the judge's written rationale for that score. And here's the interactive radar chart visualizing the five dimensions — that's Chart.js rendering live in the browser.
 
 You can see it took [X] improvement cycles and cost [X] cents total. Let me generate another one — this time for stressed students, conversion goal, urgent tone.
 
@@ -59,9 +59,9 @@ Different segment, completely different copy, different score profile. The syste
 
 ## 5. BATCH GENERATION & REPORTING (~30s)
 
-> [SCREEN: Switch to the Batch tab in Gradio]
+> [SCREEN: Switch to the Batch tab]
 
-For production runs, there's the Batch tab — you set the number of ads with a slider and hit Run Batch. There's also a CLI command for headless runs: `python -m output.batch_runner`. We ran a full 53-ad batch across all three audience segments, both campaign goals, multiple tones and offers. The batch report script generates a full markdown report with an executive summary, per-segment pass rates, per-dimension averages, and every individual ad with its scores.
+For production runs, there's the Batch tab — you set the number of ads with a slider and hit Run Batch. The UI streams progress in real time via Server-Sent Events, so you see each ad being generated as it happens. We ran a full 53-ad batch across all three audience segments, both campaign goals, multiple tones and offers. When it finishes you get summary stats, per-segment pass rates, and per-dimension averages right in the browser.
 
 > [SCREEN: Flash the batch report markdown — output/batch1_ad_library.md — scroll through briefly]
 
@@ -73,11 +73,11 @@ For production runs, there's the Batch tab — you set the number of ads with a 
 
 > [SCREEN: Show output/quality_trends.png — the 2x2 dashboard]
 
-The visualization module produces this quality trends dashboard — score by iteration cycle, average score per dimension, pass rate by audience segment, and cost by iteration count. Each individual ad also gets its own radar chart showing its dimension profile at a glance.
+The visualization module produces this quality trends dashboard — score by iteration cycle, average score per dimension, pass rate by audience segment, and cost by iteration count. Each individual ad also gets an interactive Chart.js radar chart showing its dimension profile at a glance — you can hover over points to see exact scores.
 
 ---
 
-## 7. TECH STACK & WHY GRADIO (~30s)
+## 7. TECH STACK & DEPLOYMENT (~30s)
 
 > [SCREEN: Slide or stay on dashboard — bullet list of stack]
 
@@ -85,7 +85,7 @@ Quick note on the stack. I went with **Gemini 3.1 Flash Lite** for both generati
 
 The entire pipeline is **Python** — Pydantic models, YAML config, clean module boundaries.
 
-For the UI we chose **Gradio**. It wraps Python natively, zero frontend code, and the `--share` flag gives you a temporary public URL instantly. The whole three-tab dashboard is about 150 lines. It's the right tool when you want data and ML people to build something that marketing people can actually use.
+The frontend is **FastAPI** serving Jinja2 templates styled with **Tailwind CSS and DaisyUI**, with **Chart.js** for interactive radar charts — all loaded from CDN, zero build step. It's a single Python process, no separate frontend, no CORS. The app is deployed to **Railway**, so it has a persistent public URL — no tunneling, no temporary share links.
 
 Observability is **Langfuse plus OpenTelemetry** — auto-instrumentation captures every Gemini call without touching pipeline code.
 
@@ -105,13 +105,13 @@ I documented the limitations honestly. The 100% pass rate is suspiciously high �
 
 > [SCREEN: Slide — "What's Next"]
 
-For v2, three big things.
+For v2, two big things.
 
 **Image generation** — pairing the ad copy with AI-generated creative so you get a complete ad unit, not just text.
 
 **Model fallback and load balancing** — if Gemini rate-limits or goes down, automatic failover to a different provider. Claude Sonnet 4 from Anthropic is the top candidate here — it's a strong writer, and using a different model family for evaluation would also solve the self-evaluation bias problem we flagged in limitations.
 
-And **stricter quality thresholds**, evaluation caching, and eventually A/B test integration to close the loop with real-world performance data.
+Beyond that — stricter quality thresholds, evaluation caching, and eventually A/B test integration to close the loop with real-world performance data.
 
 ---
 
@@ -123,9 +123,9 @@ That's the Autonomous Ad Engine — generates, scores, and self-improves ad copy
 
 ---
 
-**Total word count:** ~780 words (~5:10 at 150 wpm — trim the live demo section based on how long the actual generation takes on screen, or speed up pace slightly to land at ~4:00)
+**Total word count:** ~770 words (~5:10 at 150 wpm — trim the live demo section based on how long the actual generation takes on screen, or speed up pace slightly to land at ~4:00)
 
 **Trim notes if running long:**
 - Section 8 (decisions/limitations) can be shortened to just self-evaluation bias + 100% pass rate
-- Section 5 (batch) can skip the CLI mention
-- Section 7 (tech stack) can drop the Langfuse detail
+- Section 5 (batch) can skip the SSE detail
+- Section 7 (tech stack) can drop the Railway deployment detail

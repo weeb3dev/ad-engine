@@ -1,6 +1,6 @@
 [
   {
-    "ad_id": "80cc40603a05",
+    "ad_id": "8d9342032288",
     "brief": {
       "audience_segment": "anxious_parents",
       "product": "sat_prep",
@@ -9,50 +9,50 @@
       "specific_offer": "Free SAT practice test"
     },
     "generated_ad": {
-      "primary_text": "Your child is capable of more than their current practice score shows. The digital SAT isn\u2019t just about knowing the material\u2014it\u2019s about mastering the interface and the adaptive format.\n\nStop guessing where the gaps are. We don\u2019t believe in generic study plans; we believe in precision. We start with a comprehensive diagnostic to identify the exact 3\u20134 concepts holding your student back, then build a personalized roadmap to close those gaps.\n\nSee the score they\u2019re truly capable of with a clear, expert-led path forward. It\u2019s time to turn test-day stress into test-day confidence.",
-      "headline": "Unlock Your Child\u2019s True SAT Potential",
-      "description": "Get a free digital diagnostic and a personalized performance roadmap.",
+      "primary_text": "Your child has the GPA, but the SAT score isn't following suit. It\u2019s not a lack of effort\u2014it\u2019s a lack of strategy for the new Digital SAT format.\n\nAt Varsity Tutors, we don't believe in generic prep. We start with a diagnostic to identify the exact 3\u20134 concepts dragging their score down, then match them with a top-tier tutor to bridge those gaps in weeks, not months.\n\nTake Marcus: He entered with a 1220 and a 3.9 GPA. After 12 sessions of targeted 1:1 prep on the official digital interface, he hit a 1440. \n\nStop guessing and start closing the gaps. Get their personalized performance breakdown today.",
+      "headline": "1220 \u2192 1440: Close Their SAT Gap Fast",
+      "description": "1:1 diagnostic-driven tutoring tailored to the Digital SAT.",
       "cta_button": "Try Free"
     },
     "evaluation": {
       "clarity": {
         "score": 9,
-        "rationale": "The ad is exceptionally clear, leading with a compelling value proposition that is immediately understandable. It avoids clutter and maintains a singular focus on the diagnostic-to-roadmap process, making the offer and the benefit perfectly aligned.",
+        "rationale": "The ad is exceptionally clear, immediately addressing the parent's frustration and offering a specific, strategy-based solution. It avoids fluff and maintains a singular focus on score improvement through personalization, making it highly effective for a quick scroll.",
         "confidence": "high"
       },
       "value_proposition": {
-        "score": 7,
-        "rationale": "The ad effectively communicates a differentiated value proposition by focusing on the digital SAT's unique interface and adaptive format rather than just general tutoring. While it is highly persuasive and clear, it misses the 'exceptional' tier because it lacks a concrete, data-backed outcome or social proof to anchor the promise of improvement.",
+        "score": 9,
+        "rationale": "The ad excels by pairing a relatable student success story with a clear, outcome-oriented value proposition that addresses the specific anxiety of the new Digital SAT format. It effectively balances the 'why' (strategy vs. effort) with the 'what' (personalized, diagnostic-driven results), making the benefit both tangible and credible.",
         "confidence": "high"
       },
       "call_to_action": {
-        "score": 7,
-        "rationale": "The CTA button is low-friction and highly relevant to the offer, which is a strong point. However, the primary text lacks a clear, directive closing sentence to bridge the gap between the value proposition and the button, leaving the final 'ask' entirely to the UI.",
+        "score": 9,
+        "rationale": "The CTA is highly effective because it provides a specific, low-friction value proposition ('personalized performance breakdown') that directly addresses the user's pain point. By pairing this directive with a 'Try Free' button, the ad minimizes commitment while clearly defining the next step in the customer journey.",
         "confidence": "high"
       },
       "brand_voice": {
         "score": 8,
-        "rationale": "The copy strikes a strong balance between being knowledgeable about the digital SAT's specific challenges and remaining approachable for parents. It effectively reframes the test as a solvable problem, which is both empowering and results-focused, fitting the Varsity Tutors brand voice well.",
+        "rationale": "The copy hits the brand voice perfectly by reframing the problem as a 'strategy gap' rather than a student failure, which is both empowering and knowledgeable. It feels distinctly like Varsity Tutors by focusing on the specific, measurable outcome of the diagnostic-to-tutor pipeline without resorting to generic motivational fluff.",
         "confidence": "high"
       },
       "emotional_resonance": {
-        "score": 7,
-        "rationale": "The ad successfully validates the parent's intuition that their child is underperforming, which creates a strong emotional connection. While it effectively balances tension and resolution, it leans slightly too heavily into the 'technical' side of the solution, missing an opportunity to lean further into the relief a parent feels when they finally find a partner to help their child succeed.",
+        "score": 8,
+        "rationale": "The ad effectively taps into the parent's frustration regarding their child's 'hidden potential' and offers a clear, hopeful resolution. By validating that the issue is a lack of strategy rather than a lack of effort, it builds immediate trust and emotional alignment with the reader.",
         "confidence": "high"
       },
-      "aggregate_score": 7.65,
+      "aggregate_score": 8.7,
       "passes_threshold": true,
-      "weakest_dimension": "value_proposition"
+      "weakest_dimension": "brand_voice"
     },
     "iteration_cycle": 3,
-    "improved_from": 5.9,
+    "improved_from": 5.7,
     "improvement_strategy": "few_shot_injection",
-    "generation_cost_usd": 0.007744999999999999,
-    "evaluation_cost_usd": 0.04985874999999999,
-    "timestamp": "2026-03-10T22:32:38.429400"
+    "generation_cost_usd": 0.00826125,
+    "evaluation_cost_usd": 0.05077749999999999,
+    "timestamp": "2026-03-11T19:28:07.304602"
   },
   {
-    "ad_id": "f08eecb71710",
+    "ad_id": "fd1beb5947ec",
     "brief": {
       "audience_segment": "anxious_parents",
       "product": "sat_prep",
@@ -61,462 +61,46 @@
       "specific_offer": "Free SAT practice test"
     },
     "generated_ad": {
-      "primary_text": "The Digital SAT is a new ballgame, and the old prep methods don't cut it anymore. While other students are guessing at the adaptive format, your child could be mastering the exact logic behind it. Varsity Tutors students see an average score improvement of 140+ points by focusing on high-impact, AI-driven study plans that bridge their specific knowledge gaps. Don't leave their college acceptance to chance. Start with a free Digital SAT diagnostic to reveal their unique 'score ceiling' and get an actionable blueprint for their target school.",
-      "headline": "Unlock 140+ Points on the Digital SAT",
-      "description": "Get a free diagnostic exam + a personalized performance breakdown today.",
+      "primary_text": "Is your child\u2019s SAT score holding them back from their dream school? Don\u2019t leave their future to chance. At Varsity Tutors, our students see an average score increase of 100+ points by replacing generic study guides with a 1-on-1 expert tutor who builds a curriculum around their specific gaps.\n\nWe don't just teach the test; we teach the strategy that unlocks higher scores. Stop guessing and start progressing with a personalized plan that turns test anxiety into a competitive advantage.\n\nReady to see what a targeted prep plan looks like? Start with a free diagnostic SAT practice test and a detailed score report that highlights exactly where they can pick up the most points.",
+      "headline": "Help Your Child Gain 100+ Points on the SAT",
+      "description": "Start with a free diagnostic test and personalized score analysis.",
       "cta_button": "Get Started"
     },
     "evaluation": {
       "clarity": {
         "score": 8,
-        "rationale": "The ad is highly readable and maintains a singular focus on SAT score improvement through a specific, actionable offer. It avoids clutter and clearly communicates the benefit to the parent immediately.",
+        "rationale": "The ad is highly readable and communicates the value proposition within the first three seconds. It successfully balances the emotional hook of 'dream schools' with the logical proof of a 100+ point average increase, leading to a clear, actionable next step.",
         "confidence": "high"
       },
       "value_proposition": {
         "score": 8,
-        "rationale": "The ad does an excellent job of connecting the specific challenge of the Digital SAT to a tangible, quantified outcome. By anchoring the value in a 140+ point improvement and a clear 'blueprint' for college acceptance, it provides a compelling reason for the user to click.",
-        "confidence": "high"
-      },
-      "call_to_action": {
-        "score": 8,
-        "rationale": "The CTA is strong because it offers a high-value, low-friction 'free diagnostic' that directly addresses the user's pain point. While 'Get Started' is a standard button choice, the copy leading up to it is specific and actionable, making the next step clear and compelling.",
-        "confidence": "high"
-      },
-      "brand_voice": {
-        "score": 8,
-        "rationale": "The copy strikes a strong balance between being an expert authority and an approachable partner for parents. It successfully reframes the test as a strategic challenge rather than a measure of intelligence, which is both empowering and highly aligned with the Varsity Tutors brand voice.",
-        "confidence": "high"
-      },
-      "emotional_resonance": {
-        "score": 4,
-        "rationale": "While the ad touches on the fear of 'leaving college acceptance to chance,' it quickly pivots to technical jargon like 'AI-driven study plans' and 'diagnostic blueprints,' which kills the emotional momentum. It fails to validate the parent's underlying stress or the student's potential, resulting in a clinical tone that doesn't resonate on a personal level.",
-        "confidence": "high"
-      },
-      "aggregate_score": 7.4,
-      "passes_threshold": true,
-      "weakest_dimension": "emotional_resonance"
-    },
-    "iteration_cycle": 2,
-    "improved_from": 6.75,
-    "improvement_strategy": "targeted_reprompt",
-    "generation_cost_usd": 0.00450625,
-    "evaluation_cost_usd": 0.033278749999999996,
-    "timestamp": "2026-03-10T22:33:00.503670"
-  },
-  {
-    "ad_id": "6bdb97082b2e",
-    "brief": {
-      "audience_segment": "anxious_parents",
-      "product": "sat_prep",
-      "campaign_goal": "awareness",
-      "tone": "confident",
-      "specific_offer": "Free SAT practice test"
-    },
-    "generated_ad": {
-      "primary_text": "Is the SAT standing between your student and their dream school? Don\u2019t just study harder\u2014study smarter. While the average student sees incremental gains, Varsity Tutors students gain an average of 145+ points by targeting the specific concepts that actually move the needle.\n\nWe don't believe in one-size-fits-all prep. Our AI-driven diagnostic identifies your student\u2019s exact knowledge gaps in minutes, not hours. With a custom-built curriculum and expert 1-on-1 coaching, we help students master the test, reduce test-day anxiety, and gain the competitive edge needed for top-tier admissions.\n\nStop guessing where they stand and start closing the gap. Claim your free AI-powered diagnostic test and personalized performance report today to see exactly how we turn potential into a higher score.",
-      "headline": "Help Your Student Gain 145+ Points on the SAT",
-      "description": "Start with a free diagnostic to uncover your student's unique growth path.",
-      "cta_button": "Get Started"
-    },
-    "evaluation": {
-      "clarity": {
-        "score": 8,
-        "rationale": "The ad maintains a singular focus on SAT score improvement through personalized, AI-driven methods, making the value proposition immediately clear. The headline and description reinforce the primary text perfectly without being redundant, ensuring the reader understands the offer within the first few seconds.",
-        "confidence": "high"
-      },
-      "value_proposition": {
-        "score": 8,
-        "rationale": "The ad successfully anchors its value proposition in a specific, quantifiable outcome (145+ points) and clearly explains the 'how' through personalized, AI-driven diagnostics. It strikes a great balance between being results-focused and explaining the unique methodology without getting bogged down in technical jargon.",
-        "confidence": "high"
-      },
-      "call_to_action": {
-        "score": 8,
-        "rationale": "The CTA is highly effective because it offers a specific, low-friction value proposition (a free diagnostic) that directly addresses the pain point mentioned in the copy. While the 'Get Started' button is standard, the primary text does an excellent job of priming the user for that specific action, making the conversion path clear and compelling.",
-        "confidence": "high"
-      },
-      "brand_voice": {
-        "score": 8,
-        "rationale": "The copy successfully balances confidence and expertise by grounding its claims in specific, measurable outcomes rather than vague promises. It maintains an empowering tone that validates the student's potential while positioning Varsity Tutors as a knowledgeable partner, though it could be slightly more conversational to fully capture the 'approachable' brand pillar.",
-        "confidence": "high"
-      },
-      "emotional_resonance": {
-        "score": 5,
-        "rationale": "The ad identifies the emotional tension of the SAT as a barrier to a dream school, but it immediately pivots to technical features, losing the emotional thread. It functions more as a rational pitch for a tool rather than an empathetic message that validates a parent's stress or a student's ambition.",
-        "confidence": "high"
-      },
-      "aggregate_score": 7.55,
-      "passes_threshold": true,
-      "weakest_dimension": "emotional_resonance"
-    },
-    "iteration_cycle": 2,
-    "improved_from": 6.1,
-    "improvement_strategy": "targeted_reprompt",
-    "generation_cost_usd": 0.0055975,
-    "evaluation_cost_usd": 0.034896250000000004,
-    "timestamp": "2026-03-10T22:33:24.214394"
-  },
-  {
-    "ad_id": "0ccd3dd046f0",
-    "brief": {
-      "audience_segment": "anxious_parents",
-      "product": "sat_prep",
-      "campaign_goal": "awareness",
-      "tone": "urgent",
-      "specific_offer": "1-on-1 expert tutoring"
-    },
-    "generated_ad": {
-      "primary_text": "Is your teen\u2019s SAT score holding them back from their dream school? Don\u2019t rely on generic prep books or guesswork. Varsity Tutors students see an average score increase of 100+ points by mastering the exact patterns found on the digital SAT.\n\nWe don't just teach content; our elite, 1-on-1 tutors use a proprietary diagnostic to identify your teen\u2019s specific knowledge gaps and replace test anxiety with a proven, strategy-based roadmap. Give your child the competitive edge they deserve\u2014and the confidence to stand out in a crowded admissions field.\n\nReady to see where your teen stands? Take our free, 5-minute diagnostic assessment to pinpoint their exact opportunities for improvement.",
-      "headline": "Unlock a 100+ Point SAT Increase With 1-on-1 Prep",
-      "description": "Start with a free diagnostic to see your teen's potential.",
-      "cta_button": "Try Free"
-    },
-    "evaluation": {
-      "clarity": {
-        "score": 8,
-        "rationale": "The ad is highly effective because it leads with a relatable pain point and immediately follows with a quantifiable outcome. The messaging is consistent across the headline and body, ensuring the reader understands exactly what is being offered and what the next step is within seconds.",
-        "confidence": "high"
-      },
-      "value_proposition": {
-        "score": 8,
-        "rationale": "The value proposition is strong, specific, and outcome-oriented, effectively anchoring the benefit to a measurable score increase. It successfully balances the 'what' (100+ points) with the 'how' (strategy-based, digital SAT focus) without becoming overly feature-heavy.",
+        "rationale": "The ad effectively balances a strong, quantifiable outcome (100+ point increase) with a clear, actionable value proposition that addresses the 'how' (strategy vs. generic study). It avoids feature-dumping and focuses squarely on the parent's desire for their child's academic success.",
         "confidence": "high"
       },
       "call_to_action": {
         "score": 9,
-        "rationale": "The CTA is highly effective because it is specific, low-friction, and perfectly aligned with the offer in the primary text. By explicitly stating the time commitment ('5-minute') and the benefit ('pinpoint exact opportunities'), it removes the barrier to entry for a cold audience.",
+        "rationale": "The CTA is highly effective because it offers a specific, low-friction 'free' value proposition that directly addresses the user's need for a starting point. By aligning the primary text's invitation with a clear, action-oriented button, the ad creates a seamless path for the user to engage without feeling pressured into an immediate purchase.",
         "confidence": "high"
       },
       "brand_voice": {
         "score": 8,
-        "rationale": "The copy successfully positions the brand as an expert partner that understands the nuances of the digital SAT, striking a strong balance between confidence and approachability. It empowers the parent by reframing the test as a solvable strategy challenge rather than a reflection of the student's intelligence.",
+        "rationale": "The copy hits the brand voice pillars well by being confident, results-oriented, and helpful without being aggressive or generic. It successfully positions the tutor as a strategic partner rather than just a service provider, which feels distinctly Varsity Tutors.",
         "confidence": "high"
       },
       "emotional_resonance": {
         "score": 7,
-        "rationale": "The copy effectively taps into the parent's desire to see their child succeed and their anxiety regarding the 'crowded admissions field.' It provides a solid balance of tension and resolution, though it stops just short of the deeply personal, validating tone that would make it truly exceptional.",
+        "rationale": "The ad effectively taps into the parent's desire to remove barriers for their child, successfully balancing the tension of test anxiety with the promise of a personalized solution. While it is professional and hits the right emotional beats, it relies on somewhat standard industry tropes rather than a unique, high-impact emotional insight that would truly disrupt a user's feed.",
         "confidence": "high"
       },
       "aggregate_score": 8.05,
       "passes_threshold": true,
       "weakest_dimension": "emotional_resonance"
     },
-    "iteration_cycle": 3,
-    "improved_from": 4.7,
-    "improvement_strategy": "few_shot_injection",
-    "generation_cost_usd": 0.008708750000000001,
-    "evaluation_cost_usd": 0.0513,
-    "timestamp": "2026-03-10T22:34:00.018841"
-  },
-  {
-    "ad_id": "8c825ea12ec5",
-    "brief": {
-      "audience_segment": "anxious_parents",
-      "product": "sat_prep",
-      "campaign_goal": "awareness",
-      "tone": "empathetic",
-      "specific_offer": "1-on-1 expert tutoring"
-    },
-    "generated_ad": {
-      "primary_text": "Your child is acing their classes, but their SAT score says otherwise. The problem isn't their intelligence\u2014it's the digital format.\n\nThe digital SAT is an adaptive test, not a traditional exam. Most students lose points because they aren't trained on the actual software interface, the time-per-question strategy, or the specific logic patterns of the new digital format.\n\nTake Marcus: He had a 3.7 GPA but plateaued at 1160. By working with a Varsity Tutors expert to identify his 3 specific 'point-drain' areas, he mastered the adaptive interface and boosted his score to 1380 in just 12 sessions.\n\nWe don't waste time on content they already know. We run a diagnostic to find exactly what's holding them back, then pair them with a tutor who knows how to unlock that potential.\n\nStop prepping for the old test. Start preparing for their dream school.",
-      "headline": "1160 \u2192 1380: Master the Digital SAT",
-      "description": "1:1 diagnostic-driven tutoring matched to your student\u2019s unique goals.",
-      "cta_button": "Get Started"
-    },
-    "evaluation": {
-      "clarity": {
-        "score": 9,
-        "rationale": "The ad is exceptionally clear, immediately identifying the problem (the digital SAT format) and the solution (personalized, diagnostic-driven tutoring). It avoids clutter and maintains a singular focus on score improvement, making it highly effective for a quick scroll.",
-        "confidence": "high"
-      },
-      "value_proposition": {
-        "score": 9,
-        "rationale": "The ad excels by anchoring its value proposition in a specific, relatable student success story and a clear 'problem-solution' framework regarding the digital SAT. It successfully balances the emotional frustration of a plateaued score with a logical, diagnostic-driven path to improvement.",
-        "confidence": "high"
-      },
-      "call_to_action": {
-        "score": 5,
-        "rationale": "While the ad has a clear CTA button, it relies on the generic 'Get Started' which lacks the specificity and low-friction appeal required for high-converting EdTech ads. The copy fails to provide an embedded action step that tells the user exactly what happens when they click, leaving the transition from 'dream school' to 'click' feeling slightly disconnected.",
-        "confidence": "high"
-      },
-      "brand_voice": {
-        "score": 9,
-        "rationale": "This copy perfectly captures the Varsity Tutors voice by validating the student's intelligence while offering a clear, expert-led solution to the digital SAT format. It is highly empowering and results-focused, positioning the brand as a knowledgeable partner rather than just another service provider.",
-        "confidence": "high"
-      },
-      "emotional_resonance": {
-        "score": 9,
-        "rationale": "The copy masterfully validates a parent's gut feeling that their child is capable of more, effectively turning test anxiety into a solvable technical challenge. By framing the SAT as a 'format' issue rather than a 'student' issue, it builds immediate trust and offers a clear, hopeful path to the desired outcome.",
-        "confidence": "high"
-      },
-      "aggregate_score": 8.2,
-      "passes_threshold": true,
-      "weakest_dimension": "call_to_action"
-    },
-    "iteration_cycle": 3,
-    "improved_from": 5.25,
-    "improvement_strategy": "few_shot_injection",
-    "generation_cost_usd": 0.009845,
-    "evaluation_cost_usd": 0.05188125,
-    "timestamp": "2026-03-10T22:34:39.358476"
-  },
-  {
-    "ad_id": "58367df5eefb",
-    "brief": {
-      "audience_segment": "anxious_parents",
-      "product": "sat_prep",
-      "campaign_goal": "awareness",
-      "tone": "confident",
-      "specific_offer": "1-on-1 expert tutoring"
-    },
-    "generated_ad": {
-      "primary_text": "Is the stress of SAT season keeping you\u2014and your teen\u2014up at night? \n\nYou don\u2019t have to navigate the college admissions race alone. Varsity Tutors connects your student with elite, 1-on-1 expert tutors who specialize in breaking down the SAT into manageable, high-impact strategies. \n\nForget one-size-fits-all prep classes. Our students see an average 200+ point improvement by focusing exactly on the areas they need to master. Whether it\u2019s conquering the Reading section or fine-tuning Math skills, we provide the personalized roadmap they need to feel confident and prepared on test day. \n\nGive your student the competitive edge they deserve. Let\u2019s turn that test anxiety into a top-tier score.",
-      "headline": "Boost SAT Scores with 1-on-1 Expert Tutoring",
-      "description": "Join 100,000+ students who achieved their dream scores with Varsity Tutors.",
-      "cta_button": "Get Started"
-    },
-    "evaluation": {
-      "clarity": {
-        "score": 8,
-        "rationale": "The ad is highly readable and maintains a singular focus on reducing test anxiety through personalized, high-impact tutoring. It avoids the common pitfall of repeating the same message across fields, ensuring every line adds value to the core promise.",
-        "confidence": "high"
-      },
-      "value_proposition": {
-        "score": 8,
-        "rationale": "The ad effectively anchors the value proposition to a specific, compelling metric (200+ point improvement) while addressing the emotional benefit of reduced test anxiety. It is a strong, results-oriented pitch that clearly differentiates the service from generic prep classes, though it stops just short of the 'exceptional' tier by lacking a specific student success story or timeframe.",
-        "confidence": "high"
-      },
-      "call_to_action": {
-        "score": 4,
-        "rationale": "The CTA lacks a clear, low-friction directive in the primary text, and the 'Get Started' button is a generic, high-commitment prompt that fails to capitalize on the emotional momentum built in the copy. To improve, the copy should end with a specific next step (e.g., 'Book your free consultation') and the button should reflect that specific, low-risk action.",
-        "confidence": "high"
-      },
-      "brand_voice": {
-        "score": 8,
-        "rationale": "The copy strikes a perfect balance between being approachable for the parent and confident in the brand's expertise. It successfully reframes the SAT from a source of stress to a manageable challenge, embodying the empowering and results-focused tone Varsity Tutors aims for.",
-        "confidence": "high"
-      },
-      "emotional_resonance": {
-        "score": 8,
-        "rationale": "The ad does an excellent job of validating the parent's emotional burden, moving from the pain of test anxiety to the hope of a personalized solution. It successfully bridges the gap between the parent's worry and the student's potential, making the brand feel like a supportive partner rather than just a service provider.",
-        "confidence": "high"
-      },
-      "aggregate_score": 7.2,
-      "passes_threshold": true,
-      "weakest_dimension": "call_to_action"
-    },
-    "iteration_cycle": 1,
-    "improved_from": null,
-    "improvement_strategy": null,
-    "generation_cost_usd": 0.0030375,
-    "evaluation_cost_usd": 0.01794875,
-    "timestamp": "2026-03-10T22:34:51.787119"
-  },
-  {
-    "ad_id": "e54ab4e128e6",
-    "brief": {
-      "audience_segment": "anxious_parents",
-      "product": "sat_prep",
-      "campaign_goal": "awareness",
-      "tone": "urgent",
-      "specific_offer": "Score improvement guarantee"
-    },
-    "generated_ad": {
-      "primary_text": "Average test prep teaches to the middle. Your child isn't average. Instead of generic drills, Varsity Tutors uses AI-driven diagnostics to pinpoint the exact 5-10 concepts holding your student\u2019s score back. Our 1-on-1 methodology is proven: students who complete our core programs average a 115-point increase. Stop guessing at their progress and start building a path to their reach schools with a personalized roadmap, dedicated expert coaching, and a score improvement guarantee that puts your investment first. Let\u2019s turn their hard work into the acceptance letter they\u2019ve earned.",
-      "headline": "Proven 115-Point Average Score Increase",
-      "description": "Personalized 1-on-1 SAT prep with data-backed results.",
-      "cta_button": "Get Started"
-    },
-    "evaluation": {
-      "clarity": {
-        "score": 9,
-        "rationale": "The ad is exceptionally clear, leading with a strong, relatable hook that immediately differentiates the service from generic competitors. It maintains a singular focus on personalized outcomes throughout, ensuring the reader understands exactly what is being offered and why it matters.",
-        "confidence": "high"
-      },
-      "value_proposition": {
-        "score": 8,
-        "rationale": "The ad effectively balances a strong, quantified outcome (115-point increase) with a clear value proposition that addresses the 'why' behind the service. It avoids feature-dumping by anchoring the AI and coaching components directly to the student's path toward their reach schools.",
-        "confidence": "high"
-      },
-      "call_to_action": {
-        "score": 4,
-        "rationale": "The CTA button 'Get Started' is generic and lacks the specificity needed to lower friction for a cold audience. Furthermore, the primary text fails to include a clear, actionable directive at the end, leaving the reader without a defined next step to take after being persuaded by the copy.",
-        "confidence": "high"
-      },
-      "brand_voice": {
-        "score": 8,
-        "rationale": "The copy successfully positions Varsity Tutors as an expert partner by focusing on specific, data-backed outcomes rather than vague promises. It strikes a strong balance between being confident in the methodology and approachable for parents, effectively meeting them where they are in the college prep journey.",
-        "confidence": "high"
-      },
-      "emotional_resonance": {
-        "score": 7,
-        "rationale": "The ad successfully taps into the parent's desire to see their child's hard work rewarded, effectively positioning the service as a bridge to their 'reach schools.' While the middle section becomes a bit feature-heavy, the opening and closing lines provide enough emotional resonance to make the reader feel understood and hopeful.",
-        "confidence": "high"
-      },
-      "aggregate_score": 7.3,
-      "passes_threshold": true,
-      "weakest_dimension": "call_to_action"
-    },
     "iteration_cycle": 2,
     "improved_from": 6.4,
     "improvement_strategy": "targeted_reprompt",
-    "generation_cost_usd": 0.0050125,
-    "evaluation_cost_usd": 0.03387875,
-    "timestamp": "2026-03-10T22:35:15.021984"
-  },
-  {
-    "ad_id": "ee313b8a3544",
-    "brief": {
-      "audience_segment": "anxious_parents",
-      "product": "sat_prep",
-      "campaign_goal": "awareness",
-      "tone": "empathetic",
-      "specific_offer": "Score improvement guarantee"
-    },
-    "generated_ad": {
-      "primary_text": "Your child is smarter than their current SAT score suggests. The problem isn't their intelligence\u2014it's the format. The Digital SAT is an adaptive, laptop-based test, yet most students are still prepping with outdated methods.\n\nTake Alex, for example. He was stuck at an 1150 despite a 3.8 GPA. After our diagnostic identified his specific logic gaps, his matched tutor focused exclusively on the digital interface and adaptive scoring mechanics. In just 12 sessions, he walked into the test with a plan and walked out with a 1360.\n\nWe don't waste time on content your student already knows. We find the 3\u20134 specific areas holding them back and close those gaps with 1:1 expert guidance. \n\nStop guessing and start scoring. With our Score Improvement Guarantee, you aren't just buying tutoring\u2014you're investing in a measurable, proven result.",
-      "headline": "1150 to 1360: Close the Gap with 1:1 Digital SAT Prep",
-      "description": "Diagnostic-driven, adaptive SAT tutoring. Score Improvement Guarantee included.",
-      "cta_button": "Get Started"
-    },
-    "evaluation": {
-      "clarity": {
-        "score": 9,
-        "rationale": "The ad maintains a singular focus on the 'score-to-potential' gap, making the value proposition immediately clear to the reader. The structure is clean, professional, and avoids the clutter of competing messages, ensuring the core benefit is understood instantly.",
-        "confidence": "high"
-      },
-      "value_proposition": {
-        "score": 9,
-        "rationale": "The ad provides a highly compelling, specific value proposition by anchoring the benefit to a concrete student success story and a clear, measurable outcome. It effectively differentiates the brand by positioning the service as a strategic solution to the specific challenges of the new Digital SAT format.",
-        "confidence": "high"
-      },
-      "call_to_action": {
-        "score": 4,
-        "rationale": "While the primary text ends with a strong command, the 'Get Started' button is too vague and implies a high-commitment sign-up process. It lacks a low-friction 'hook' (like 'Book a Free Consultation' or 'Take the Diagnostic') that would better align with the 'diagnostic-driven' value proposition mentioned in the copy.",
-        "confidence": "high"
-      },
-      "brand_voice": {
-        "score": 8,
-        "rationale": "The copy successfully validates the student's intelligence while positioning the brand as an expert guide, perfectly hitting the 'empowering but knowledgeable' brand voice. It avoids arrogance by focusing on specific, actionable mechanics rather than empty promises, making it feel both credible and approachable for parents.",
-        "confidence": "high"
-      },
-      "emotional_resonance": {
-        "score": 8,
-        "rationale": "The opening line is a masterclass in emotional resonance, immediately validating a parent's gut feeling that their child is capable of more. By framing the test as a 'format' issue rather than an 'intelligence' issue, the ad removes the shame from the student and replaces it with a clear, actionable path to success.",
-        "confidence": "high"
-      },
-      "aggregate_score": 7.7,
-      "passes_threshold": true,
-      "weakest_dimension": "call_to_action"
-    },
-    "iteration_cycle": 3,
-    "improved_from": 5.4,
-    "improvement_strategy": "few_shot_injection",
-    "generation_cost_usd": 0.00949125,
-    "evaluation_cost_usd": 0.051512499999999996,
-    "timestamp": "2026-03-10T22:35:48.590049"
-  },
-  {
-    "ad_id": "eee84e73ecd6",
-    "brief": {
-      "audience_segment": "anxious_parents",
-      "product": "sat_prep",
-      "campaign_goal": "awareness",
-      "tone": "confident",
-      "specific_offer": "Score improvement guarantee"
-    },
-    "generated_ad": {
-      "primary_text": "Your child is smart. Their SAT score just isn't showing it yet.\n\nMost SAT prep is generic, but the digital SAT is a strategy test. Spending weeks on content your child already knows is a waste of time. We fix that by identifying the specific 3\u20134 gaps costing them points.\n\nOur students see an average improvement of 200+ points by focusing only on what matters. Stop guessing and start targeting their unique needs.\n\nReady to see where they stand? Get your free diagnostic assessment today.",
-      "headline": "Get a 200+ Point Edge with 1-on-1 Prep",
-      "description": "Custom strategy sessions focused on closing your child's specific score gaps.",
-      "cta_button": "Get Started"
-    },
-    "evaluation": {
-      "clarity": {
-        "score": 9,
-        "rationale": "The ad is exceptionally clear, leading with a relatable pain point and following up with a logical, benefit-driven solution. It avoids clutter and ensures the reader understands exactly what is being offered and why it matters within the first few seconds of scanning.",
-        "confidence": "high"
-      },
-      "value_proposition": {
-        "score": 8,
-        "rationale": "The ad does an excellent job of articulating a clear, outcome-driven value proposition that differentiates the service from generic competitors. By anchoring the benefit to a specific, quantified improvement and framing the digital SAT as a strategic challenge, it speaks directly to the parent's desire for efficiency and results.",
-        "confidence": "high"
-      },
-      "call_to_action": {
-        "score": 8,
-        "rationale": "The CTA is strong because it aligns perfectly with a low-friction, high-value offer (a free diagnostic). While 'Get Started' is a standard button choice, the primary text effectively primes the user for the specific action of taking an assessment.",
-        "confidence": "high"
-      },
-      "brand_voice": {
-        "score": 9,
-        "rationale": "The copy perfectly captures the brand voice by validating the student's intelligence while positioning the SAT as a solvable strategic challenge. It is highly empowering and knowledgeable without resorting to fear-based tactics or generic corporate jargon.",
-        "confidence": "high"
-      },
-      "emotional_resonance": {
-        "score": 8,
-        "rationale": "The opening line masterfully validates the parent's perspective, creating an immediate emotional connection by framing the test as the problem rather than the student. By balancing this frustration with a clear, hopeful path to improvement, the ad successfully taps into the parent's desire to see their child's true potential reflected in their results.",
-        "confidence": "high"
-      },
-      "aggregate_score": 8.4,
-      "passes_threshold": true,
-      "weakest_dimension": "value_proposition"
-    },
-    "iteration_cycle": 3,
-    "improved_from": 6.5,
-    "improvement_strategy": "few_shot_injection",
-    "generation_cost_usd": 0.00841625,
-    "evaluation_cost_usd": 0.050928749999999995,
-    "timestamp": "2026-03-10T22:36:24.927726"
-  },
-  {
-    "ad_id": "b9f4dbb7ae84",
-    "brief": {
-      "audience_segment": "anxious_parents",
-      "product": "sat_prep",
-      "campaign_goal": "conversion",
-      "tone": "urgent",
-      "specific_offer": "Free SAT practice test"
-    },
-    "generated_ad": {
-      "primary_text": "Is your teen prepared for the SAT? Don\u2019t let test anxiety stand between them and their dream college. \n\nMost students don\u2019t realize where their knowledge gaps are until it\u2019s too late. With the right prep, an average student can see a 200+ point improvement. \n\nStart with our free SAT practice test to get a clear, diagnostic breakdown of your teen's strengths and weaknesses. You\u2019ll receive a personalized score report to identify exactly what to focus on for test day success.\n\nTake the guesswork out of admissions. See exactly where they stand today.",
-      "headline": "Boost Your SAT Score with Free Practice",
-      "description": "Join thousands of students reaching their goal scores. Start for free.",
-      "cta_button": "Try Free"
-    },
-    "evaluation": {
-      "clarity": {
-        "score": 8,
-        "rationale": "The ad maintains a singular focus on the diagnostic test as the entry point for SAT improvement. It avoids clutter and clearly communicates the 'what' and the 'why' without requiring the reader to hunt for the offer.",
-        "confidence": "high"
-      },
-      "value_proposition": {
-        "score": 7,
-        "rationale": "The ad effectively communicates a concrete benefit by quantifying the potential score improvement and offering a clear, actionable diagnostic tool. While it is a strong, publishable value proposition, it lacks the specific student success stories or social proof that would make the claim feel truly undeniable to a skeptical parent.",
-        "confidence": "high"
-      },
-      "call_to_action": {
-        "score": 8,
-        "rationale": "The CTA is highly effective because it is low-friction, free, and perfectly aligned with the value proposition offered in the text. It avoids the 'Learn More' trap and provides a clear, logical next step for a parent concerned about their teen's test readiness.",
-        "confidence": "high"
-      },
-      "brand_voice": {
-        "score": 6,
-        "rationale": "The copy is competent and hits the right notes of being approachable and results-focused, but it lacks the unique, empowering insight that defines the Varsity Tutors brand voice. It feels like a standard industry template rather than a tailored message that reframes the SAT experience for the parent and student.",
-        "confidence": "high"
-      },
-      "emotional_resonance": {
-        "score": 6,
-        "rationale": "The ad successfully identifies the core emotional pain points of parental worry and student anxiety, providing a clear path to resolution. While it is competent and approachable, it lacks the narrative punch or 'aha' moment required to truly resonate on an emotional level beyond standard industry messaging.",
-        "confidence": "high"
-      },
-      "aggregate_score": 7.15,
-      "passes_threshold": true,
-      "weakest_dimension": "brand_voice"
-    },
-    "iteration_cycle": 1,
-    "improved_from": null,
-    "improvement_strategy": null,
-    "generation_cost_usd": 0.0025525,
-    "evaluation_cost_usd": 0.016552499999999998,
-    "timestamp": "2026-03-10T22:36:37.042872"
+    "generation_cost_usd": 0.00524875,
+    "evaluation_cost_usd": 0.0347175,
+    "timestamp": "2026-03-11T19:28:32.086435"
   }
 ]

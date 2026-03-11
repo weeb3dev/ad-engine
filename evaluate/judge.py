@@ -80,6 +80,19 @@ def _estimate_cost(input_tokens: int, output_tokens: int) -> float:
     return (input_tokens * _INPUT_COST_PER_M + output_tokens * _OUTPUT_COST_PER_M) / 1_000_000
 
 
+def get_evaluation_context() -> tuple[dict[str, str], str, str, list[str]]:
+    """Return shared evaluation context for per-dimension streaming loops.
+
+    Returns (rubrics, high_ref, low_ref, dimension_names).
+    """
+    cfg = get_config()
+    rubrics = get_all_rubrics()
+    calibration_ads = _load_calibration_ads()
+    high_ref, low_ref = _pick_references(calibration_ads)
+    dimension_names = list(cfg.dimensions.keys())
+    return rubrics, high_ref, low_ref, dimension_names
+
+
 @observe(name="evaluate-dimension")
 def evaluate_dimension(
     ad_fields: dict[str, str],
