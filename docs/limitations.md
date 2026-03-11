@@ -28,9 +28,17 @@
 - Reference ads may become stale as competitors update their campaigns.
 - No automated pattern extraction from competitor ads.
 
+## Web Application
+
+- **Single-process architecture.** The FastAPI server runs as one `uvicorn` process with no worker pool. Only one pipeline run executes at a time — concurrent requests will queue behind `asyncio.to_thread`.
+- **No authentication or rate limiting.** Anyone with the Railway URL can generate ads and burn API credits. There's no auth layer, no API key requirement, and no request throttling.
+- **No persistent storage.** The ad library is a JSON file on disk (`data/ad_library.json`). Railway's ephemeral filesystem means data resets on every redeploy unless a volume is configured.
+- **No SSE retry/reconnect on the client.** If the connection drops mid-stream, the in-flight result is lost. The client doesn't attempt reconnection or resume from the last event.
+- **Legacy Gradio code.** `app.py` (the original Gradio GUI) still exists in the repo alongside `server.py`. It's dead code — the Procfile runs FastAPI.
+
 ## Missing Features
 
-- **No visualization pipeline.** Quality trend charts (Phase 10) are not yet implemented.
+- **Visualizations are basic.** `output/visualize.py` produces static matplotlib charts (quality_trends.png, per-ad radar PNGs) and the web UI has interactive Chart.js radar charts, but there's no trend-over-time tracking across batches or historical comparison.
 - **No A/B test integration.** Generated ads can't be pushed to a Meta Ads account for real-world performance testing.
 - **No human-in-the-loop.** The pipeline is fully autonomous — there's no approval step before an ad is marked as "passing."
 - **Model escalation is a placeholder.** Tier 3 of the improvement strategy (switch to a more expensive model) is defined but not implemented.
@@ -42,3 +50,5 @@
 - **Centralize cost constants.** Having pricing in two files is a maintenance hazard. Should live in `config.yaml`.
 - **Add content hash caching for evaluations.** Identical ad text should return cached scores instead of burning 5 API calls.
 - **Invest more in the emotional_resonance rubric.** It's the weakest dimension by a wide margin (6.51 avg). The rubric likely needs more specific anchoring examples and clearer scoring criteria.
+- **Use a persistent database.** Replace `data/ad_library.json` with SQLite or Postgres so the ad library survives redeploys and supports querying.
+- **Add authentication.** Even basic API key auth would prevent the public URL from being an open credit-burning endpoint.

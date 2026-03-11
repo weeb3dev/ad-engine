@@ -72,3 +72,33 @@ Entries are written as decisions are made, not retroactively.
 - **Decision:** Option B — hardcoded constants in `feedback.py` and `generator.py`: $1.25/1M input tokens, $10.00/1M output tokens.
 - **Rationale:** There's no public Gemini pricing API. Config.yaml would be cleaner but adds complexity for something that changes rarely. Hardcoded constants are easy to grep and update. The values match the current Flash Lite pricing.
 - **Outcome:** Cost tracking works. 53 ads cost $2.35 total, $0.044/ad average. If pricing changes, two constants need updating in two files — not ideal but acceptable for v1. A future improvement would be centralizing these in config.yaml.
+
+---
+
+### Decision: Replace Gradio with FastAPI + Jinja2 + Tailwind/DaisyUI
+- **Date:** 2026-03-11
+- **Context:** The Gradio GUI was functional but limited — no control over layout, no incremental streaming of evaluation scores, and `share=True` links are temporary (expire after 72 hours). Needed a real deployment with a persistent URL.
+- **Options:** (A) Keep Gradio. (B) FastAPI + Jinja2 + Tailwind CSS. (C) Separate React/Next.js frontend.
+- **Decision:** Option B — single-process FastAPI serving Jinja2 templates styled with Tailwind CSS + DaisyUI from CDN, Chart.js for interactive radar charts.
+- **Rationale:** Zero build step, no CORS, no separate frontend repo. Tailwind + DaisyUI gives a polished component library out of the box. Chart.js loads from CDN. Everything is one `uvicorn` process — simple to deploy and reason about. A separate React app would add a build pipeline, a second deploy, and CORS configuration for marginal benefit at this stage.
+- **Outcome:** Full dashboard with Generate, Batch, and Library tabs. Responsive UI with DaisyUI's `corporate` theme. Interactive Chart.js radar charts per ad. Deploys as a single process to Railway.
+
+---
+
+### Decision: SSE streaming for real-time pipeline progress
+- **Date:** 2026-03-11
+- **Context:** The pipeline takes 15-30 seconds per ad (generate + 5 evaluation calls + potential improvement cycles). Need to show each stage as it happens rather than a loading spinner.
+- **Options:** (A) WebSocket for bidirectional communication. (B) Server-Sent Events (SSE) for server-to-client streaming. (C) Polling the server for status updates.
+- **Decision:** Option B — SSE via FastAPI's `StreamingResponse`.
+- **Rationale:** SSE is unidirectional (server → client), which is exactly the pattern here — the client submits a brief and watches the pipeline execute. No WebSocket upgrade complexity, no polling overhead. `StreamingResponse` is native to FastAPI. The client uses `fetch()` + `getReader()` to parse the stream. Structured JSON events per stage (`status`, `ad_copy`, `eval_start`, `eval_progress`, `improving`, `complete`) let the frontend render incrementally — ad copy card appears first, then scores fill in one-by-one, then the radar chart builds vertex by vertex.
+- **Outcome:** Generate endpoint streams ~8–12 events per ad depending on improvement cycles. Batch endpoint streams `progress` and `ad_complete` events with running summary stats. The frontend shows a step indicator, progressive score table, and incremental radar chart — no spinners, no waiting for the full result.
+
+---
+
+### Decision: Deploy to Railway
+- **Date:** 2026-03-11
+- **Context:** Need a persistent public URL for the demo video and reviewer access. Gradio's `share=True` links expire after 72 hours and are unreliable.
+- **Options:** (A) Railway. (B) Fly.io. (C) Render. (D) Keep Gradio share link.
+- **Decision:** Option A — Railway with a one-line Procfile.
+- **Rationale:** Minimal config: `web: uvicorn server:app --host 0.0.0.0 --port ${PORT:-8000}`. Railway auto-detects Python from `requirements.txt`, assigns a stable `*.up.railway.app` URL, and supports environment variables in the dashboard. SSE streaming works without buffering issues (some platforms like Render buffer SSE responses by default). Free tier is sufficient for demo traffic.
+- **Outcome:** Live at a persistent Railway URL. Environment variables (`GOOGLE_API_KEY`, `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY`, `LANGFUSE_BASE_URL`) configured in the Railway dashboard. Deploys automatically on push.

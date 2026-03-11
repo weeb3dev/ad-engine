@@ -1,6 +1,6 @@
 # Autonomous Ad Engine
 
-Self-improving ad copy generation pipeline for Varsity Tutors SAT prep. Generates Facebook/Instagram ads, scores them with an LLM judge across 5 quality dimensions, and iteratively improves weak areas until they pass a quality threshold.
+Self-improving ad copy generation pipeline for Varsity Tutors SAT prep. Generates Facebook/Instagram ads, scores them with an LLM judge across 5 quality dimensions, and iteratively improves weak areas until they pass a quality threshold. Ships with a streaming web dashboard deployed to Railway.
 
 ## Quick Start
 
@@ -9,6 +9,11 @@ git clone <repo-url> && cd ad-engine
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env   # add your API keys
+
+# Web dashboard
+uvicorn server:app --reload
+
+# Or CLI batch run
 python -m output.batch_runner --num-ads 10
 ```
 
@@ -16,10 +21,12 @@ python -m output.batch_runner --num-ads 10
 
 ```mermaid
 flowchart LR
-    Brief[AdBrief] --> Gen[Generate]
+    Browser[Browser] -->|SSE| Server[FastAPI]
+    Server --> Brief[AdBrief]
+    Brief --> Gen[Generate]
     Gen --> Ad[GeneratedAd]
     Ad --> Eval[Evaluate]
-    Eval --> Score{Score >= 7.0?}
+    Eval --> Score{"Score >= 7.0?"}
     Score -->|Yes| Library[Ad Library]
     Score -->|No| Improve[Improve]
     Improve --> Ad
@@ -27,12 +34,14 @@ flowchart LR
     Gen -.-> Langfuse
 ```
 
-**Four stages:**
+**Four stages, streamed to the browser over SSE:**
 
 1. **Generate** -- Gemini produces ad copy from a brief (audience, goal, offer, hook style)
-2. **Evaluate** -- LLM judge scores the ad on 5 dimensions independently
+2. **Evaluate** -- LLM judge scores the ad on 5 dimensions independently, each score streamed as it completes
 3. **Improve** -- Weakest dimension identified, targeted reprompt or few-shot injection fixes it
 4. **Observe** -- Every LLM call traced to Langfuse with token counts, latency, and cost
+
+The web dashboard (FastAPI + Jinja2 + Tailwind/DaisyUI) renders each pipeline stage incrementally — ad copy appears first, then scores fill in one-by-one with an interactive Chart.js radar chart building in real time.
 
 ## How It Works
 
@@ -42,34 +51,41 @@ Each ad goes through a generate-evaluate-improve loop. The evaluator scores 5 di
 
 ```
 ad-engine/
+├── server.py                    # FastAPI app — SSE endpoints, Jinja2 templates
+├── Procfile                     # Railway deployment (uvicorn)
+├── templates/
+│   └── index.html               # Dashboard UI (Tailwind + DaisyUI + Chart.js)
+├── static/
+│   └── app.js                   # Client-side SSE parsing, Chart.js radar rendering
 ├── config/
-│   ├── config.yaml           # Dimensions, weights, threshold, brand voice
-│   ├── loader.py             # Config + Gemini client singleton
-│   └── observability.py      # Langfuse/OTEL tracing (graceful degradation)
+│   ├── config.yaml              # Dimensions, weights, threshold, brand voice
+│   ├── loader.py                # Config + Gemini client singleton
+│   └── observability.py         # Langfuse/OTEL tracing (graceful degradation)
 ├── generate/
-│   ├── models.py             # Pydantic models (AdBrief, GeneratedAd, AdRecord, etc.)
-│   ├── generator.py          # Ad generation via Gemini
-│   ├── briefs.py             # Brief matrix generation (3 segments x 2 goals x 3 offers x 3 tones)
+│   ├── models.py                # Pydantic models (AdBrief, GeneratedAd, AdRecord, etc.)
+│   ├── generator.py             # Ad generation via Gemini
+│   ├── briefs.py                # Brief matrix generation (3 segments x 2 goals x 3 offers x 3 tones)
 │   └── prompts/
 │       └── generator_prompt.yaml
 ├── evaluate/
-│   ├── judge.py              # LLM-as-judge scoring
-│   ├── dimensions.py         # Rubric definitions per dimension
-│   ├── calibration.py        # Judge calibration against reference ads
+│   ├── judge.py                 # LLM-as-judge scoring
+│   ├── dimensions.py            # Rubric definitions per dimension
+│   ├── calibration.py           # Judge calibration against reference ads
 │   └── prompts/
 │       └── judge_prompt.yaml
 ├── iterate/
-│   ├── feedback.py           # Core pipeline loop (generate -> evaluate -> improve)
-│   └── strategies.py         # Targeted reprompt, few-shot injection, model escalation
+│   ├── feedback.py              # Core pipeline loop (generate -> evaluate -> improve)
+│   └── strategies.py            # Targeted reprompt, few-shot injection, model escalation
 ├── output/
-│   ├── batch_runner.py       # CLI batch orchestrator with progress bar
-│   └── generate_report.py    # Markdown report from batch results
-├── compete/references/       # Reference ads and competitor patterns
-├── data/                     # Generated artifacts (ad_library.json, batch_summary.json)
-├── tests/                    # 15+ pytest tests
+│   ├── batch_runner.py          # CLI batch orchestrator with progress bar
+│   ├── generate_report.py       # Markdown report from batch results
+│   └── visualize.py             # Quality trend charts (matplotlib)
+├── compete/references/          # Reference ads and competitor patterns
+├── data/                        # Generated artifacts (ad_library.json, batch_summary.json)
+├── tests/                       # 15+ pytest tests
 └── docs/
-    ├── decision_log.md       # Design decisions with rationale and outcomes
-    └── limitations.md        # Known limitations and what I'd do differently
+    ├── decision_log.md          # Design decisions with rationale and outcomes
+    └── limitations.md           # Known limitations and what I'd do differently
 ```
 
 ## Configuration
@@ -89,8 +105,10 @@ Dimension weights: clarity (0.25), value_proposition (0.25), call_to_action (0.2
 
 | Command | Description |
 |---------|-------------|
-| `python -m output.batch_runner --num-ads 54` | Full batch generation run |
+| `uvicorn server:app --reload` | Web dashboard (dev) |
+| `python -m output.batch_runner --num-ads 54` | Full batch generation run (CLI) |
 | `python -m output.generate_report` | Markdown report from batch data |
+| `python -m output.visualize` | Generate quality trend charts |
 | `python -m generate.briefs` | Generate and save brief matrix |
 | `python -m evaluate.calibration` | Run judge calibration against reference ads |
 
@@ -126,6 +144,10 @@ Using `gemini-3.1-flash-lite-preview` at $1.25/1M input tokens and $10.00/1M out
 - ~$2.35 for a 53-ad batch
 - Evaluation is the primary cost driver (5 LLM calls per evaluation, ~2.2 evaluations per ad)
 
+## Deployment
+
+Deployed to **Railway** with a one-line Procfile. Environment variables (`GOOGLE_API_KEY`, `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY`, `LANGFUSE_BASE_URL`) are configured in the Railway dashboard.
+
 ## Key Design Decisions
 
 See [docs/decision_log.md](docs/decision_log.md) for the full log. Highlights:
@@ -134,6 +156,9 @@ See [docs/decision_log.md](docs/decision_log.md) for the full log. Highlights:
 - Single cheap model for both gen and eval (10x cost savings vs. Pro)
 - Relaxed character limits (let the evaluator handle length, not hard validation)
 - Three-tier improvement escalation (reprompt -> few-shot -> model upgrade)
+- Replaced Gradio with FastAPI + Tailwind/DaisyUI for full layout control and persistent deployment
+- SSE streaming over WebSockets — unidirectional is all we need, and it's native to FastAPI
+- Railway over Fly.io/Render for zero-config Python deploys with SSE support
 
 ## Limitations
 
@@ -142,4 +167,6 @@ See [docs/limitations.md](docs/limitations.md). The biggest ones:
 - Self-evaluation bias (same model family for gen + eval)
 - 100% pass rate suggests the threshold or judge may be too lenient
 - emotional_resonance consistently scores lowest (6.51 avg) and doesn't improve much through iteration
+- Single-process web app with no auth — not production-hardened
+- Ad library stored as JSON on disk (ephemeral on redeploy)
 - No caching, no A/B test integration, no human approval step
