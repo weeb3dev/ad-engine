@@ -53,3 +53,44 @@ brand:
       label: "Families comparing prep options (Princeton Review, Kaplan, Khan Academy)"
 
 seed: 42
+
+# ── v2: Image Generation ──────────────────────────────────────────────
+
+image_generation:
+  model: "gemini-3.1-flash-image-preview"     # Nano Banana 2 (default)
+  # Alt: "gemini-3-pro-image-preview"         # Nano Banana Pro — 2x cost, better text rendering
+  default_aspect_ratio: "1:1"                  # feed ads; "9:16" for Stories
+  default_resolution: "1K"                     # 512 for drafts, 1K for production, 2K/4K for high-res
+  thinking_level: "minimal"                    # "minimal" (faster/cheaper) or "high" (better quality)
+  variants_per_ad: 2                           # image variants per text ad
+  text_overlay_mode: "programmatic"            # "programmatic" (PIL, pixel-perfect) or "ai" (in-image, experimental)
+  style_approaches:
+    - "photorealistic"
+    - "ugc_style"
+    - "illustration"
+    - "minimal_graphic"
+
+visual_evaluation:
+  model: "gemini-2.5-flash"                    # multimodal judge (see orchestration rationale)
+  threshold: 6.5                               # lower than text — image eval is noisier
+  dimensions:
+    brand_consistency:
+      weight: 0.30
+      description: "Does the image match Varsity Tutors' visual identity?"
+      score_1: "Generic stock photo, could be any brand"
+      score_10: "Distinctly VT: warm, approachable, education-focused, trustworthy"
+    engagement_potential:
+      weight: 0.30
+      description: "Would this stop a thumb-scroll in a Facebook/Instagram feed?"
+      score_1: "Boring, forgettable, blends into the feed"
+      score_10: "Arresting visual that demands attention without being clickbait"
+    text_image_coherence:
+      weight: 0.25
+      description: "Does the image reinforce and complement the ad copy?"
+      score_1: "Disconnected — image has nothing to do with the copy"
+      score_10: "Image and copy tell one unified story"
+    technical_quality:
+      weight: 0.15
+      description: "Resolution, composition, no AI artifacts?"
+      score_1: "Distorted faces, melted text, blurry, bad composition"
+      score_10: "Clean, high-resolution, professional composition"
