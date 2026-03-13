@@ -4,8 +4,12 @@ const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => document.querySelectorAll(sel);
 
 let genRadarChart = null;
+let genVisualRadarChart = null;
+let genTextRadarMmChart = null;
 let libRadarChart = null;
+let libVisualRadarChart = null;
 let _libraryCache = [];
+let _libIsMultimodal = false;
 
 // ── SSE helpers ──────────────────────────────────────────────────────────
 
@@ -52,14 +56,30 @@ $$("#tab-nav .tab").forEach((btn) => {
 
 // ── Generate (streaming) ─────────────────────────────────────────────────
 
+function isMultimodalMode() {
+  const toggle = $("#gen-multimodal");
+  return toggle && toggle.checked;
+}
+
 function setGenStep(stepName) {
-  const steps = $$("#gen-steps .step");
-  let reached = false;
-  const order = ["generate", "evaluate", "improve", "done"];
+  const isMMod = isMultimodalMode();
+  const imagesStep = $("#gen-step-images");
+
+  if (isMMod && imagesStep) {
+    imagesStep.classList.remove("hidden");
+  }
+
+  const order = isMMod
+    ? ["generate", "evaluate", "improve", "images", "done"]
+    : ["generate", "evaluate", "improve", "done"];
   const targetIdx = order.indexOf(stepName);
 
-  steps.forEach((el, idx) => {
-    if (idx <= targetIdx) {
+  const steps = $$("#gen-steps .step");
+  steps.forEach((el) => {
+    const step = el.dataset.step;
+    if (!isMMod && step === "images") return;
+    const stepIdx = order.indexOf(step);
+    if (stepIdx >= 0 && stepIdx <= targetIdx) {
       el.classList.add("step-primary");
     } else {
       el.classList.remove("step-primary");
@@ -72,12 +92,21 @@ async function generateAd() {
   const goal = document.querySelector('input[name="gen-goal"]:checked').value;
   const tone = $("#gen-tone").value;
   const offer = $("#gen-offer").value;
+  const multimodal = isMultimodalMode();
 
   $("#gen-placeholder").classList.add("hidden");
   $("#gen-ad-card").classList.add("hidden");
+  $("#gen-images-section").classList.add("hidden");
   $("#gen-error").classList.add("hidden");
   $("#gen-streaming").classList.remove("hidden");
   $("#gen-btn").disabled = true;
+
+  const imagesStep = $("#gen-step-images");
+  if (multimodal && imagesStep) {
+    imagesStep.classList.remove("hidden");
+  } else if (imagesStep) {
+    imagesStep.classList.add("hidden");
+  }
 
   setGenStep("generate");
   $("#gen-status").textContent = "Starting pipeline...";
@@ -88,11 +117,14 @@ async function generateAd() {
   badge.textContent = "—";
   badge.className = "badge badge-lg font-mono";
   $("#gen-meta").textContent = "";
+  $("#gen-variants-grid").innerHTML = "";
 
   let currentScores = {};
 
+  const endpoint = multimodal ? "/api/generate-multimodal" : "/api/generate";
+
   try {
-    const res = await fetch("/api/generate", {
+    const res = await fetch(endpoint, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -165,10 +197,49 @@ async function generateAd() {
           tbody.innerHTML = "";
           break;
 
+        case "image_generating":
+          setGenStep("images");
+          $("#gen-status").textContent = data.message;
+          $("#gen-images-section").classList.remove("hidden");
+          break;
+
+        case "image_variant": {
+          const grid = $("#gen-variants-grid");
+          const card = document.createElement("div");
+          card.className = "variant-card bg-base-200/50 rounded-lg p-3 fade-in";
+          card.id = `gen-variant-${data.index}`;
+          const vs = data.visual_evaluation.visual_aggregate_score;
+          card.innerHTML = `
+            <img src="${data.image_url}" alt="${data.style} variant" class="rounded-md mb-2" loading="lazy">
+            <div class="flex items-center justify-between">
+              <span class="badge badge-sm badge-outline">${data.style}</span>
+              <span class="badge badge-sm font-mono ${scoreBadgeClass(vs)}">${vs.toFixed(2)}</span>
+            </div>
+          `;
+          grid.appendChild(card);
+          $("#gen-status").textContent = `Image variant ${data.index + 1}/${data.total} (${data.style}) scored ${vs.toFixed(2)}`;
+          break;
+        }
+
+        case "image_variant_error":
+          $("#gen-status").textContent = `Image variant ${data.style} failed: ${data.message}`;
+          break;
+
+        case "image_selected": {
+          const winCard = $(`#gen-variant-${data.winning_index}`);
+          if (winCard) winCard.classList.add("winner");
+          $("#gen-status").textContent = `Winner: ${data.style} (visual score: ${data.visual_aggregate_score.toFixed(2)})`;
+          break;
+        }
+
         case "complete":
           setGenStep("done");
           $("#gen-streaming").classList.add("hidden");
-          renderGenerateResult(data.record);
+          if (multimodal && data.record.winning_variant) {
+            renderMultimodalResult(data.record);
+          } else {
+            renderGenerateResult(data.record);
+          }
           break;
 
         case "error":
@@ -265,6 +336,66 @@ function renderGenerateResult(record) {
   });
 
   renderRadar("gen-radar", ev, (c) => (genRadarChart = c), genRadarChart);
+}
+
+function renderMultimodalResult(record) {
+  const textRec = record.text_record;
+  const ad = textRec.generated_ad;
+  const ev = textRec.evaluation;
+
+  const card = $("#gen-ad-card");
+  card.classList.remove("hidden");
+
+  $("#gen-primary-text").textContent = ad.primary_text;
+  $("#gen-headline").textContent = ad.headline;
+  $("#gen-description").textContent = ad.description;
+  $("#gen-cta").textContent = ad.cta_button;
+
+  const textScore = ev.aggregate_score;
+  const badge = $("#gen-score-badge");
+  badge.textContent = textScore.toFixed(2);
+  badge.className = "badge badge-lg font-mono " + scoreBadgeClass(textScore);
+
+  const cost = record.total_cost_usd.toFixed(4);
+  let meta = `Cycle ${textRec.iteration_cycle}`;
+  if (textRec.improvement_strategy) meta += ` · ${textRec.improvement_strategy}`;
+  meta += ` · $${cost}`;
+  $("#gen-meta").textContent = meta;
+
+  const tbody = $("#gen-scores-body");
+  tbody.innerHTML = "";
+  CONFIG.dimensions.forEach((d) => {
+    const ds = ev[d];
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td>${CONFIG.dimension_labels[d]}</td><td class="font-mono">${ds.score}/10</td><td><span class="badge badge-sm badge-ghost">${ds.confidence}</span></td>`;
+    tbody.appendChild(tr);
+  });
+
+  renderRadar("gen-radar", ev, (c) => (genRadarChart = c), genRadarChart);
+
+  const imgSection = $("#gen-images-section");
+  imgSection.classList.remove("hidden");
+
+  const combined = record.combined_score;
+  const combinedBadge = $("#gen-combined-badge");
+  combinedBadge.textContent = combined.toFixed(2);
+  combinedBadge.className = "badge badge-lg font-mono " + scoreBadgeClass(combined);
+  $("#gen-combined-meta").textContent = `Combined (0.6 text + 0.4 visual) · $${cost}`;
+
+  const winnerVis = record.winning_variant.visual_evaluation;
+  renderVisualRadar(
+    "gen-visual-radar",
+    winnerVis,
+    (c) => (genVisualRadarChart = c),
+    genVisualRadarChart
+  );
+
+  renderRadar(
+    "gen-text-radar-mm",
+    ev,
+    (c) => (genTextRadarMmChart = c),
+    genTextRadarMmChart
+  );
 }
 
 // ── Batch (streaming with progressive stats) ─────────────────────────────
@@ -371,9 +502,12 @@ function renderBatchResults(s) {
 async function loadLibrary() {
   const segment = $("#lib-segment").value;
   const minScore = parseFloat($("#lib-min").value);
+  const mmToggle = $("#lib-multimodal");
+  _libIsMultimodal = mmToggle && mmToggle.checked;
 
+  const endpoint = _libIsMultimodal ? "/api/multimodal-library" : "/api/library";
   const params = new URLSearchParams({ segment, min_score: minScore });
-  const res = await fetch("/api/library?" + params);
+  const res = await fetch(endpoint + "?" + params);
   _libraryCache = await res.json();
 
   if (_libraryCache.length === 0) {
@@ -388,6 +522,19 @@ async function loadLibrary() {
   $("#lib-table-wrap").classList.remove("hidden");
   $("#lib-count").textContent = _libraryCache.length + " ads";
 
+  const thead = $("#lib-thead");
+  if (_libIsMultimodal) {
+    thead.innerHTML = `<tr>
+      <th></th><th>ID</th><th>Segment</th><th>Goal</th>
+      <th>Headline</th><th>Combined</th><th>Text</th><th>Visual</th>
+    </tr>`;
+  } else {
+    thead.innerHTML = `<tr>
+      <th>ID</th><th>Segment</th><th>Goal</th>
+      <th>Headline</th><th>Score</th><th>Cycles</th>
+    </tr>`;
+  }
+
   const tbody = $("#lib-body");
   tbody.innerHTML = "";
   _libraryCache.forEach((r, idx) => {
@@ -395,16 +542,40 @@ async function loadLibrary() {
     tr.className = "cursor-pointer hover";
     tr.onclick = () => showLibDetail(idx);
     const segLabel = CONFIG.segment_labels[r.brief.audience_segment] || r.brief.audience_segment;
-    tr.innerHTML = `
-      <td class="font-mono text-xs">${r.ad_id.slice(0, 8)}</td>
-      <td>${segLabel}</td>
-      <td>${r.brief.campaign_goal}</td>
-      <td class="max-w-xs truncate">${r.generated_ad.headline}</td>
-      <td><span class="badge badge-sm font-mono ${scoreBadgeClass(r.evaluation.aggregate_score)}">${r.evaluation.aggregate_score.toFixed(2)}</span></td>
-      <td>${r.iteration_cycle}</td>
-    `;
+
+    if (_libIsMultimodal) {
+      const imgPath = _mmImageUrl(r.winning_variant);
+      const ad = r.text_record.generated_ad;
+      const textScore = r.text_record.evaluation.aggregate_score;
+      const visScore = r.winning_variant.visual_evaluation.visual_aggregate_score;
+      tr.innerHTML = `
+        <td><img src="${imgPath}" class="w-10 h-10 rounded object-cover" alt=""></td>
+        <td class="font-mono text-xs">${r.ad_id.slice(0, 8)}</td>
+        <td>${segLabel}</td>
+        <td>${r.brief.campaign_goal}</td>
+        <td class="max-w-xs truncate">${ad.headline}</td>
+        <td><span class="badge badge-sm font-mono ${scoreBadgeClass(r.combined_score)}">${r.combined_score.toFixed(2)}</span></td>
+        <td class="font-mono text-xs">${textScore.toFixed(2)}</td>
+        <td class="font-mono text-xs">${visScore.toFixed(2)}</td>
+      `;
+    } else {
+      tr.innerHTML = `
+        <td class="font-mono text-xs">${r.ad_id.slice(0, 8)}</td>
+        <td>${segLabel}</td>
+        <td>${r.brief.campaign_goal}</td>
+        <td class="max-w-xs truncate">${r.generated_ad.headline}</td>
+        <td><span class="badge badge-sm font-mono ${scoreBadgeClass(r.evaluation.aggregate_score)}">${r.evaluation.aggregate_score.toFixed(2)}</span></td>
+        <td>${r.iteration_cycle}</td>
+      `;
+    }
     tbody.appendChild(tr);
   });
+}
+
+function _mmImageUrl(variant) {
+  if (!variant || !variant.image_path) return "";
+  const name = variant.image_path.split("/").pop();
+  return "/images/" + name;
 }
 
 function showLibDetail(idx) {
@@ -414,8 +585,23 @@ function showLibDetail(idx) {
   const panel = $("#lib-detail");
   panel.classList.remove("hidden");
 
+  if (_libIsMultimodal) {
+    _showMultimodalDetail(record);
+  } else {
+    _showTextDetail(record);
+  }
+
+  panel.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function _showTextDetail(record) {
   const ad = record.generated_ad;
   const ev = record.evaluation;
+
+  $("#lib-detail-image-wrap").classList.add("hidden");
+  $("#lib-visual-scores-wrap").classList.add("hidden");
+  $("#lib-visual-radar-wrap").classList.add("hidden");
+  $("#lib-all-variants").classList.add("hidden");
 
   $("#lib-primary-text").textContent = ad.primary_text;
   $("#lib-headline").textContent = ad.headline;
@@ -443,7 +629,96 @@ function showLibDetail(idx) {
   });
 
   renderRadar("lib-radar", ev, (c) => (libRadarChart = c), libRadarChart);
-  panel.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function _showMultimodalDetail(record) {
+  const textRec = record.text_record;
+  const ad = textRec.generated_ad;
+  const ev = textRec.evaluation;
+  const winner = record.winning_variant;
+  const winVis = winner.visual_evaluation;
+
+  const imgWrap = $("#lib-detail-image-wrap");
+  imgWrap.classList.remove("hidden");
+  $("#lib-detail-image").src = _mmImageUrl(winner);
+  $("#lib-detail-image-meta").textContent =
+    `Style: ${winner.style} · Visual: ${winVis.visual_aggregate_score.toFixed(2)} · Combined: ${record.combined_score.toFixed(2)}`;
+
+  $("#lib-primary-text").textContent = ad.primary_text;
+  $("#lib-headline").textContent = ad.headline;
+  $("#lib-description").textContent = ad.description;
+  $("#lib-cta").textContent = ad.cta_button;
+
+  let meta = `Combined: <strong>${record.combined_score.toFixed(2)}</strong>`;
+  meta += ` · Text: ${ev.aggregate_score.toFixed(2)} · Visual: ${winVis.visual_aggregate_score.toFixed(2)}`;
+  meta += ` · $${record.total_cost_usd.toFixed(4)}`;
+  meta += ` · ${record.pipeline_time_s.toFixed(1)}s`;
+  $("#lib-meta").innerHTML = meta;
+
+  const tbody = $("#lib-scores-body");
+  tbody.innerHTML = "";
+  CONFIG.dimensions.forEach((d) => {
+    const ds = ev[d];
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${CONFIG.dimension_labels[d]}</td>
+      <td class="font-mono">${ds.score}/10</td>
+      <td><span class="badge badge-sm badge-ghost">${ds.confidence}</span></td>
+      <td class="text-xs max-w-md">${ds.rationale}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  const visWrap = $("#lib-visual-scores-wrap");
+  visWrap.classList.remove("hidden");
+  const visBody = $("#lib-visual-scores-body");
+  visBody.innerHTML = "";
+  CONFIG.visual_dimensions.forEach((d) => {
+    const ds = winVis[d];
+    if (!ds) return;
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${CONFIG.visual_dimension_labels[d]}</td>
+      <td class="font-mono">${ds.score}/10</td>
+      <td><span class="badge badge-sm badge-ghost">${ds.confidence}</span></td>
+      <td class="text-xs max-w-md">${ds.rationale}</td>
+    `;
+    visBody.appendChild(tr);
+  });
+
+  renderRadar("lib-radar", ev, (c) => (libRadarChart = c), libRadarChart);
+
+  const visRadarWrap = $("#lib-visual-radar-wrap");
+  visRadarWrap.classList.remove("hidden");
+  renderVisualRadar(
+    "lib-visual-radar",
+    winVis,
+    (c) => (libVisualRadarChart = c),
+    libVisualRadarChart
+  );
+
+  const allVariants = $("#lib-all-variants");
+  const varGrid = $("#lib-variants-grid");
+  if (record.all_variants && record.all_variants.length > 1) {
+    allVariants.classList.remove("hidden");
+    varGrid.innerHTML = "";
+    record.all_variants.forEach((v, i) => {
+      const isWinner = v.variant_id === winner.variant_id;
+      const vs = v.visual_evaluation.visual_aggregate_score;
+      const div = document.createElement("div");
+      div.className = `variant-card bg-base-200/50 p-2 ${isWinner ? "winner" : ""}`;
+      div.innerHTML = `
+        <img src="${_mmImageUrl(v)}" alt="${v.style}" class="rounded-md mb-1" loading="lazy">
+        <div class="flex items-center justify-between text-xs">
+          <span class="badge badge-xs badge-outline">${v.style}</span>
+          <span class="font-mono ${isWinner ? "font-bold" : ""}">${vs.toFixed(2)}</span>
+        </div>
+      `;
+      varGrid.appendChild(div);
+    });
+  } else {
+    allVariants.classList.add("hidden");
+  }
 }
 
 function hideLibDetail() {
@@ -455,10 +730,13 @@ function hideLibDetail() {
 function renderRadar(canvasId, evaluation, setter, existing) {
   if (existing) existing.destroy();
 
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+
   const labels = CONFIG.dimensions.map((d) => CONFIG.dimension_labels[d]);
   const data = CONFIG.dimensions.map((d) => evaluation[d].score);
 
-  const ctx = document.getElementById(canvasId).getContext("2d");
+  const ctx = canvas.getContext("2d");
   const chart = new Chart(ctx, {
     type: "radar",
     data: {
@@ -471,6 +749,53 @@ function renderRadar(canvasId, evaluation, setter, existing) {
           backgroundColor: "rgba(75, 107, 251, 0.15)",
           borderColor: "rgb(75, 107, 251)",
           pointBackgroundColor: "rgb(75, 107, 251)",
+          pointRadius: 4,
+          borderWidth: 2,
+        },
+      ],
+    },
+    options: {
+      scales: {
+        r: {
+          min: 0,
+          max: 10,
+          ticks: { stepSize: 2, backdropColor: "transparent", font: { size: 10 } },
+          pointLabels: { font: { size: 11 } },
+          grid: { color: "rgba(0,0,0,0.06)" },
+          angleLines: { color: "rgba(0,0,0,0.06)" },
+        },
+      },
+      plugins: { legend: { display: false } },
+      responsive: false,
+    },
+  });
+
+  setter(chart);
+}
+
+function renderVisualRadar(canvasId, visualEvaluation, setter, existing) {
+  if (existing) existing.destroy();
+
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+
+  const dims = CONFIG.visual_dimensions;
+  const labels = dims.map((d) => CONFIG.visual_dimension_labels[d]);
+  const data = dims.map((d) => (visualEvaluation[d] ? visualEvaluation[d].score : 0));
+
+  const ctx = canvas.getContext("2d");
+  const chart = new Chart(ctx, {
+    type: "radar",
+    data: {
+      labels,
+      datasets: [
+        {
+          label: "Visual Score",
+          data,
+          fill: true,
+          backgroundColor: "rgba(34, 197, 94, 0.15)",
+          borderColor: "rgb(34, 197, 94)",
+          pointBackgroundColor: "rgb(34, 197, 94)",
           pointRadius: 4,
           borderWidth: 2,
         },
