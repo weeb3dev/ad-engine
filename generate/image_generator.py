@@ -143,7 +143,8 @@ def generate_ad_image(
             image_result: Image.Image | None = None
             for part in response.parts:
                 if part.inline_data is not None:
-                    image_result = part.as_image()
+                    genai_img = part.as_image()
+                    image_result = genai_img._pil_image if hasattr(genai_img, "_pil_image") else genai_img
                     break
 
             if image_result is None:
