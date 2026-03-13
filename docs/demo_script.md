@@ -37,6 +37,8 @@ The pipeline has four stages.
 
 **Observe** — every single LLM call is traced to Langfuse via OpenTelemetry, so we get full visibility into token counts, latency, and cost per call — with graceful degradation if Langfuse isn't configured.
 
+The whole thing streams to the browser over Server-Sent Events — the frontend sees each stage as it happens, not just the final result.
+
 ---
 
 ## 4. LIVE DEMO — GENERATING ADS (~60s)
@@ -45,15 +47,15 @@ The pipeline has four stages.
 
 Here's the dashboard, deployed on Railway with a persistent URL. We're on the Generate tab. I'll pick an audience segment — let's start with "Parents anxious about college admissions," set the campaign goal to awareness, tone to empathetic, and the offer is a free SAT practice test.
 
-> [SCREEN: Click "Generate Ad" — wait for results to populate]
+> [SCREEN: Click "Generate Ad" — watch the streaming pipeline]
 
-There's the generated ad — headline, primary text, description, CTA. Below that we get the aggregate score and a full breakdown table showing each dimension's score, confidence level, and the judge's written rationale for that score. And here's the interactive radar chart visualizing the five dimensions — that's Chart.js rendering live in the browser.
+Notice the step indicator at the top — it tracks where we are in the pipeline: Generate, Evaluate, Improve, Done. The ad copy card appears immediately after generation, before any scores exist. Now watch the scores table — each dimension fills in one by one as the judge evaluates it. Clarity first, then value proposition, call to action, brand voice, emotional resonance. The radar chart builds incrementally too, adding a vertex with each score.
 
-You can see it took [X] improvement cycles and cost [X] cents total. Let me generate another one — this time for stressed students, conversion goal, urgent tone.
+If the aggregate score lands below 7.0, the system kicks into an improvement cycle — you'll see the status update with the strategy name and cycle number, new ad copy streams in, and the scores re-evaluate live. No spinner, no waiting — you see every pipeline stage as it happens.
 
 > [SCREEN: Change inputs, click Generate again, show new results]
 
-Different segment, completely different copy, different score profile. The system adapts the messaging to the audience and the goal.
+Let me run another one — stressed students, conversion goal, urgent tone. Different segment, completely different copy, different score profile. The system adapts the messaging to the audience and the goal.
 
 ---
 
@@ -61,7 +63,9 @@ Different segment, completely different copy, different score profile. The syste
 
 > [SCREEN: Switch to the Batch tab]
 
-For production runs, there's the Batch tab — you set the number of ads with a slider and hit Run Batch. The UI streams progress in real time via Server-Sent Events, so you see each ad being generated as it happens. We ran a full 53-ad batch across all three audience segments, both campaign goals, multiple tones and offers. When it finishes you get summary stats, per-segment pass rates, and per-dimension averages right in the browser.
+For production runs, there's the Batch tab — you set the number of ads with a slider and hit Run Batch. The progress bar advances with each ad, but the real thing to watch is the live stat cards — pass count, average score, per-segment pass rates, and per-dimension averages all update progressively after each ad completes. You don't wait until the end to see how the batch is shaping up.
+
+We ran a full 53-ad batch across all three audience segments, both campaign goals, multiple tones and offers.
 
 > [SCREEN: Flash the batch report markdown — output/batch1_ad_library.md — scroll through briefly]
 
@@ -85,7 +89,7 @@ Quick note on the stack. I went with **Gemini 3.1 Flash Lite** for both generati
 
 The entire pipeline is **Python** — Pydantic models, YAML config, clean module boundaries.
 
-The frontend is **FastAPI** serving Jinja2 templates styled with **Tailwind CSS and DaisyUI**, with **Chart.js** for interactive radar charts — all loaded from CDN, zero build step. It's a single Python process, no separate frontend, no CORS. The app is deployed to **Railway**, so it has a persistent public URL — no tunneling, no temporary share links.
+The frontend is **FastAPI** serving Jinja2 templates styled with **Tailwind CSS and DaisyUI**, with **Chart.js** for interactive radar charts — all loaded from CDN, zero build step. Both the generate and batch endpoints use **Server-Sent Events** — FastAPI's `StreamingResponse` pushes structured JSON events per pipeline stage, and a shared JS helper on the client parses and renders them incrementally. It's a single Python process, no separate frontend, no CORS. The app is deployed to **Railway**, so it has a persistent public URL — no tunneling, no temporary share links.
 
 Observability is **Langfuse plus OpenTelemetry** — auto-instrumentation captures every Gemini call without touching pipeline code.
 
@@ -123,9 +127,9 @@ That's the Autonomous Ad Engine — generates, scores, and self-improves ad copy
 
 ---
 
-**Total word count:** ~770 words (~5:10 at 150 wpm — trim the live demo section based on how long the actual generation takes on screen, or speed up pace slightly to land at ~4:00)
+**Total word count:** ~830 words (~5:30 at 150 wpm — the streaming demo section runs longer on screen because you're narrating what's happening in real time; trim architecture or tech stack if you need to land at ~4:00)
 
 **Trim notes if running long:**
 - Section 8 (decisions/limitations) can be shortened to just self-evaluation bias + 100% pass rate
-- Section 5 (batch) can skip the SSE detail
-- Section 7 (tech stack) can drop the Railway deployment detail
+- Section 7 (tech stack) can drop the SSE implementation detail and Railway mention
+- Section 3 (architecture) can cut the SSE streaming sentence at the end
