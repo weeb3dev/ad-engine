@@ -223,6 +223,7 @@ class MultiModalAdRecord(BaseModel):
 class ModelConfig(BaseModel):
     generator: str
     evaluator: str
+    escalation: str = "gemini-2.5-flash"
 
 
 class QualityConfig(BaseModel):

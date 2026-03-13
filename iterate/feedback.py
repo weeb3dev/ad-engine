@@ -31,6 +31,9 @@ _PROJECT_ROOT = Path(__file__).resolve().parent.parent
 _INPUT_COST_PER_M = 1.25
 _OUTPUT_COST_PER_M = 10.00
 
+_ESCALATION_INPUT_COST_PER_M = 0.30
+_ESCALATION_OUTPUT_COST_PER_M = 2.50
+
 
 def _extract_json(text: str) -> dict[str, Any]:
     """Extract a JSON object from model response, handling markdown fences."""
@@ -74,6 +77,19 @@ def improve_ad(
         pass
 
     display_dim = weak_dim.replace("_", " ").title()
+
+    model = config.models.generator
+    cost_input_rate = _INPUT_COST_PER_M
+    cost_output_rate = _OUTPUT_COST_PER_M
+
+    if strategy == "model_escalation":
+        model = config.models.escalation
+        cost_input_rate = _ESCALATION_INPUT_COST_PER_M
+        cost_output_rate = _ESCALATION_OUTPUT_COST_PER_M
+        console.print(
+            f"\n  [bold cyan]Escalating to {model} for improvement[/bold cyan]"
+        )
+
     console.print(
         f"\n[bold yellow]Improving ad[/bold yellow]  "
         f"strategy={strategy}  weak_dim={display_dim} ({dim_score.score}/10)"
@@ -93,7 +109,7 @@ def improve_ad(
     for retry_idx, temp in enumerate(temperatures):
         try:
             response = client.models.generate_content(
-                model=config.models.generator,
+                model=model,
                 contents=user_prompt,
                 config={
                     "system_instruction": system_instruction,
@@ -106,7 +122,7 @@ def improve_ad(
             usage: dict[str, Any] = {
                 "input_tokens": input_tokens,
                 "output_tokens": output_tokens,
-                "cost_usd": _estimate_cost(input_tokens, output_tokens),
+                "cost_usd": (input_tokens * cost_input_rate + output_tokens * cost_output_rate) / 1_000_000,
             }
 
             parsed = _extract_json(response.text)

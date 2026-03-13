@@ -3,6 +3,7 @@
 models:
   generator: "gemini-3.1-flash-lite-preview"
   evaluator: "gemini-3.1-flash-lite-preview"
+  escalation: "gemini-2.5-flash"
 
 quality:
   threshold: 7.0

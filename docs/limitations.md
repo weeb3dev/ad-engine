@@ -41,7 +41,8 @@
 - **Visualizations are basic.** `output/visualize.py` produces static matplotlib charts (quality_trends.png, per-ad radar PNGs) and the web UI has interactive Chart.js radar charts, but there's no trend-over-time tracking across batches or historical comparison.
 - **No A/B test integration.** Generated ads can't be pushed to a Meta Ads account for real-world performance testing.
 - **No human-in-the-loop.** The pipeline is fully autonomous — there's no approval step before an ad is marked as "passing."
-- **Model escalation is a placeholder.** Tier 3 of the improvement strategy (switch to a more expensive model) is defined but not implemented.
+- **Model escalation adds cost on tier 3.** Tier 3 of the improvement strategy now switches from `gemini-3.1-flash-lite-preview` to `gemini-2.5-flash` ($0.30/$2.50 per 1M tokens vs $1.25/$10.00). This is a genuine model upgrade but only triggers on attempt 3 — most ads resolve by tier 1-2, so the cost impact across a batch is small.
+- **Self-evaluation bias spans two model tiers.** With escalation, the improvement loop can use either flash-lite or 2.5-flash, but both are in the Gemini family. The evaluator (also flash-lite) may still be lenient toward output from a sibling model. Cross-family evaluation (e.g., Claude or GPT-4 as judge) remains the strongest mitigation.
 
 ## What I'd Do Differently
 

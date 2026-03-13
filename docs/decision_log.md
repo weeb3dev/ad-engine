@@ -102,3 +102,22 @@ Entries are written as decisions are made, not retroactively.
 - **Decision:** Option A — Railway with a one-line Procfile.
 - **Rationale:** Minimal config: `web: uvicorn server:app --host 0.0.0.0 --port ${PORT:-8000}`. Railway auto-detects Python from `requirements.txt`, assigns a stable `*.up.railway.app` URL, and supports environment variables in the dashboard. SSE streaming works without buffering issues (some platforms like Render buffer SSE responses by default). Free tier is sufficient for demo traffic.
 - **Outcome:** Live at a persistent Railway URL. Environment variables (`GOOGLE_API_KEY`, `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY`, `LANGFUSE_BASE_URL`) configured in the Railway dashboard. Deploys automatically on push.
+
+---
+
+### Decision: Multi-model orchestration — which model handles which task
+- **Date:** 2026-03-13
+- **Context:** v2 introduces image generation and visual evaluation alongside the existing text pipeline. A single model can no longer cover all tasks well. Need to decide which model handles which task.
+- **Orchestration map:**
+
+| Task | Model | Rationale |
+|---|---|---|
+| Text generation | `gemini-3.1-flash-lite-preview` | Cheapest, fast, proven in v1 (100% pass rate at $0.044/ad). Iteration loop compensates for any weak individual generations. |
+| Text evaluation | `gemini-3.1-flash-lite-preview` | Same cheap model. Calibration passed 8/8. Self-evaluation bias exists but is acceptable. |
+| Image generation | `gemini-3.1-flash-image-preview` | Nano Banana 2 — the only Gemini model that generates images. No alternative within the ecosystem. |
+| Visual evaluation | `gemini-2.5-flash` | Flash-lite's vision capabilities are too weak for reliable image scoring — it tends to score everything 6-8 regardless of quality. 2.5 Flash provides meaningfully better discrimination at ~$0.01 more per image eval. |
+| Text improvement (tier 3 escalation) | `gemini-2.5-flash` | Genuine model upgrade for stubborn cases. Better reasoning and creative output than flash-lite. Only triggers on attempt 3, so cost impact is minimal. |
+
+- **Decision:** Use the cheapest model that meets each task's capability bar. Upgrade only where there's a measurable quality gap (visual eval, tier 3 escalation).
+- **Cost per multimodal ad:** ~$0.005 text gen + ~$0.008 text eval + ~$0.005 text improvement + ~$0.134 image gen (2 variants at 1K) + ~$0.008 visual eval = **~$0.16/ad**. Image generation is the dominant cost driver at ~84%.
+- **Outcome:** The escalation model is now configurable via `config.models.escalation` (defaults to `gemini-2.5-flash`). When the improvement loop reaches tier 3, `improve_ad()` switches to the escalation model with its own cost tracking. This replaces the previous placeholder that only changed the system prompt.
