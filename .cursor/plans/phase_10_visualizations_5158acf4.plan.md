@@ -45,7 +45,7 @@ Creates a radar/spider chart for one ad's 5 dimension scores. Saves to `output/r
 
 Produces two files:
 
-- `**data/evaluation_report.json**`: total ads, pass rate, average score, per-dimension averages and standard deviations, per-segment pass rates, total/per-ad/per-passing-ad cost, quality improvement (avg score at cycle 1 vs final cycle).
+- `**data/evaluation_report.json`**: total ads, pass rate, average score, per-dimension averages and standard deviations, per-segment pass rates, total/per-ad/per-passing-ad cost, quality improvement (avg score at cycle 1 vs final cycle).
 - `**data/evaluation_report.md**`: human-readable version of the same stats, with a short narrative summary.
 
 ### 4. CLI entry point
