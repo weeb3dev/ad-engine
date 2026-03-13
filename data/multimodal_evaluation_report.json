@@ -1,0 +1,53 @@
+{
+  "total_ads": 1,
+  "pass_rates": {
+    "text": 1.0,
+    "visual": 1.0,
+    "combined": 1.0
+  },
+  "scores": {
+    "text_avg": 8.5,
+    "visual_avg": 9.15,
+    "combined_avg": 8.76,
+    "combined_min": 8.76,
+    "combined_max": 8.76
+  },
+  "visual_dimensions": {
+    "brand_consistency": {
+      "avg": 10,
+      "stdev": 0.0
+    },
+    "engagement_potential": {
+      "avg": 8,
+      "stdev": 0.0
+    },
+    "text_image_coherence": {
+      "avg": 9,
+      "stdev": 0.0
+    },
+    "technical_quality": {
+      "avg": 10,
+      "stdev": 0.0
+    }
+  },
+  "text_visual_correlation": null,
+  "best_style_per_segment": {
+    "anxious_parents": "ugc_style"
+  },
+  "style_distribution": {
+    "ugc_style": 1
+  },
+  "cost": {
+    "total_usd": 0.137,
+    "per_ad_usd": 0.137,
+    "avg_text_gen": 0.009388,
+    "avg_text_eval": 0.051375,
+    "avg_image_gen": 0.071651,
+    "avg_image_eval": 0.004575
+  },
+  "time": {
+    "avg_pipeline_s": 116.04,
+    "avg_text_s": 100.59,
+    "avg_image_s": 15.45
+  }
+}

@@ -1,42 +1,40 @@
 {
-  "total_ads": 53,
-  "passed": 53,
+  "total_ads": 2,
+  "passed": 2,
   "pass_rate": 1.0,
-  "avg_score": 7.59,
-  "min_score": 7.0,
-  "max_score": 8.85,
+  "avg_score": 8.38,
+  "min_score": 8.05,
+  "max_score": 8.7,
   "per_dimension": {
     "clarity": {
-      "avg": 8.42,
-      "stdev": 0.99
+      "avg": 8.5,
+      "stdev": 0.71
     },
     "value_proposition": {
-      "avg": 7.7,
-      "stdev": 0.77
+      "avg": 8.5,
+      "stdev": 0.71
     },
     "call_to_action": {
-      "avg": 6.98,
-      "stdev": 1.69
+      "avg": 9,
+      "stdev": 0.0
     },
     "brand_voice": {
-      "avg": 7.91,
-      "stdev": 0.88
+      "avg": 8,
+      "stdev": 0.0
     },
     "emotional_resonance": {
-      "avg": 6.51,
-      "stdev": 1.56
+      "avg": 7.5,
+      "stdev": 0.71
     }
   },
   "per_segment_pass_rate": {
-    "anxious_parents": 1.0,
-    "comparison_shoppers": 1.0,
-    "stressed_students": 1.0
+    "anxious_parents": 1.0
   },
-  "total_cost_usd": 2.3512,
-  "cost_per_ad": 0.0444,
-  "cost_per_passing_ad": 0.0444,
+  "total_cost_usd": 0.099,
+  "cost_per_ad": 0.0495,
+  "cost_per_passing_ad": 0.0495,
   "quality_improvement": {
-    "cycle_1_avg": 7.36,
-    "final_cycle_avg": 8.07
+    "cycle_1_avg": null,
+    "final_cycle_avg": 8.7
   }
 }

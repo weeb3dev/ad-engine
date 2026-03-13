@@ -2,33 +2,26 @@
 
 ## Overview
 
-- **Total ads:** 53
-- **Pass rate:** 100% (53/53)
-- **Avg aggregate score:** 7.59
-- **Score range:** 7.0 -- 8.85
-- **Total cost:** $2.35
-- **Cost per ad:** $0.0444
-- **Cost per passing ad:** $0.0444
-
-## Quality Improvement
-
-- Ads completing in cycle 1 averaged **7.36**
-- Ads requiring max cycles averaged **8.07**
+- **Total ads:** 2
+- **Pass rate:** 100% (2/2)
+- **Avg aggregate score:** 8.38
+- **Score range:** 8.05 -- 8.7
+- **Total cost:** $0.10
+- **Cost per ad:** $0.0495
+- **Cost per passing ad:** $0.0495
 
 ## Per-Dimension Breakdown
 
 | Dimension | Avg | Std Dev |
 |---|---|---|
-| Clarity | 8.42 | 0.99 |
-| Value Proposition | 7.7 | 0.77 |
-| Call to Action | 6.98 | 1.69 |
-| Brand Voice | 7.91 | 0.88 |
-| Emotional Resonance | 6.51 | 1.56 |
+| Clarity | 8.5 | 0.71 |
+| Value Proposition | 8.5 | 0.71 |
+| Call to Action | 9 | 0.0 |
+| Brand Voice | 8 | 0.0 |
+| Emotional Resonance | 7.5 | 0.71 |
 
 ## Pass Rate by Segment
 
 | Segment | Pass Rate |
 |---|---|
 | Anxious Parents | 100% |
-| Comparison Shoppers | 100% |
-| Stressed Students | 100% |

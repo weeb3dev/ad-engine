@@ -1,0 +1,138 @@
+[
+  {
+    "ad_id": "dcb34e4146eb",
+    "brief": {
+      "audience_segment": "anxious_parents",
+      "product": "sat_prep",
+      "campaign_goal": "awareness",
+      "tone": "urgent",
+      "specific_offer": "Free SAT practice test"
+    },
+    "text_record": {
+      "ad_id": "dcb34e4146eb",
+      "brief": {
+        "audience_segment": "anxious_parents",
+        "product": "sat_prep",
+        "campaign_goal": "awareness",
+        "tone": "urgent",
+        "specific_offer": "Free SAT practice test"
+      },
+      "generated_ad": {
+        "primary_text": "You\u2019ve watched them study for hours. You know how bright, capable, and dedicated they are. So why doesn't their SAT score reflect the student you see at the kitchen table every night?\n\nThe truth? Your child isn't failing the material\u2014they\u2019re being tripped up by the test. The digital SAT is a strategy game, not just a measure of intelligence. When a score doesn't match a student's potential, it\u2019s usually because they\u2019re missing a few key patterns, not because they lack the smarts.\n\nStop guessing where the disconnect is. Our comprehensive diagnostic pinpoint the exact 3\u20134 gaps holding them back, so you can stop wasting time on what they already know and start mastering what they don't.\n\nSee the score they are actually capable of. Let\u2019s get a clear picture of their potential today.",
+        "headline": "Their SAT Score Doesn't Define Their Potential",
+        "description": "Get a free diagnostic practice test and a personalized breakdown of their specific performance gaps.",
+        "cta_button": "Try Free"
+      },
+      "evaluation": {
+        "clarity": {
+          "score": 9,
+          "rationale": "The ad maintains a laser-focus on the disconnect between a student's intelligence and their test score, leading naturally to the diagnostic tool as the solution. It is exceptionally clear, avoids jargon, and ensures the reader understands the value proposition without needing to re-read.",
+          "confidence": "high"
+        },
+        "value_proposition": {
+          "score": 7,
+          "rationale": "The ad does an excellent job of reframing the SAT as a strategy test, which creates a compelling value proposition for frustrated parents. While it clearly articulates the benefit of a diagnostic tool, it lacks the hard evidence or specific 'before-and-after' metrics that would elevate it from a strong pitch to a high-converting, trust-building asset.",
+          "confidence": "high"
+        },
+        "call_to_action": {
+          "score": 9,
+          "rationale": "The CTA is highly effective because it is specific, low-friction, and perfectly aligned with the value proposition of a free diagnostic. By pairing a clear, action-oriented closing sentence in the primary text with a 'Try Free' button, the ad removes ambiguity and lowers the barrier to entry for the user.",
+          "confidence": "high"
+        },
+        "brand_voice": {
+          "score": 9,
+          "rationale": "This copy perfectly balances empathy for the parent with expert insight into the digital SAT, making the brand feel like a knowledgeable ally. It avoids generic motivational fluff and instead offers a clear, results-focused path forward that feels both professional and deeply human.",
+          "confidence": "high"
+        },
+        "emotional_resonance": {
+          "score": 9,
+          "rationale": "This copy excels by validating the parent's gut feeling that their child is capable of more, effectively turning a source of anxiety into a solvable problem. It strikes a perfect balance between acknowledging the emotional weight of the situation and providing a clear, empowering path forward.",
+          "confidence": "high"
+        },
+        "aggregate_score": 8.5,
+        "passes_threshold": true,
+        "weakest_dimension": "value_proposition"
+      },
+      "iteration_cycle": 3,
+      "improved_from": 5.85,
+      "improvement_strategy": "few_shot_injection",
+      "generation_cost_usd": 0.0093875,
+      "evaluation_cost_usd": 0.051375000000000004,
+      "timestamp": "2026-03-13T22:11:19.630341"
+    },
+    "winning_variant": {
+      "variant_id": "dcb34e4146eb_v1",
+      "style": "ugc_style",
+      "placement": "feed_square",
+      "image_path": "data/images/dcb34e4146eb_v1_ugc_style.png",
+      "visual_evaluation": {
+        "brand_consistency": {
+          "score": 10,
+          "rationale": "This image is an exceptional match for Varsity Tutors' brand consistency. It perfectly embodies the warm, approachable, and trustworthy visual identity, featuring a naturally-lit kitchen scene with a parent and teen studying. The genuine interaction and clear education context make it distinctly VT, feeling supportive and real.",
+          "confidence": "high"
+        },
+        "engagement_potential": {
+          "score": 8,
+          "rationale": "This image is highly engaging due to the genuine smiles and positive interaction between the mother and son, creating a warm and relatable scene for parents. The natural lighting and clear focal point draw the eye, effectively conveying a supportive learning environment. It's a strong, authentic visual that would likely stop a scroll without being overly dramatic or clickbait.",
+          "confidence": "high"
+        },
+        "text_image_coherence": {
+          "score": 9,
+          "rationale": "The image perfectly reinforces the ad copy's opening hook by showing a mother and son studying at a 'kitchen table,' directly addressing the parent's perspective. The engaged student and supportive parent visually convey the core message that the child is bright and capable, and their potential is not defined by a score. It tells a unified story of untapped potential, making it highly coherent with the ad's narrative.",
+          "confidence": "high"
+        },
+        "technical_quality": {
+          "score": 10,
+          "rationale": "This image exhibits exceptional technical quality. It is high-resolution, sharp, and professionally composed with natural lighting and a pleasing depth of field. There are no visible AI artifacts, blurriness, or compositional flaws, making it ready for immediate publication.",
+          "confidence": "high"
+        },
+        "visual_aggregate_score": 9.15,
+        "passes_visual_threshold": true,
+        "weakest_visual_dimension": "engagement_potential"
+      },
+      "generation_cost_usd": 0.071651,
+      "evaluation_cost_usd": 0.0045751,
+      "generation_time_s": 15.45
+    },
+    "all_variants": [
+      {
+        "variant_id": "dcb34e4146eb_v1",
+        "style": "ugc_style",
+        "placement": "feed_square",
+        "image_path": "data/images/dcb34e4146eb_v1_ugc_style.png",
+        "visual_evaluation": {
+          "brand_consistency": {
+            "score": 10,
+            "rationale": "This image is an exceptional match for Varsity Tutors' brand consistency. It perfectly embodies the warm, approachable, and trustworthy visual identity, featuring a naturally-lit kitchen scene with a parent and teen studying. The genuine interaction and clear education context make it distinctly VT, feeling supportive and real.",
+            "confidence": "high"
+          },
+          "engagement_potential": {
+            "score": 8,
+            "rationale": "This image is highly engaging due to the genuine smiles and positive interaction between the mother and son, creating a warm and relatable scene for parents. The natural lighting and clear focal point draw the eye, effectively conveying a supportive learning environment. It's a strong, authentic visual that would likely stop a scroll without being overly dramatic or clickbait.",
+            "confidence": "high"
+          },
+          "text_image_coherence": {
+            "score": 9,
+            "rationale": "The image perfectly reinforces the ad copy's opening hook by showing a mother and son studying at a 'kitchen table,' directly addressing the parent's perspective. The engaged student and supportive parent visually convey the core message that the child is bright and capable, and their potential is not defined by a score. It tells a unified story of untapped potential, making it highly coherent with the ad's narrative.",
+            "confidence": "high"
+          },
+          "technical_quality": {
+            "score": 10,
+            "rationale": "This image exhibits exceptional technical quality. It is high-resolution, sharp, and professionally composed with natural lighting and a pleasing depth of field. There are no visible AI artifacts, blurriness, or compositional flaws, making it ready for immediate publication.",
+            "confidence": "high"
+          },
+          "visual_aggregate_score": 9.15,
+          "passes_visual_threshold": true,
+          "weakest_visual_dimension": "engagement_potential"
+        },
+        "generation_cost_usd": 0.071651,
+        "evaluation_cost_usd": 0.0045751,
+        "generation_time_s": 15.45
+      }
+    ],
+    "combined_score": 8.76,
+    "total_cost_usd": 0.136989,
+    "pipeline_time_s": 116.04,
+    "timestamp": "2026-03-13T22:12:39.447908"
+  }
+]
