@@ -1,0 +1,63 @@
+# Image generation prompt templates for Nano Banana 2
+# Assembled by generate/image_prompts/prompt_builder.py into a single paragraph per image call.
+# Aspect ratio is enforced via types.ImageConfig, NOT through prompt text.
+
+base_instructions: |
+  This is a creative for a Facebook/Instagram paid social ad for Varsity Tutors SAT prep.
+  High quality, well-lit, professional but warm and approachable.
+  Brand tone: Varsity Tutors — warm blues and whites, education-focused, trustworthy.
+  No watermarks, logos, or UI chrome in the image.
+  Do NOT include the Facebook ad interface or phone mockup — just the creative.
+
+audience_scenes:
+  anxious_parents: >-
+    A warm, well-lit family home. A supportive parent and their teenager
+    at a kitchen table or cozy home office with study materials. Modern decor, natural light.
+  stressed_students: >-
+    A bright, organized study space. A focused teenager with a laptop,
+    determined but not stressed. Study materials visible. Natural window light.
+  comparison_shoppers: >-
+    A clean, aspirational setting. A confident student or parent-student
+    pair in a modern environment that communicates 'smart choice.' Achievement-oriented.
+
+style_modifiers:
+  photorealistic: >-
+    Professional photography style. Shallow depth of field, natural warm
+    lighting, real people with genuine expressions. DSLR quality, 85mm lens feel. Authentic,
+    not posed stock photography.
+  ugc_style: >-
+    Casual smartphone photo aesthetic. Slightly imperfect framing, warm ambient
+    light, real-life feel. Like a parent or student took this photo naturally. No studio setup.
+  illustration: >-
+    Modern flat illustration. Clean geometric shapes, warm color palette
+    (blues, warm whites, soft oranges), friendly simplified characters. Think Headspace or
+    Duolingo ad visual language.
+  minimal_graphic: >-
+    Bold graphic design. Large sans-serif typography as the focal point,
+    solid or soft gradient background in warm blue tones, minimal imagery. Clean and modern.
+    Think Apple or Nike simplicity applied to education.
+
+placement_instructions:
+  feed_square: >-
+    Compose for a square Facebook/Instagram feed placement. Center the focal point.
+  feed_landscape: >-
+    Compose for a wide landscape Facebook feed placement. Use horizontal visual flow.
+  stories_vertical: >-
+    Compose for a vertical Instagram Stories placement. Stack elements top-to-bottom.
+
+campaign_goal_modifiers:
+  awareness: >-
+    Emotional and aspirational. Focus on possibility, relief, and connection.
+  conversion: >-
+    Action-oriented. Clear visual hierarchy, emphasis on the offer.
+
+# Only used when text_overlay_mode == "ai" in config
+headline_instruction_ai: >-
+  Include the text '{headline}' as visible overlay text in the image,
+  using a clean, readable sans-serif font in white or dark blue with sufficient contrast
+  against the background.
+
+# Used when text_overlay_mode == "programmatic" (default) — headline added via PIL after generation
+headline_instruction_programmatic: >-
+  Leave clear space at the bottom of the image for a text overlay that will be added
+  separately. Do NOT render any text in the image.
