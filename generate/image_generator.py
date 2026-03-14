@@ -155,11 +155,13 @@ def generate_ad_image(
                     f"No image returned after {max_attempts} attempts"
                 )
 
+            NO_TEXT_STYLES = {"ugc_style"}
+
             overlay_mode = "programmatic"
             if config.image_generation:
                 overlay_mode = config.image_generation.text_overlay_mode
 
-            if overlay_mode == "programmatic":
+            if overlay_mode == "programmatic" and style not in NO_TEXT_STYLES:
                 image_result = apply_text_overlay(image_result, ad.headline)
 
             metadata: dict[str, Any] = {

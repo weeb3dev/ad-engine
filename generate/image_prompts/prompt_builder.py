@@ -56,11 +56,18 @@ def build_full_image_prompt(
         "",
     )
 
+    NO_TEXT_STYLES = {"ugc_style"}
+
     overlay_mode = "programmatic"
     if config and config.image_generation:
         overlay_mode = config.image_generation.text_overlay_mode
 
-    if overlay_mode == "ai":
+    if style in NO_TEXT_STYLES:
+        headline_instruction = (
+            "Do NOT render any text, captions, or overlays in the image. "
+            "The image must contain zero text of any kind."
+        )
+    elif overlay_mode == "ai":
         headline_instruction = t["headline_instruction_ai"].format(
             headline=ad.headline,
         )
