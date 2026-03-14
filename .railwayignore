@@ -10,6 +10,7 @@ __pycache__/
 .pytest_cache/
 .DS_Store
 tests/
-output/
+output/*.png
+output/*.md
 data/images/
 *.md
