@@ -49,6 +49,7 @@ from output.batch_runner import load_ad_library
 from output.generate_report import DIMENSION_LABELS, SEGMENT_LABELS
 
 _ROOT = Path(__file__).resolve().parent
+_APP_JS_VERSION = str(int((_ROOT / "static" / "app.js").stat().st_mtime))
 
 DIMENSIONS = [
     "clarity",
@@ -98,6 +99,7 @@ async def index(request: Request):
             "request": request,
             "segments": segments,
             "tones": TONES,
+            "js_version": _APP_JS_VERSION,
             "config_json": json.dumps(
                 {
                     "segments": segments,
