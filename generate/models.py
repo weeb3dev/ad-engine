@@ -46,6 +46,7 @@ class AdBrief(BaseModel):
     campaign_goal: Literal["awareness", "conversion"]
     tone: Optional[str] = None
     specific_offer: Optional[str] = None
+    style_approaches: Optional[list[str]] = None
 
 
 # ---------------------------------------------------------------------------

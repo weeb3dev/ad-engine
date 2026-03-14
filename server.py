@@ -514,7 +514,9 @@ async def generate_multimodal_endpoint(brief: AdBrief):
             )
 
             # ── Stage 2: Images ────────────────────────────────────────
-            style_approaches = cfg.image_generation.style_approaches if cfg.image_generation else ["photorealistic", "ugc_style"]
+            style_approaches = brief.style_approaches or (
+                cfg.image_generation.style_approaches if cfg.image_generation else ["photorealistic", "ugc_style"]
+            )
             variants_per_ad = cfg.image_generation.variants_per_ad if cfg.image_generation else 2
             styles = style_approaches[:variants_per_ad]
             total_styles = len(styles)

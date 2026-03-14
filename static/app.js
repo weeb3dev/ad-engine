@@ -61,6 +61,12 @@ function isMultimodalMode() {
   return toggle && toggle.checked;
 }
 
+$("#gen-multimodal").addEventListener("change", () => {
+  const picker = $("#gen-style-picker");
+  if (!picker) return;
+  picker.classList.toggle("hidden", !isMultimodalMode());
+});
+
 function setGenStep(stepName) {
   const isMMod = isMultimodalMode();
   const imagesStep = $("#gen-step-images");
@@ -132,6 +138,9 @@ async function generateAd() {
         campaign_goal: goal,
         tone: tone || null,
         specific_offer: offer || null,
+        style_approaches: multimodal
+          ? [document.querySelector('input[name="gen-style"]:checked')?.value || "hero_photo"]
+          : undefined,
       }),
     });
 

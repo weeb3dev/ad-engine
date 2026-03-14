@@ -100,6 +100,27 @@
               </label>
             </div>
 
+            <div id="gen-style-picker" class="form-control hidden">
+              <label class="label"><span class="label-text">Visual Style</span></label>
+              <div class="flex flex-wrap gap-2">
+                <label class="btn btn-xs btn-outline gap-1 has-[:checked]:btn-primary">
+                  <input type="radio" name="gen-style" value="ugc_style" class="radio radio-xs hidden"> UGC Photo
+                </label>
+                <label class="btn btn-xs btn-outline gap-1 has-[:checked]:btn-primary">
+                  <input type="radio" name="gen-style" value="hero_photo" class="radio radio-xs hidden" checked> Hero Photo
+                </label>
+                <label class="btn btn-xs btn-outline gap-1 has-[:checked]:btn-primary">
+                  <input type="radio" name="gen-style" value="infographic" class="radio radio-xs hidden"> Infographic
+                </label>
+                <label class="btn btn-xs btn-outline gap-1 has-[:checked]:btn-primary">
+                  <input type="radio" name="gen-style" value="typography_checklist" class="radio radio-xs hidden"> Typography
+                </label>
+                <label class="btn btn-xs btn-outline gap-1 has-[:checked]:btn-primary">
+                  <input type="radio" name="gen-style" value="comic_panel" class="radio radio-xs hidden"> Comic Panel
+                </label>
+              </div>
+            </div>
+
             <button id="gen-btn" class="btn btn-primary mt-2" onclick="generateAd()">
               Generate Ad
             </button>
