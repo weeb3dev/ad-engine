@@ -10,6 +10,8 @@ let libRadarChart = null;
 let libVisualRadarChart = null;
 let _libraryCache = [];
 let _libIsMultimodal = false;
+let _lastGenAdId = null;
+let _libDetailAdId = null;
 
 // ── SSE helpers ──────────────────────────────────────────────────────────
 
@@ -67,6 +69,14 @@ $("#gen-multimodal").addEventListener("change", () => {
   picker.classList.toggle("hidden", !isMultimodalMode());
 });
 
+const _batchMmToggle = $("#batch-multimodal");
+if (_batchMmToggle) {
+  _batchMmToggle.addEventListener("change", () => {
+    const picker = $("#batch-style-picker");
+    if (picker) picker.classList.toggle("hidden", !_batchMmToggle.checked);
+  });
+}
+
 function setGenStep(stepName) {
   const isMMod = isMultimodalMode();
   const imagesStep = $("#gen-step-images");
@@ -106,6 +116,9 @@ async function generateAd() {
   $("#gen-error").classList.add("hidden");
   $("#gen-streaming").classList.remove("hidden");
   $("#gen-btn").disabled = true;
+  const dlWrap = $("#gen-download-wrap");
+  if (dlWrap) dlWrap.classList.add("hidden");
+  _lastGenAdId = null;
 
   const imagesStep = $("#gen-step-images");
   if (multimodal && imagesStep) {
@@ -314,6 +327,10 @@ function renderPartialRadar(scores) {
 }
 
 function renderGenerateResult(record) {
+  _lastGenAdId = record.ad_id;
+  const dlWrap = $("#gen-download-wrap");
+  if (dlWrap) dlWrap.classList.remove("hidden");
+
   const card = $("#gen-ad-card");
   card.classList.remove("hidden");
 
@@ -349,6 +366,10 @@ function renderGenerateResult(record) {
 }
 
 function renderMultimodalResult(record) {
+  _lastGenAdId = record.ad_id;
+  const dlWrap = $("#gen-download-wrap");
+  if (dlWrap) dlWrap.classList.remove("hidden");
+
   const textRec = record.text_record;
   const ad = textRec.generated_ad;
   const ev = textRec.evaluation;
@@ -410,8 +431,21 @@ function renderMultimodalResult(record) {
 
 // ── Batch (streaming with progressive stats) ─────────────────────────────
 
+function _getCheckedValues(name) {
+  return [...$$(`input[name="${name}"]:checked`)].map((el) => el.value);
+}
+
 async function runBatch() {
   const num = parseInt($("#batch-num").value);
+  const mmToggle = $("#batch-multimodal");
+  const multimodal = mmToggle && mmToggle.checked;
+
+  const segments = _getCheckedValues("batch-segment");
+  const goals = _getCheckedValues("batch-goal");
+  const tones = _getCheckedValues("batch-tone");
+  const offers = _getCheckedValues("batch-offer");
+  const styles = multimodal ? _getCheckedValues("batch-style") : undefined;
+
   $("#batch-btn").disabled = true;
   $("#batch-placeholder").classList.add("hidden");
   $("#batch-results").classList.add("hidden");
@@ -429,7 +463,15 @@ async function runBatch() {
     const res = await fetch("/api/batch", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ num_ads: num }),
+      body: JSON.stringify({
+        num_ads: num,
+        segments: segments.length ? segments : null,
+        goals: goals.length ? goals : null,
+        tones: tones.length ? tones : null,
+        offers: offers.length ? offers : null,
+        multimodal,
+        style_approaches: styles && styles.length ? styles : undefined,
+      }),
     });
 
     const reader = res.body.getReader();
@@ -522,15 +564,19 @@ async function loadLibrary() {
 
   if (_libraryCache.length === 0) {
     $("#lib-placeholder").classList.remove("hidden");
-    $("#lib-placeholder").innerHTML = "<p>No ads found. Run a batch first, or adjust filters.</p>";
+    $("#lib-placeholder").innerHTML = "<p>No ads found. Generate an ad or run a batch first, or adjust filters.</p>";
     $("#lib-table-wrap").classList.add("hidden");
     $("#lib-detail").classList.add("hidden");
+    const expWrap = $("#lib-export-wrap");
+    if (expWrap) expWrap.classList.add("hidden");
     return;
   }
 
   $("#lib-placeholder").classList.add("hidden");
   $("#lib-table-wrap").classList.remove("hidden");
   $("#lib-count").textContent = _libraryCache.length + " ads";
+  const expWrap = $("#lib-export-wrap");
+  if (expWrap) expWrap.classList.remove("hidden");
 
   const thead = $("#lib-thead");
   if (_libIsMultimodal) {
@@ -591,6 +637,8 @@ function _mmImageUrl(variant) {
 function showLibDetail(idx) {
   const record = _libraryCache[idx];
   if (!record) return;
+
+  _libDetailAdId = record.ad_id;
 
   const panel = $("#lib-detail");
   panel.classList.remove("hidden");
@@ -830,6 +878,39 @@ function renderVisualRadar(canvasId, visualEvaluation, setter, existing) {
   });
 
   setter(chart);
+}
+
+// ── Downloads ────────────────────────────────────────────────────────────
+
+function _triggerDownload(url) {
+  const a = document.createElement("a");
+  a.href = url;
+  a.style.display = "none";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+function downloadGenAd(fmt) {
+  if (!_lastGenAdId) return;
+  _triggerDownload(`/api/download/ad/${_lastGenAdId}?format=${fmt}`);
+}
+
+function downloadLibAd(fmt) {
+  if (!_libDetailAdId) return;
+  _triggerDownload(`/api/download/ad/${_libDetailAdId}?format=${fmt}`);
+}
+
+function downloadLibrary(fmt) {
+  const segment = $("#lib-segment").value;
+  const minScore = parseFloat($("#lib-min").value);
+  const params = new URLSearchParams({
+    multimodal: _libIsMultimodal,
+    segment,
+    min_score: minScore,
+    format: fmt,
+  });
+  _triggerDownload(`/api/download/library?${params}`);
 }
 
 // ── Utilities ────────────────────────────────────────────────────────────

@@ -158,12 +158,23 @@
           <!-- Ad Card -->
           <div id="gen-ad-card" class="card bg-base-100 shadow-sm hidden fade-in">
             <div class="card-body">
-              <!-- Score badge -->
+              <!-- Score badge + download -->
               <div class="flex items-center justify-between">
                 <h2 class="card-title text-base">Generated Ad</h2>
                 <div class="flex items-center gap-3">
                   <span id="gen-meta" class="text-xs text-base-content/50"></span>
                   <div class="badge badge-lg font-mono" id="gen-score-badge">—</div>
+                  <div id="gen-download-wrap" class="dropdown dropdown-end hidden">
+                    <label tabindex="0" class="btn btn-sm btn-ghost gap-1">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                      Download
+                    </label>
+                    <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box shadow-lg w-44 z-10">
+                      <li><a onclick="downloadGenAd('json')">JSON</a></li>
+                      <li><a onclick="downloadGenAd('csv')">CSV</a></li>
+                      <li><a onclick="downloadGenAd('zip')">ZIP (all files)</a></li>
+                    </ul>
+                  </div>
                 </div>
               </div>
 
@@ -234,6 +245,7 @@
     <div id="tab-batch" class="tab-panel">
       <div class="card bg-base-100 shadow-sm mb-6">
         <div class="card-body">
+          <!-- Row 1: slider + run button -->
           <div class="flex flex-wrap items-end gap-6">
             <div class="form-control w-64">
               <label class="label"><span class="label-text">Number of Ads</span></label>
@@ -246,6 +258,91 @@
               </div>
             </div>
             <button id="batch-btn" class="btn btn-primary" onclick="runBatch()">Run Batch</button>
+          </div>
+
+          <div class="divider my-2"></div>
+
+          <!-- Row 2: Audience Segments -->
+          <div class="form-control">
+            <label class="label"><span class="label-text font-medium">Audience Segments</span></label>
+            <div class="flex flex-wrap gap-3">
+              {% for seg in segments %}
+              <label class="label cursor-pointer gap-2">
+                <input type="checkbox" name="batch-segment" value="{{ seg.id }}" class="checkbox checkbox-sm checkbox-primary" checked>
+                <span class="label-text">{{ seg.label }}</span>
+              </label>
+              {% endfor %}
+            </div>
+          </div>
+
+          <!-- Row 3: Campaign Goals -->
+          <div class="form-control">
+            <label class="label"><span class="label-text font-medium">Campaign Goals</span></label>
+            <div class="flex flex-wrap gap-3">
+              {% for goal in goals %}
+              <label class="label cursor-pointer gap-2">
+                <input type="checkbox" name="batch-goal" value="{{ goal }}" class="checkbox checkbox-sm checkbox-primary" checked>
+                <span class="label-text">{{ goal|capitalize }}</span>
+              </label>
+              {% endfor %}
+            </div>
+          </div>
+
+          <!-- Row 4: Tones -->
+          <div class="form-control">
+            <label class="label"><span class="label-text font-medium">Tones</span></label>
+            <div class="flex flex-wrap gap-3">
+              {% for tone in tones %}
+              <label class="label cursor-pointer gap-2">
+                <input type="checkbox" name="batch-tone" value="{{ tone }}" class="checkbox checkbox-sm checkbox-primary" checked>
+                <span class="label-text">{{ tone|capitalize }}</span>
+              </label>
+              {% endfor %}
+            </div>
+          </div>
+
+          <!-- Row 5: Offers -->
+          <div class="form-control">
+            <label class="label"><span class="label-text font-medium">Offers</span></label>
+            <div class="flex flex-wrap gap-3">
+              {% for offer in offers %}
+              <label class="label cursor-pointer gap-2">
+                <input type="checkbox" name="batch-offer" value="{{ offer }}" class="checkbox checkbox-sm checkbox-primary" checked>
+                <span class="label-text">{{ offer }}</span>
+              </label>
+              {% endfor %}
+            </div>
+          </div>
+
+          <div class="divider my-2"></div>
+
+          <!-- Row 6: Multi-Modal toggle + style picker -->
+          <div class="form-control">
+            <label class="label cursor-pointer justify-start gap-3">
+              <input type="checkbox" id="batch-multimodal" class="toggle toggle-primary toggle-sm">
+              <span class="label-text font-medium">Multi-Modal</span>
+              <span class="text-xs text-base-content/40">(text + images — slower)</span>
+            </label>
+          </div>
+          <div id="batch-style-picker" class="form-control hidden">
+            <label class="label"><span class="label-text">Visual Styles</span></label>
+            <div class="flex flex-wrap gap-2">
+              <label class="btn btn-xs btn-outline gap-1 has-[:checked]:btn-primary">
+                <input type="checkbox" name="batch-style" value="ugc_style" class="hidden" checked> UGC Photo
+              </label>
+              <label class="btn btn-xs btn-outline gap-1 has-[:checked]:btn-primary">
+                <input type="checkbox" name="batch-style" value="hero_photo" class="hidden" checked> Hero Photo
+              </label>
+              <label class="btn btn-xs btn-outline gap-1 has-[:checked]:btn-primary">
+                <input type="checkbox" name="batch-style" value="infographic" class="hidden"> Infographic
+              </label>
+              <label class="btn btn-xs btn-outline gap-1 has-[:checked]:btn-primary">
+                <input type="checkbox" name="batch-style" value="typography_checklist" class="hidden"> Typography
+              </label>
+              <label class="btn btn-xs btn-outline gap-1 has-[:checked]:btn-primary">
+                <input type="checkbox" name="batch-style" value="comic_panel" class="hidden"> Comic Panel
+              </label>
+            </div>
           </div>
 
           <!-- Progress -->
@@ -371,6 +468,17 @@
               <span class="label-text font-medium">Multi-Modal</span>
             </label>
             <button class="btn btn-sm btn-primary" onclick="loadLibrary()">Load / Filter</button>
+            <div id="lib-export-wrap" class="dropdown dropdown-end hidden">
+              <label tabindex="0" class="btn btn-sm btn-ghost gap-1">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                Export All
+              </label>
+              <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box shadow-lg w-44 z-10">
+                <li><a onclick="downloadLibrary('json')">JSON</a></li>
+                <li><a onclick="downloadLibrary('csv')">CSV</a></li>
+                <li><a onclick="downloadLibrary('zip')">ZIP (all files)</a></li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
@@ -406,7 +514,20 @@
         <div class="card-body">
           <div class="flex items-center justify-between">
             <h3 class="card-title text-sm">Ad Detail</h3>
-            <button class="btn btn-ghost btn-xs" onclick="hideLibDetail()">Close</button>
+            <div class="flex items-center gap-2">
+              <div class="dropdown dropdown-end">
+                <label tabindex="0" class="btn btn-ghost btn-xs gap-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                  Download
+                </label>
+                <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box shadow-lg w-44 z-10">
+                  <li><a onclick="downloadLibAd('json')">JSON</a></li>
+                  <li><a onclick="downloadLibAd('csv')">CSV</a></li>
+                  <li><a onclick="downloadLibAd('zip')">ZIP (all files)</a></li>
+                </ul>
+              </div>
+              <button class="btn btn-ghost btn-xs" onclick="hideLibDetail()">Close</button>
+            </div>
           </div>
           <!-- Image for multimodal (hidden by default) -->
           <div id="lib-detail-image-wrap" class="hidden mt-3">

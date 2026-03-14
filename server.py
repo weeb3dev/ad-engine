@@ -9,20 +9,24 @@ Usage:
 """
 
 import asyncio
+import csv
+import io
+import itertools
 import json
 import time
 import uuid
+import zipfile
 from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 
 import matplotlib
 
 matplotlib.use("Agg")
 
 from fastapi import FastAPI, Request
-from fastapi.responses import StreamingResponse
+from fastapi.responses import Response, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
@@ -31,7 +35,7 @@ from config.loader import get_config
 from evaluate.judge import evaluate_dimension, get_evaluation_context
 from evaluate.visual.image_judge import evaluate_ad_image
 from generate.ab_variants import select_best_variant
-from generate.briefs import TONES, generate_brief_matrix, load_briefs
+from generate.briefs import CAMPAIGN_GOALS, OFFERS, TONES, generate_brief_matrix, load_briefs
 from generate.generator import generate_ad
 from generate.image_generator import generate_ad_image, save_ad_image
 from generate.models import (
@@ -99,11 +103,15 @@ async def index(request: Request):
             "request": request,
             "segments": segments,
             "tones": TONES,
+            "offers": OFFERS,
+            "goals": CAMPAIGN_GOALS,
             "js_version": _APP_JS_VERSION,
             "config_json": json.dumps(
                 {
                     "segments": segments,
                     "tones": TONES,
+                    "offers": OFFERS,
+                    "goals": CAMPAIGN_GOALS,
                     "dimensions": DIMENSIONS,
                     "dimension_labels": DIMENSION_LABELS,
                     "segment_labels": SEGMENT_LABELS,
@@ -125,6 +133,20 @@ def _ad_fields(ad: GeneratedAd) -> dict[str, str]:
         "description": ad.description,
         "cta_button": ad.cta_button,
     }
+
+
+def _append_text_ad(record: AdRecord) -> None:
+    lib_path = _ROOT / "data" / "ad_library.json"
+    existing = json.loads(lib_path.read_text()) if lib_path.exists() else []
+    existing.append(record.model_dump(mode="json"))
+    lib_path.write_text(json.dumps(existing, indent=2, default=str))
+
+
+def _append_multimodal_ad(record: MultiModalAdRecord) -> None:
+    lib_path = _ROOT / "data" / "multimodal_ad_library.json"
+    existing = json.loads(lib_path.read_text()) if lib_path.exists() else []
+    existing.append(record.model_dump(mode="json"))
+    lib_path.write_text(json.dumps(existing, indent=2, default=str))
 
 
 @app.post("/api/generate")
@@ -293,6 +315,7 @@ async def generate_endpoint(brief: AdBrief):
                 timestamp=datetime.utcnow(),
             )
 
+            _append_text_ad(record)
             yield _sse({"type": "complete", "record": record.model_dump(mode="json")})
 
         except Exception as exc:
@@ -306,17 +329,42 @@ async def generate_endpoint(brief: AdBrief):
 
 class BatchRequest(BaseModel):
     num_ads: int = 5
+    segments: Optional[list[str]] = None
+    goals: Optional[list[str]] = None
+    tones: Optional[list[str]] = None
+    offers: Optional[list[str]] = None
+    multimodal: bool = False
+    style_approaches: Optional[list[str]] = None
+
+
+def _build_batch_briefs(req: BatchRequest, cfg) -> list[AdBrief]:
+    segs = req.segments or [s.id for s in cfg.brand.audience_segments]
+    goals = req.goals or CAMPAIGN_GOALS
+    tones = req.tones or TONES
+    offers = req.offers or OFFERS
+
+    briefs = [
+        AdBrief(
+            audience_segment=seg,
+            campaign_goal=goal,
+            tone=tone,
+            specific_offer=offer,
+            style_approaches=req.style_approaches if req.multimodal else None,
+        )
+        for seg, goal, offer, tone in itertools.product(segs, goals, offers, tones)
+    ]
+    briefs.sort(key=lambda b: (b.audience_segment, b.campaign_goal))
+    return briefs[: req.num_ads]
 
 
 @app.post("/api/batch")
 async def batch_endpoint(req: BatchRequest):
     async def stream():
         cfg = get_config()
-        briefs_path = _ROOT / "data" / "briefs.json"
-        briefs = load_briefs() if briefs_path.exists() else generate_brief_matrix(cfg)
-        briefs = briefs[: req.num_ads]
+        briefs = _build_batch_briefs(req, cfg)
 
         records: list[AdRecord] = []
+        mm_records: list[MultiModalAdRecord] = []
         errors: list[str] = []
 
         for i, brief in enumerate(briefs):
@@ -324,8 +372,14 @@ async def batch_endpoint(req: BatchRequest):
             yield _sse({"type": "progress", "current": i, "total": len(briefs), "label": label})
 
             try:
-                record = await asyncio.to_thread(run_pipeline, brief, cfg)
-                records.append(record)
+                text_record = await asyncio.to_thread(run_pipeline, brief, cfg)
+                records.append(text_record)
+
+                if req.multimodal:
+                    mm_rec = await _run_batch_multimodal(text_record, brief, cfg)
+                    if mm_rec:
+                        mm_records.append(mm_rec)
+
                 yield _sse({
                     "type": "ad_complete",
                     "index": i,
@@ -337,17 +391,91 @@ async def batch_endpoint(req: BatchRequest):
 
         if records:
             lib_path = _ROOT / "data" / "ad_library.json"
-            with open(lib_path, "w") as f:
-                json.dump(
-                    [r.model_dump(mode="json") for r in records],
-                    f,
-                    indent=2,
-                    default=str,
-                )
+            existing = json.loads(lib_path.read_text()) if lib_path.exists() else []
+            existing.extend([r.model_dump(mode="json") for r in records])
+            lib_path.write_text(json.dumps(existing, indent=2, default=str))
+
+        if mm_records:
+            mm_lib = _ROOT / "data" / "multimodal_ad_library.json"
+            existing_mm = json.loads(mm_lib.read_text()) if mm_lib.exists() else []
+            existing_mm.extend([r.model_dump(mode="json") for r in mm_records])
+            mm_lib.write_text(json.dumps(existing_mm, indent=2, default=str))
 
         yield _sse({"type": "complete", "summary": _batch_summary(records, errors)})
 
     return StreamingResponse(stream(), media_type="text/event-stream")
+
+
+async def _run_batch_multimodal(
+    text_record: AdRecord, brief: AdBrief, cfg
+) -> MultiModalAdRecord | None:
+    pipeline_start = time.time()
+    style_approaches = brief.style_approaches or (
+        cfg.image_generation.style_approaches if cfg.image_generation else ["photorealistic", "ugc_style"]
+    )
+    variants_per_ad = cfg.image_generation.variants_per_ad if cfg.image_generation else 2
+    styles = style_approaches[:variants_per_ad]
+
+    image_variants: list[ImageVariant] = []
+    image_gen_cost = 0.0
+    image_eval_cost = 0.0
+
+    for vi, style in enumerate(styles):
+        try:
+            gen_start = time.time()
+            image, meta = await asyncio.to_thread(
+                generate_ad_image, text_record.generated_ad, brief, style, "feed_square", cfg,
+            )
+            gen_time = round(time.time() - gen_start, 2)
+
+            image_path = await asyncio.to_thread(
+                save_ad_image, image, text_record.ad_id, vi, style,
+            )
+            gen_cost = meta.get("cost_usd", 0.0)
+            image_gen_cost += gen_cost
+
+            vis_eval, vis_usage = await asyncio.to_thread(
+                evaluate_ad_image, image, text_record.generated_ad, cfg,
+            )
+            ev_cost = vis_usage.get("cost_usd", 0.0)
+            image_eval_cost += ev_cost
+
+            variant = ImageVariant(
+                variant_id=f"{text_record.ad_id}_v{vi}_{style}",
+                style=style,
+                placement="feed_square",
+                image_path=image_path,
+                visual_evaluation=vis_eval,
+                generation_cost_usd=round(gen_cost, 6),
+                evaluation_cost_usd=round(ev_cost, 6),
+                generation_time_s=gen_time,
+            )
+            image_variants.append(variant)
+        except Exception as exc:
+            print(f"[batch-multimodal] Image variant {style} failed: {exc}")
+
+    if not image_variants:
+        return None
+
+    winner = select_best_variant(image_variants, brief.campaign_goal)
+    text_score = text_record.evaluation.aggregate_score
+    visual_score = winner.visual_evaluation.visual_aggregate_score
+    combined = round(_TEXT_WEIGHT * text_score + _VISUAL_WEIGHT * visual_score, 2)
+    total_cost = round(
+        text_record.generation_cost_usd + text_record.evaluation_cost_usd + image_gen_cost + image_eval_cost, 6
+    )
+
+    return MultiModalAdRecord(
+        ad_id=text_record.ad_id,
+        brief=brief,
+        text_record=text_record,
+        winning_variant=winner,
+        all_variants=image_variants,
+        combined_score=combined,
+        total_cost_usd=total_cost,
+        pipeline_time_s=round(time.time() - pipeline_start, 2),
+        timestamp=datetime.utcnow(),
+    )
 
 
 @app.post("/api/generate-multimodal")
@@ -622,6 +750,7 @@ async def generate_multimodal_endpoint(brief: AdBrief):
                 timestamp=datetime.utcnow(),
             )
 
+            _append_multimodal_ad(mm_record)
             yield _sse({"type": "complete", "record": mm_record.model_dump(mode="json")})
 
         except Exception as exc:
@@ -660,6 +789,176 @@ def library_endpoint(segment: str = "all", min_score: float = 0):
     records = [r for r in records if r.evaluation.aggregate_score >= min_score]
     records.sort(key=lambda r: -r.evaluation.aggregate_score)
     return [r.model_dump(mode="json") for r in records]
+
+
+_CSV_COLUMNS = [
+    "ad_id", "segment", "goal", "tone", "offer", "headline",
+    "primary_text", "description", "cta", "aggregate_score",
+    "clarity", "value_proposition", "call_to_action",
+    "brand_voice", "emotional_resonance", "cycle", "cost", "timestamp",
+]
+_CSV_COLUMNS_MM = _CSV_COLUMNS + [
+    "combined_score", "visual_score", "winning_style", "image_filename",
+]
+
+
+def _ad_record_to_csv_row(r: dict) -> dict:
+    brief = r.get("brief", {})
+    ad = r.get("generated_ad", {})
+    ev = r.get("evaluation", {})
+    return {
+        "ad_id": r.get("ad_id", ""),
+        "segment": brief.get("audience_segment", ""),
+        "goal": brief.get("campaign_goal", ""),
+        "tone": brief.get("tone", ""),
+        "offer": brief.get("specific_offer", ""),
+        "headline": ad.get("headline", ""),
+        "primary_text": ad.get("primary_text", ""),
+        "description": ad.get("description", ""),
+        "cta": ad.get("cta_button", ""),
+        "aggregate_score": ev.get("aggregate_score", ""),
+        "clarity": ev.get("clarity", {}).get("score", ""),
+        "value_proposition": ev.get("value_proposition", {}).get("score", ""),
+        "call_to_action": ev.get("call_to_action", {}).get("score", ""),
+        "brand_voice": ev.get("brand_voice", {}).get("score", ""),
+        "emotional_resonance": ev.get("emotional_resonance", {}).get("score", ""),
+        "cycle": r.get("iteration_cycle", ""),
+        "cost": round(r.get("generation_cost_usd", 0) + r.get("evaluation_cost_usd", 0), 4),
+        "timestamp": r.get("timestamp", ""),
+    }
+
+
+def _mm_record_to_csv_row(r: dict) -> dict:
+    tr = r.get("text_record", {})
+    row = _ad_record_to_csv_row(tr)
+    row["ad_id"] = r.get("ad_id", row["ad_id"])
+    row["combined_score"] = r.get("combined_score", "")
+    wv = r.get("winning_variant", {})
+    vis_eval = wv.get("visual_evaluation", {})
+    row["visual_score"] = vis_eval.get("visual_aggregate_score", "")
+    row["winning_style"] = wv.get("style", "")
+    img_path = wv.get("image_path", "")
+    row["image_filename"] = Path(img_path).name if img_path else ""
+    row["cost"] = round(r.get("total_cost_usd", 0), 4)
+    return row
+
+
+def _find_ad_in_libraries(ad_id: str) -> tuple[dict | None, bool]:
+    for lib_name, is_mm in [("multimodal_ad_library.json", True), ("ad_library.json", False)]:
+        lib_path = _ROOT / "data" / lib_name
+        if not lib_path.exists():
+            continue
+        records = json.loads(lib_path.read_text())
+        for rec in records:
+            if rec.get("ad_id") == ad_id:
+                return rec, is_mm
+    return None, False
+
+
+def _build_csv_bytes(records: list[dict], is_mm: bool) -> bytes:
+    cols = _CSV_COLUMNS_MM if is_mm else _CSV_COLUMNS
+    row_fn = _mm_record_to_csv_row if is_mm else _ad_record_to_csv_row
+    buf = io.StringIO()
+    writer = csv.DictWriter(buf, fieldnames=cols, extrasaction="ignore")
+    writer.writeheader()
+    for r in records:
+        writer.writerow(row_fn(r))
+    return buf.getvalue().encode()
+
+
+def _build_zip(records: list[dict], is_mm: bool) -> bytes:
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as zf:
+        zf.writestr("ads.json", json.dumps(records, indent=2, default=str))
+        zf.writestr("ads.csv", _build_csv_bytes(records, is_mm).decode())
+        if is_mm:
+            added = set()
+            for r in records:
+                for v in r.get("all_variants", []):
+                    img_path = v.get("image_path", "")
+                    if not img_path:
+                        continue
+                    fname = Path(img_path).name
+                    full = _ROOT / "data" / "images" / fname
+                    if full.exists() and fname not in added:
+                        zf.write(full, f"images/{fname}")
+                        added.add(fname)
+    return buf.getvalue()
+
+
+@app.get("/api/download/ad/{ad_id}")
+def download_ad(ad_id: str, format: str = "zip"):
+    record, is_mm = _find_ad_in_libraries(ad_id)
+    if record is None:
+        return Response(content="Ad not found", status_code=404)
+
+    if format == "json":
+        return Response(
+            content=json.dumps(record, indent=2, default=str),
+            media_type="application/json",
+            headers={"Content-Disposition": f'attachment; filename="ad_{ad_id}.json"'},
+        )
+    elif format == "csv":
+        return Response(
+            content=_build_csv_bytes([record], is_mm),
+            media_type="text/csv",
+            headers={"Content-Disposition": f'attachment; filename="ad_{ad_id}.csv"'},
+        )
+    else:
+        return Response(
+            content=_build_zip([record], is_mm),
+            media_type="application/zip",
+            headers={"Content-Disposition": f'attachment; filename="ad_{ad_id}.zip"'},
+        )
+
+
+@app.get("/api/download/library")
+def download_library(
+    multimodal: bool = False,
+    segment: str = "all",
+    min_score: float = 0,
+    format: str = "zip",
+):
+    if multimodal:
+        lib_path = _ROOT / "data" / "multimodal_ad_library.json"
+    else:
+        lib_path = _ROOT / "data" / "ad_library.json"
+
+    if not lib_path.exists():
+        return Response(content="Library empty", status_code=404)
+
+    records = json.loads(lib_path.read_text())
+
+    if segment != "all":
+        records = [r for r in records if r.get("brief", {}).get("audience_segment") == segment]
+
+    if min_score > 0:
+        if multimodal:
+            records = [r for r in records if r.get("combined_score", 0) >= min_score]
+        else:
+            records = [r for r in records if r.get("evaluation", {}).get("aggregate_score", 0) >= min_score]
+
+    if not records:
+        return Response(content="No ads match filters", status_code=404)
+
+    if format == "json":
+        return Response(
+            content=json.dumps(records, indent=2, default=str),
+            media_type="application/json",
+            headers={"Content-Disposition": 'attachment; filename="ad_library.json"'},
+        )
+    elif format == "csv":
+        return Response(
+            content=_build_csv_bytes(records, multimodal),
+            media_type="text/csv",
+            headers={"Content-Disposition": 'attachment; filename="ad_library.csv"'},
+        )
+    else:
+        return Response(
+            content=_build_zip(records, multimodal),
+            media_type="application/zip",
+            headers={"Content-Disposition": 'attachment; filename="ad_library.zip"'},
+        )
 
 
 @app.get("/health")
