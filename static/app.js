@@ -286,6 +286,7 @@ function renderPartialRadar(scores) {
       ],
     },
     options: {
+      layout: { padding: 20 },
       scales: {
         r: {
           min: 0,
@@ -755,6 +756,7 @@ function renderRadar(canvasId, evaluation, setter, existing) {
       ],
     },
     options: {
+      layout: { padding: 20 },
       scales: {
         r: {
           min: 0,
@@ -802,6 +804,7 @@ function renderVisualRadar(canvasId, visualEvaluation, setter, existing) {
       ],
     },
     options: {
+      layout: { padding: 20 },
       scales: {
         r: {
           min: 0,
