@@ -1,0 +1,15 @@
+.venv/
+__pycache__/
+*.pyc
+.git/
+.gitignore
+.env
+.env.example
+.cursor/
+.gradio/
+.pytest_cache/
+.DS_Store
+tests/
+output/
+data/images/
+*.md
