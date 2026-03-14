@@ -40,7 +40,10 @@ _RUBRIC_EXTRAS: dict[str, dict[str, str]] = {
             "- Leaving copywriting framework labels visible ('BEFORE:', "
             "'AFTER:', 'THE BRIDGE:') in the final copy\n"
             "- Bold markdown (**text**) that renders as literal asterisks on "
-            "Meta placements"
+            "Meta placements\n"
+            "- Stacking too many value claims (pricing + score improvement + "
+            "competitor comparisons + feature lists) — when an ad tries to "
+            "communicate 5 propositions at once, none of them land"
         ),
     },
     "value_proposition": {
@@ -52,7 +55,8 @@ _RUBRIC_EXTRAS: dict[str, dict[str, str]] = {
         "example_high": (
             "\"Jessica went from 1180 to 1410 in 16 sessions\" — a named "
             "student, specific score jump, specific timeframe. The claim is "
-            "credible because it's concrete."
+            "credible because it's concrete. Or: '16 sessions → 200 points' "
+            "— conditioned claim with a clear input/output."
         ),
         "example_low": (
             "\"We have expert tutors who can help your child do better on "
@@ -60,18 +64,24 @@ _RUBRIC_EXTRAS: dict[str, dict[str, str]] = {
             "differentiation. Could be any tutoring company."
         ),
         "common_mistakes": (
+            "- Vague score claims with no conditions: 'gain 200 points' is "
+            "not credible without specifying starting range and timeline. "
+            "Good: '16 sessions → 200 points' or '100pts/month at 2x/week'. "
+            "Bad: 'gain 200 points' (impossible above 1400, dubious above 1350)\n"
             "- Unsourced statistics ('2.6x better results') that trigger "
-            "skepticism in educated parents\n"
+            "skepticism — add the comparison: '2.6x the improvement of "
+            "Princeton Review group classes'\n"
             "- Leading with features ('digital SAT interface training') "
             "instead of outcomes ('scored 1390')\n"
-            "- Vague improvement claims ('boost your score') without "
-            "anchoring to specific numbers\n"
-            "- Missing the digital SAT reframe angle that differentiates "
-            "VT from paper-based competitors\n"
-            "- Stacking too many value claims in one ad (pricing + score "
-            "improvement + competitor comparisons + feature lists) — when "
-            "an ad tries to communicate 5 propositions at once, none of "
-            "them land. A buried value proposition is a weak one."
+            "- Missing the digital SAT reframe angle: 60%+ of math can be "
+            "solved with built-in tools, students trained on the interface "
+            "gain 100+ points from tool mastery alone\n"
+            "- Missing competitor comparison with real numbers: Princeton "
+            "Review charges $252/hr for 1:1 vs VT at $349/mth\n"
+            "- Missing the scholarship angle: every 100 SAT points = "
+            "$10,000-$40,000 in merit aid\n"
+            "- Stacking too many value claims in one ad — when an ad tries "
+            "to communicate 5 propositions at once, none of them land"
         ),
     },
     "call_to_action": {
@@ -82,8 +92,9 @@ _RUBRIC_EXTRAS: dict[str, dict[str, str]] = {
         ),
         "example_high": (
             "Primary text ends with 'Start this week.' and the CTA button "
-            "is 'Start Your Free Assessment' — specific, urgent, and "
-            "low-friction (free + assessment implies no commitment)."
+            "is 'Book Now' — specific, urgent, and low-friction. Or: "
+            "'Talk to an SAT specialist today. We'll call you in 60 seconds.' "
+            "with a 'Book Now' button — micro-commitment, immediate action."
         ),
         "example_low": (
             "A bare 'Learn More' button with no action prompt in the copy. "
@@ -91,11 +102,17 @@ _RUBRIC_EXTRAS: dict[str, dict[str, str]] = {
         ),
         "common_mistakes": (
             "- Using 'Learn More' as the CTA button — it's the weakest "
-            "option on Meta and signals lazy copywriting\n"
-            "- No urgency element (deadline, limited spots, test date)\n"
+            "option on Meta and signals lazy copywriting. Prefer 'Book Now', "
+            "'Try Free', or 'Get Started'\n"
+            "- No urgency element — but urgency must be REAL (test date, "
+            "college app deadline, weeks remaining), never fake ('spots "
+            "filling fast', 'limited enrollment')\n"
             "- Asking for high-commitment action ('Sign Up') to cold "
             "audiences who haven't been warmed up\n"
-            "- CTA that doesn't match the offer in the primary text"
+            "- CTA that doesn't match the offer in the primary text\n"
+            "- Generic CTAs like 'Start your journey' — prefer specific "
+            "actions: 'Book Diagnostic', 'See what score is realistic in "
+            "8-10 weeks', 'Talk to an SAT specialist today'"
         ),
     },
     "brand_voice": {
@@ -109,8 +126,8 @@ _RUBRIC_EXTRAS: dict[str, dict[str, str]] = {
             "\"Your child isn't struggling with the material — they're "
             "struggling with the test.\" — empowering (validates the "
             "student's intelligence), knowledgeable (reframes the real "
-            "problem), approachable (speaks directly to the parent), "
-            "results-focused (implies a solvable problem)."
+            "problem), approachable (speaks directly to the parent in "
+            "their language), results-focused (implies a solvable problem)."
         ),
         "example_low": (
             "\"Stop Wasting Time on Khan Academy\" as a headline — "
@@ -120,15 +137,26 @@ _RUBRIC_EXTRAS: dict[str, dict[str, str]] = {
             "that could be any education brand."
         ),
         "common_mistakes": (
+            "- Using 'your student' instead of 'your child' — parents NEVER "
+            "call their child 'my student'. This is a dead giveaway of "
+            "brand-disconnected copy. Automatic 2-point deduction.\n"
+            "- Using 'SAT Prep' instead of 'SAT Tutoring' — VT positions "
+            "as tutoring, not generic prep\n"
+            "- Corporate/marketing language that parents don't use: 'unlock "
+            "potential', 'maximize score potential', 'tailored support', "
+            "'custom strategies', 'growth areas', 'concrete score gains', "
+            "'dream college within reach'. Replace with plain speech: 'raise "
+            "your child's score', 'tutoring'\n"
             "- Aggressive competitor attacks that violate 'confident but "
             "not arrogant'\n"
-            "- Corporate jargon ('diagnostic-driven solutions') instead of "
-            "human language\n"
-            "- Generic motivational copy ('unlock potential', 'achieve "
-            "greatness') that any brand could use\n"
+            "- Generic motivational copy ('achieve greatness', 'empower "
+            "their future') that any brand could use\n"
             "- Fear-based messaging that contradicts the empowering tone\n"
             "- Overpromising in a way that sounds arrogant rather than "
-            "confident"
+            "confident\n"
+            "- POSITIVE SIGNALS: speaks in parent language, uses 'your child', "
+            "shows specific mechanism rather than telling, names competitors "
+            "with real price/result comparisons"
         ),
     },
     "emotional_resonance": {
@@ -138,10 +166,12 @@ _RUBRIC_EXTRAS: dict[str, dict[str, str]] = {
             "but doesn't feel anything."
         ),
         "example_high": (
-            "\"You're not imagining it. The score doesn't match the "
-            "student.\" — validates a parent's gut feeling that their child "
-            "is capable, tapping into the worry that the test is unfair and "
-            "the hope that it's fixable."
+            "\"You're not imagining it. The score doesn't match your child.\" "
+            "— validates a parent's gut feeling that their child is capable, "
+            "tapping into the worry that the test is unfair and the hope "
+            "that it's fixable. Or: '3.8 GPA. 1260 SAT. Something's off.' "
+            "— instantly resonates with the parent who knows their child "
+            "is smarter than the score suggests."
         ),
         "example_low": (
             "\"The SAT is fully digital now. Your child takes it on a "
@@ -150,10 +180,14 @@ _RUBRIC_EXTRAS: dict[str, dict[str, str]] = {
             "thinks 'interesting' but doesn't feel urgency or hope."
         ),
         "common_mistakes": (
+            "- Fake urgency ('spots filling fast!', 'limited enrollment!', "
+            "'don't miss out!') instead of REAL calendar urgency (test date "
+            "in 6 weeks, college app deadline, number of sessions possible "
+            "before the exam). Fake scarcity is an automatic deduction.\n"
             "- Relying on abstract urgency ('don't wait!') instead of "
-            "concrete emotional triggers (test date, college app deadline)\n"
+            "concrete emotional triggers tied to the persona\n"
             "- Athlete/scholarship angle with no real story — abstract "
-            "potential without a named student feels hollow\n"
+            "potential without specifics feels hollow\n"
             "- Fear-mongering without offering hope (emotional resonance "
             "requires both tension AND resolution)\n"
             "- Parent quotes that are clearly brand-written rather than "
@@ -162,8 +196,11 @@ _RUBRIC_EXTRAS: dict[str, dict[str, str]] = {
             "template artifacts, or competing messages never reaches the "
             "reader — score the emotion the reader actually EXPERIENCES in "
             "a real feed scroll, not the emotion theoretically present in "
-            "the raw text. If clarity or brand voice execution is broken, "
-            "the emotional payload doesn't land."
+            "the raw text\n"
+            "- POSITIVE SIGNALS: persona-specific emotional triggers "
+            "(athlete mom worried about scholarship, suburban parent seeing "
+            "GPA-SAT mismatch, burned returner's trust deficit), real "
+            "calendar urgency, validation of the parent's instinct"
         ),
     },
 }

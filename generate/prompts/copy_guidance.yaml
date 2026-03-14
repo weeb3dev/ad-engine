@@ -1,0 +1,176 @@
+# Varsity Tutors SAT Ad Copy Guidance
+# Source: VT employee guidance (Cohort 4 supplementary)
+# Single source of truth for domain knowledge used across generation,
+# evaluation, and improvement stages.
+
+# ── Language & Messaging Rules ────────────────────────────────────────
+
+dos_and_donts:
+  do:
+    - 'Use "your child" — parents think of them as their children, not their students'
+    - 'Use the term "SAT Tutoring" (not "SAT Prep")'
+    - "Use avg or typical score gains/improvements with specific conditions"
+    - "Talk about 100pts/mth if you attend 2x/week 1:1 sessions, 1 weekly practice test, and 20 mins/day of practice"
+    - "Mention that every X points on the SAT is worth on avg Y dollars in scholarship/merit aid"
+    - "Compare us to competitors by name: self-study (Khan Academy, Acely, apps), in-person centers (Mathnasium, Sylvan, Kumon), local tutors, expensive group classes (Princeton Review, Kaplan)"
+    - "Compare our results: 10x the score improvement of self-study, 2.6x the improvement of in-person centers, local tutors, and group courses"
+    - "Compare our value: Princeton Review/Kaplan charge $1500-$2000 for group; $199-$252/hr for 1:1. We charge as low as $349/mth for 1:1"
+    - "Claim in-person tutoring puts students at a disadvantage because the SAT is taken on a laptop — students need practice in the same digital environment. Up to 60% of the math section can be solved with built-in formulas and calculator"
+    - "Use real calendar urgency: test dates, college app deadlines, weeks remaining, number of sessions possible"
+  dont:
+    - 'Use "your student" — parents never say this'
+    - 'Use "SAT Prep" — correct term is "SAT Tutoring"'
+    - "Use a score improvement guarantee"
+    - "Use vague score claims with no specificity (e.g. 'gain 200 points' with no conditions)"
+    - "Claim we can help them actually get a scholarship"
+    - 'Market as "online tutoring" — parents dismiss us before we can make the case'
+    - 'Use corporate/marketing language: "unlock potential", "maximize score potential", "tailored support", "custom strategies", "growth areas", "concrete score gains", "dream college within reach"'
+    - 'Use fake urgency/scarcity: "spots filling fast", "limited enrollment", "secure their spot", "don''t miss out"'
+    - "Tell instead of show — e.g. 'personalized/expert/data-driven' without specifics"
+    - "Promise '200 points' for anyone; it's impossible over 1400 and stretches believability above 1350"
+
+# ── Persona Profiles ─────────────────────────────────────────────────
+
+persona_profiles:
+  athlete_family:
+    label: "Mother of a recruited student-athlete whose SAT is the gating factor for scholarships/eligibility"
+    psychology: "Fear of missed window + urgency + identity (the athletic dream). Almost always a mother calling about an 11th-grade athlete. The family values the child's athletic dream and fears the SAT becomes the reason a scholarship disappears. Late funnel, urgency-driven, conversion likelihood very high."
+    drives_action: "Recruiting timelines, scholarship eligibility, tight schedule around practice"
+    sample_hooks:
+      - "The coach wants him. The admissions office needs an SAT score."
+      - "If the SAT is the only thing between your athlete and a scholarship… don't wait."
+      - "He's putting in the work on the field. Is his SAT score keeping up?"
+      - "Practice ends at 7. SAT tutoring starts at 9:30. Around your schedule. No commute."
+      - "Don't let a low SAT score be the reason the NCAA scholarship disappears."
+    sample_cta: "Talk to an SAT specialist today. We'll call you in 60 seconds."
+
+  suburban_optimizer:
+    label: "Upper-middle-class suburban parent whose child has a 3.8+ GPA but mid-1200s SAT"
+    psychology: "Control, optimization, fairness. Typically a mother in an affluent district. The child has strong grades and APs but a PSAT/SAT in the mid-1200s that doesn't match. Not panicked but motivated by a clear gap. Mid-funnel, comparison shopping."
+    drives_action: "GPA-SAT mismatch, belief the child is capable, comparison shopping between 1-2 options"
+    sample_hooks:
+      - "3.8 GPA. 1260 SAT. Something's off."
+      - "Straight A's. Disappointing SAT score. Sound familiar?"
+      - "If she's capable of a 1450, why is she stuck in the 1200s?"
+      - "Most mid-1200s students are 3-4 fixes away from a 1400+."
+      - "School doesn't prepare smart kids for the SAT, and neither does generic SAT Prep."
+    sample_cta: "See what score range is realistic in 8-10 weeks."
+
+  immigrant_navigator:
+    label: "First/second-gen immigrant family navigating the US college admissions system for the first time"
+    psychology: "Overwhelm + unfamiliar system + fear of making the wrong choice. Often South Asian, Middle Eastern, or Latin American. Mother calling ~60% of the time, student as proxy ~40%. Deep value on credentials and structured guidance. Early to mid-funnel, need education about the SAT before evaluating providers."
+    drives_action: "Fear of wasting money on wrong choice, unfamiliar system, desire for step-by-step guidance"
+    sample_hooks:
+      - "The SAT process is confusing. We walk you through all of it."
+      - "You don't need to understand the SAT. That's our job."
+      - "Not sure where your child stands on the SAT? That's the first thing we figure out."
+      - "Your child deserves the same shot as kids whose parents grew up with this system."
+      - "New to the US college process? We guide you through the SAT, the scores, and what they mean."
+    sample_cta: "Talk to an SAT specialist who will walk you through it step by step."
+
+  cultural_investor:
+    label: "Dual-income STEM household already investing in multiple prep resources without results"
+    psychology: "Process-oriented, already spending. Higher father involvement than other personas. Has tried prep books, apps, YouTube, subject tutors. Values mastery over quick gains. Trigger is usually a grade-related concern. Mid-funnel, highly information-driven, consensus-oriented."
+    drives_action: "Frustration that prior investments haven't worked, desire to consolidate into one system"
+    sample_hooks:
+      - "Already tried Khan Academy, prep books, and a tutor — and the score hasn't moved?"
+      - "You've invested in every resource. Now invest in the one that actually works."
+      - "Three apps, two tutors, and a prep book. Still stuck? There's a reason."
+      - "You don't need more tools. You need one plan that ties everything together."
+      - "If your child is in AP classes and still struggling on the SAT, the problem isn't effort."
+    sample_cta: "See how we replace five tools with one system that actually raises scores."
+
+  system_optimizer:
+    label: "Corporate father who treats SAT tutoring as a procurement decision, not an emotional one"
+    psychology: "Efficiency, process optimization, measurable outcomes. Father calling >75% of the time, often in tech hubs (Atlanta, Austin, Bay Area). Frequently using employer benefits (Bright Horizons, corporate education stipends). Late funnel, execution-focused. Will disengage if process is clunky."
+    drives_action: "Approaching SAT date, expiring employer benefit, frustration with slow setup process"
+    sample_hooks:
+      - "Gap: 190 points. Timeline: 10 weeks. Result: Closed."
+      - "Princeton Review: $252/hr for group. Varsity Tutors: 1:1 sessions, diagnostic-driven plan, 210-point avg gain. Do the math."
+    sample_cta: "Book Diagnostic"
+
+  neurodivergent_advocate:
+    label: "Mother of a student with ADHD, dyslexia, or processing differences who needs the right tutor fit"
+    psychology: "Protective, 'my child learns differently', fear of being misunderstood. Deep knowledge of diagnosis and accommodations. Values right fit over lowest price. Wants child seen as capable, not broken. Mid-funnel, evaluating whether provider can truly accommodate."
+    drives_action: "Approaching test date + realization standard prep won't work, need for tutor who adapts"
+    sample_hooks:
+      - "Standard SAT prep doesn't work for every kid. We know that."
+      - "ADHD doesn't mean they can't score high. It means they need the right tutor."
+      - "She has extended time. Now she needs a tutor who knows what to do with it."
+      - "Your child isn't broken. They just learn differently. We match tutors who get that."
+      - "The right tutor doesn't just know the SAT. They know how your child thinks."
+    sample_cta: "Tell us about your child. We'll match them with a tutor who understands how they learn."
+
+  burned_returner:
+    label: "Parent returning after a negative prior tutoring experience, trust deficit is the primary barrier"
+    psychology: "Disappointment, trust deficit, conditional willingness. Most often a mother, 11th/12th grader. References specific failures — tutor by name, grades declining during tutoring, 'burned/wasted/disappointed'. Sets explicit conditions for returning. Late funnel but conditional."
+    drives_action: "New academic crisis + urgency, but needs accountability and proof of what's different"
+    sample_hooks:
+      - "Tutoring didn't work last time? That's why you're here."
+      - "You already spent the money. The score didn't move. We hear you."
+      - "Bad tutor experience? Here's what we do differently."
+      - "Paid for tutoring and got the same score? That's not your child's fault."
+      - "We match, we measure, and if it's not working we change course. That's the difference."
+    sample_cta: "Tell us what went wrong. We'll show you what's different."
+
+  stressed_students:
+    label: "High school students stressed about SAT scores, often dealing with test anxiety or score plateaus"
+    psychology: "Fear + identity ('I'm not a good test taker') + confidence. Good grades but bad test scores. Studies hard but chokes on test day. May have gotten the same score twice."
+    drives_action: "Disappointing score just hit, test anxiety, feeling stuck despite studying"
+    sample_hooks:
+      - "She knows the material. She freezes on the test."
+      - "Good grades, bad test scores. That's not a knowledge problem."
+      - "'I'm just not a good test taker' — that's fixable."
+      - "Same score twice? That's fixable."
+      - "Not the score you expected?"
+    sample_cta: "See how we help students walk into the SAT feeling ready, not scared."
+
+  comparison_shoppers:
+    label: "Families comparing SAT prep options who have tried or are evaluating self-study, group classes, or local tutors"
+    psychology: "Frustration + validation + 'it's not your fault'. May have tried Khan Academy or a local tutor with no results. Evaluating multiple providers. Need proof of differentiation."
+    drives_action: "Score hasn't moved despite effort, evaluating whether to switch providers or try something new"
+    sample_hooks:
+      - "Khan Academy raised her score 10 points. That was the problem."
+      - "Free SAT prep is great… until you get your score back."
+      - "The SAT is digital now. Why prep on paper?"
+      - "This isn't a class. It's one tutor focused entirely on your child."
+      - "Generic SAT prep that goes over all the content does more harm than good."
+    sample_cta: "See what 1-on-1 changes."
+
+# ── Meta Ad Structure ────────────────────────────────────────────────
+
+meta_ad_structure:
+  format: |
+    Hook (1 sentence)
+    ↓
+    Short pattern interrupt explanation (2-3 lines max)
+    ↓
+    Micro-commitment CTA
+  example:
+    hook: "3.8 GPA. 1260 SAT. Something's off."
+    body: "The SAT isn't a classroom test. Most strong students are 3-4 targeted fixes away from a 1400+. We diagnose exactly where points are hiding."
+    cta: "See what score is realistic in 8-10 weeks."
+
+# ── Offer Positioning & Competitive Facts ────────────────────────────
+
+offer_positioning:
+  core_offer: "Monthly SAT tutoring membership — not a course, not a group class, not a self-study app"
+  results:
+    vs_self_study: "10x the score improvement of self-study (Khan Academy, prep books, apps)"
+    vs_group_classes: "2.6x the score improvement of in-person centers, local tutors, and brand-name programs (Princeton Review, Kaplan, Sylvan, Kumon, Mathnasium)"
+    typical_gain: "~100 points per month at 2 sessions/week + 20 min/day practice"
+    conditions: "16 sessions → 200 points. 8 sessions + 20min/day practice = 100 points per month. Score range 1100-1300 → 200 points in 16 sessions / 8 weeks."
+  pricing:
+    vt_monthly: "$349-$1,099/mo for 1:1 expert + full platform + study plan + diagnostics + practice tests"
+    vt_recommended: "$639/month for 2 sessions/week"
+    princeton_review_group: "$1,500-$2,500 for group Zoom class"
+    princeton_review_1on1: "$199-$252/hr for 1:1 (on top of course price)"
+    local_tutors: "$80-$200/hr with no platform, no diagnostics, no practice tests"
+  differentiators:
+    - "1:1 expert tutoring with a reserved tutor (not random each session)"
+    - "Digital SAT training on the real interface — 60%+ of math can be solved with built-in tools"
+    - "Weekly progress reports showing projected score"
+    - "Diagnostic-driven study plan targeting specific weaknesses"
+    - "Cancel anytime, no long-term commitment"
+    - "College essay support after SAT scores are in"
+  scholarship_angle: "A 100-point SAT increase can mean $10,000-$40,000 in scholarships"

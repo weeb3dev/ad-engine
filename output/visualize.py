@@ -47,7 +47,7 @@ DIMENSIONS = [
 ]
 
 PALETTE = ["#4C72B0", "#55A868", "#C44E52", "#8172B2", "#CCB974"]
-THRESHOLD = 7.0
+THRESHOLD = 7.25
 
 VISUAL_DIMENSIONS = [
     "brand_consistency",
@@ -62,7 +62,17 @@ VISUAL_DIMENSION_LABELS = {
     "technical_quality": "Technical Quality",
 }
 VISUAL_THRESHOLD = 6.5
-SEGMENT_COLORS = {"anxious_parents": "#4C72B0", "stressed_students": "#55A868", "comparison_shoppers": "#C44E52"}
+SEGMENT_COLORS = {
+    "athlete_family": "#4C72B0",
+    "suburban_optimizer": "#55A868",
+    "immigrant_navigator": "#C44E52",
+    "cultural_investor": "#8172B2",
+    "system_optimizer": "#CCB974",
+    "neurodivergent_advocate": "#64B5CD",
+    "burned_returner": "#DD8452",
+    "stressed_students": "#8C8C8C",
+    "comparison_shoppers": "#DA8BC3",
+}
 
 
 def _dim_scores(record: AdRecord) -> dict[str, int]:
@@ -606,7 +616,7 @@ def generate_multimodal_report(
         for r in records
         if r.winning_variant.visual_evaluation.passes_visual_threshold
     )
-    combined_passed = sum(1 for r in records if r.combined_score >= 7.0)
+    combined_passed = sum(1 for r in records if r.combined_score >= 7.25)
 
     # Visual dimension stats
     vis_dim_stats: dict[str, dict] = {}

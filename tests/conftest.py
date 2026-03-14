@@ -16,10 +16,10 @@ from generate.models import (
 @pytest.fixture
 def sample_brief() -> AdBrief:
     return AdBrief(
-        audience_segment="anxious_parents",
+        audience_segment="suburban_optimizer",
         campaign_goal="conversion",
         tone="empathetic",
-        specific_offer="Free SAT practice test",
+        specific_offer="Free SAT diagnostic test",
     )
 
 

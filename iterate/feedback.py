@@ -193,7 +193,7 @@ def run_pipeline(brief: AdBrief, config: Config) -> AdRecord:
         for attempt in range(1, max_attempts + 1):
             if best_eval.passes_threshold:
                 console.print(
-                    f"\n[bold green]Passed threshold ({best_eval.aggregate_score:.2f} >= 7.0) "
+                    f"\n[bold green]Passed threshold ({best_eval.aggregate_score:.2f} >= {config.quality.threshold}) "
                     f"after {cycle} cycle(s)[/bold green]"
                 )
                 break

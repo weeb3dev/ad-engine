@@ -18,9 +18,15 @@ _DATA = _ROOT / "data"
 _OUT = _ROOT / "output" / "batch1_ad_library.md"
 
 SEGMENT_LABELS = {
-    "anxious_parents": "Anxious Parents",
-    "comparison_shoppers": "Comparison Shoppers",
+    "athlete_family": "Athlete Family",
+    "suburban_optimizer": "Suburban Optimizer",
+    "immigrant_navigator": "Immigrant Navigator",
+    "cultural_investor": "Cultural Investor",
+    "system_optimizer": "System Optimizer",
+    "neurodivergent_advocate": "Neurodivergent Advocate",
+    "burned_returner": "Burned Returner",
     "stressed_students": "Stressed Students",
+    "comparison_shoppers": "Comparison Shoppers",
 }
 
 DIMENSION_LABELS = {
@@ -61,7 +67,7 @@ def _write_executive_summary(lines: list[str], summary: dict, ads: list) -> None
                  f"({dims[strongest]:.2f} avg); "
                  f"**{DIMENSION_LABELS[weakest]}** is the weakest ({dims[weakest]:.2f} avg)")
     lines.append(f"- **Call to Action** averages {dims['call_to_action']:.2f} — "
-                 "just under the 7.0 threshold, meaning many ads barely clear this dimension")
+                 "just under the 7.25 threshold, meaning many ads barely clear this dimension")
     lines.append(f"- Only **{first_try}/{total}** ads passed on first generation; "
                  f"most needed 2–3 improvement cycles (avg {summary['avg_iterations']:.1f})")
     lines.append("")
@@ -126,7 +132,7 @@ def _write_ads(lines: list[str], ads: list) -> None:
     for ad in ads:
         grouped[ad["brief"]["audience_segment"]].append(ad)
 
-    for seg in ("anxious_parents", "stressed_students", "comparison_shoppers"):
+    for seg in SEGMENT_LABELS:
         seg_ads = grouped.get(seg, [])
         seg_ads.sort(key=lambda a: -a["evaluation"]["aggregate_score"])
         label = SEGMENT_LABELS.get(seg, seg)
@@ -178,7 +184,7 @@ def main() -> None:
     lines.append("# Batch 1 — Ad Library Report\n")
     lines.append(f"*{len(ads)} ads generated across "
                  f"{len(SEGMENT_LABELS)} audience segments · "
-                 f"Gemini flash-lite · threshold 7.0/10*\n")
+                 f"Gemini flash-lite · threshold 7.25/10*\n")
 
     _write_executive_summary(lines, summary, ads)
     _write_batch_summary(lines, summary)

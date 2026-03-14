@@ -23,6 +23,7 @@ console = Console()
 
 _PROJECT_ROOT = Path(__file__).resolve().parent.parent
 _PROMPT_PATH = _PROJECT_ROOT / "generate" / "prompts" / "generator_prompt.yaml"
+_GUIDANCE_PATH = _PROJECT_ROOT / "generate" / "prompts" / "copy_guidance.yaml"
 _CALIBRATION_PATH = _PROJECT_ROOT / "compete" / "references" / "calibration_ads.json"
 
 _INPUT_COST_PER_M = 1.25
@@ -31,6 +32,7 @@ _OUTPUT_COST_PER_M = 10.00
 HOOK_STYLES = ["question", "stat", "story", "fear"]
 
 _prompt_cache: dict[str, str] | None = None
+_guidance_cache: dict[str, Any] | None = None
 
 
 def _load_prompt_template() -> dict[str, str]:
@@ -39,6 +41,14 @@ def _load_prompt_template() -> dict[str, str]:
         with open(_PROMPT_PATH) as f:
             _prompt_cache = yaml.safe_load(f)
     return _prompt_cache  # type: ignore[return-value]
+
+
+def _load_copy_guidance() -> dict[str, Any]:
+    global _guidance_cache
+    if _guidance_cache is None:
+        with open(_GUIDANCE_PATH) as f:
+            _guidance_cache = yaml.safe_load(f)
+    return _guidance_cache  # type: ignore[return-value]
 
 
 def _load_calibration_ads() -> list[dict[str, Any]]:
@@ -64,7 +74,27 @@ def _estimate_cost(input_tokens: int, output_tokens: int) -> float:
 
 
 def _resolve_audience(brief: AdBrief, config: Config) -> str:
-    """Map audience_segment ID to its human-readable label."""
+    """Map audience_segment ID to a rich persona context block.
+
+    Loads the full persona profile from copy_guidance.yaml when available,
+    falling back to the config label for unknown segments.
+    """
+    guidance = _load_copy_guidance()
+    personas = guidance.get("persona_profiles", {})
+    persona = personas.get(brief.audience_segment)
+
+    if persona:
+        hooks = persona.get("sample_hooks", [])
+        hooks_str = "\n".join(f"  - {h}" for h in hooks[:3])
+        return (
+            f"PERSONA: {persona['label']}\n"
+            f"PSYCHOLOGY: {persona['psychology']}\n"
+            f"WHAT DRIVES ACTION: {persona['drives_action']}\n"
+            f"EXAMPLE HOOKS FOR THIS PERSONA (use as inspiration, don't copy verbatim):\n"
+            f"{hooks_str}\n"
+            f"SUGGESTED CTA: {persona.get('sample_cta', '')}"
+        )
+
     for seg in config.brand.audience_segments:
         if seg.id == brief.audience_segment:
             return seg.label

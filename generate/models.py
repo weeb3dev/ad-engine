@@ -106,7 +106,7 @@ class AdEvaluation(BaseModel):
     @computed_field
     @property
     def passes_threshold(self) -> bool:
-        return self.aggregate_score >= 7.0
+        return self.aggregate_score >= 7.25  # keep in sync with config.yaml quality.threshold
 
     @computed_field
     @property

@@ -261,7 +261,7 @@ def evaluate_ad(
         f"[{agg_style}]{agg:.2f}[/{agg_style}]",
         "—",
         f"{'PASS' if evaluation.passes_threshold else 'FAIL'} "
-        f"(threshold 7.0) | weakest: {evaluation.weakest_dimension}",
+        f"(threshold 7.25) | weakest: {evaluation.weakest_dimension}",
     )
     console.print(table)
 

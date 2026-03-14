@@ -16,14 +16,30 @@ _STRATEGIES = {
     3: "model_escalation",
 }
 
+_VT_COPY_RULES = (
+    "LANGUAGE RULES (strict):\n"
+    "- ALWAYS say 'your child' — never 'your student' (parents don't say this)\n"
+    "- ALWAYS say 'SAT Tutoring' — never 'SAT Prep'\n"
+    "- NEVER use corporate language: 'unlock potential', 'maximize score potential', "
+    "'tailored support', 'custom strategies', 'growth areas'\n"
+    "- NEVER use fake urgency: 'spots filling fast', 'limited enrollment', "
+    "'secure their spot'. Use real calendar urgency instead.\n"
+    "- Score claims MUST have conditions: '16 sessions → 200 points', "
+    "'100pts/month at 2x/week + 20min/day practice'\n"
+    "- SHOW, don't TELL — describe the mechanism, not just 'personalized' or 'expert'\n"
+    "- NEVER promise a score improvement guarantee\n"
+)
+
 _SYSTEM_INSTRUCTION = (
     "You are an expert direct-response copywriter specializing in Facebook "
-    "and Instagram ads for Varsity Tutors, a personalized SAT test prep "
+    "and Instagram ads for Varsity Tutors, a personalized SAT tutoring "
     "platform.\n\n"
     "BRAND VOICE: Empowering, knowledgeable, approachable, results-focused.\n"
     "- Lead with outcomes, not features\n"
     "- Confident but not arrogant. Expert but not elitist.\n"
-    "- Meet people where they are\n\n"
+    "- Meet people where they are\n"
+    "- Write like a parent talks, not like a marketing department\n\n"
+    + _VT_COPY_RULES + "\n"
     "You are revising an existing ad to improve a specific weak dimension "
     "while keeping everything else strong."
 )
@@ -35,7 +51,15 @@ _ESCALATION_SYSTEM = (
     "results-focused.\n"
     "- Lead with outcomes, not features\n"
     "- Confident but not arrogant. Expert but not elitist.\n"
-    "- Meet people where they are\n\n"
+    "- Meet people where they are\n"
+    "- Write like a parent talks, not like a marketing department\n\n"
+    + _VT_COPY_RULES + "\n"
+    "OFFER FACTS (use for specificity):\n"
+    "- 10x score improvement vs self-study, 2.6x vs group classes/local tutors\n"
+    "- ~100 points/month at 2 sessions/week + 20min/day practice\n"
+    "- Princeton Review: $252/hr for 1:1. VT: as low as $349/mth for 1:1\n"
+    "- 100-point SAT increase = $10,000-$40,000 in scholarships\n"
+    "- Digital SAT: 60%+ of math solved with built-in tools\n\n"
     "A junior copywriter produced the ad below. It has a specific weakness. "
     "Rewrite it to award-winning quality. Be ruthless about the weak "
     "dimension while preserving what already works."

@@ -10,9 +10,27 @@ base_instructions: |
   Do NOT include the Facebook ad interface or phone mockup — just the creative.
 
 audience_scenes:
-  anxious_parents: >-
+  athlete_family: >-
+    A student-athlete at home after practice — sports bag nearby, laptop open for SAT tutoring.
+    Athletic energy meets academic focus. Warm lighting, modern suburban home.
+  suburban_optimizer: >-
     A warm, well-lit family home. A supportive parent and their teenager
     at a kitchen table or cozy home office with study materials. Modern decor, natural light.
+  immigrant_navigator: >-
+    A welcoming, warm family setting. A parent and teenager looking at a laptop together,
+    modern diverse household. Supportive atmosphere, study materials visible.
+  cultural_investor: >-
+    An organized study space with multiple prep materials visible — books, tablet, laptop.
+    A focused teenager ready to consolidate their approach. Clean, modern, purposeful.
+  system_optimizer: >-
+    A clean, data-focused setting. Dashboard-like visual. Minimal, professional environment.
+    No lifestyle imagery — data and results only. White/light background, clean typography feel.
+  neurodivergent_advocate: >-
+    A comfortable, low-stimulation study space designed for focus. A teenager with a laptop
+    in a calm environment. Warm but not cluttered. Supportive, personalized feel.
+  burned_returner: >-
+    A fresh-start setting. A parent and teenager looking hopeful at a laptop screen showing
+    progress. Clean, trustworthy environment. Second-chance energy.
   stressed_students: >-
     A bright, organized study space. A focused teenager with a laptop,
     determined but not stressed. Study materials visible. Natural window light.

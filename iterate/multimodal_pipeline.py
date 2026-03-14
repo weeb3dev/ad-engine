@@ -158,7 +158,7 @@ def run_multimodal_pipeline(
             f"Variants: {len(variants)}  |  "
             f"Cost: ${total_cost:.4f}  |  Time: {pipeline_time:.1f}s",
             title="Multimodal Result",
-            border_style="green" if combined >= 7.0 else "yellow",
+            border_style="green" if combined >= 7.25 else "yellow",
         ))
 
         return record
@@ -235,7 +235,7 @@ def run_multimodal_batch(
                 if record is not None:
                     records.append(record)
 
-                passed = sum(1 for r in records if r.combined_score >= 7.0)
+                passed = sum(1 for r in records if r.combined_score >= 7.25)
                 rate = f"{100 * passed / len(records):.0f}%" if records else "—"
                 progress.update(task, advance=1, pass_rate=rate)
 
@@ -293,7 +293,7 @@ def _print_batch_summary(records: list[MultiModalAdRecord]) -> None:
         1 for r in records
         if r.winning_variant.visual_evaluation.passes_visual_threshold
     )
-    combined_passed = sum(1 for r in records if r.combined_score >= 7.0)
+    combined_passed = sum(1 for r in records if r.combined_score >= 7.25)
     n = len(records)
 
     combined_scores = [r.combined_score for r in records]

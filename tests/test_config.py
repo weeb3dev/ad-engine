@@ -17,4 +17,4 @@ def test_config_dimensions_sum_to_one(config):
 
 
 def test_config_threshold(config):
-    assert config.quality.threshold == 7.0
+    assert config.quality.threshold == 7.25

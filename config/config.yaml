@@ -6,7 +6,7 @@ models:
   escalation: "gemini-2.5-flash"
 
 quality:
-  threshold: 7.0
+  threshold: 7.25
   max_regeneration_attempts: 3
 
 dimensions:
@@ -46,12 +46,24 @@ brand:
     - "Expert but not elitist"
     - "Meet people where they are"
   audience_segments:
-    - id: "anxious_parents"
-      label: "Parents anxious about college admissions"
+    - id: "athlete_family"
+      label: "Mother of a recruited student-athlete whose SAT is the gating factor for scholarships/eligibility"
+    - id: "suburban_optimizer"
+      label: "Upper-middle-class suburban parent whose child has a 3.8+ GPA but mid-1200s SAT"
+    - id: "immigrant_navigator"
+      label: "First/second-gen immigrant family navigating the US college admissions system"
+    - id: "cultural_investor"
+      label: "Dual-income STEM household already investing in multiple prep resources without results"
+    - id: "system_optimizer"
+      label: "Corporate father who treats SAT tutoring as a procurement decision"
+    - id: "neurodivergent_advocate"
+      label: "Mother of a student with ADHD/dyslexia/processing differences who needs the right tutor fit"
+    - id: "burned_returner"
+      label: "Parent returning after a negative prior tutoring experience"
     - id: "stressed_students"
-      label: "High school students stressed about SAT scores"
+      label: "High school students stressed about SAT scores, often dealing with test anxiety or score plateaus"
     - id: "comparison_shoppers"
-      label: "Families comparing prep options (Princeton Review, Kaplan, Khan Academy)"
+      label: "Families comparing SAT prep options who have tried or are evaluating self-study, group classes, or local tutors"
 
 seed: 42
 

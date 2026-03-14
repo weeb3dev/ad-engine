@@ -14,14 +14,14 @@ from generate.models import (
 
 
 def test_ad_brief_creation(sample_brief):
-    assert sample_brief.audience_segment == "anxious_parents"
+    assert sample_brief.audience_segment == "suburban_optimizer"
     assert sample_brief.campaign_goal == "conversion"
     assert sample_brief.product == "sat_prep"
 
 
 def test_ad_brief_invalid_goal():
     with pytest.raises(ValidationError):
-        AdBrief(audience_segment="anxious_parents", campaign_goal="invalid_goal")
+        AdBrief(audience_segment="suburban_optimizer", campaign_goal="invalid_goal")
 
 
 def test_generated_ad_headline_max_length():

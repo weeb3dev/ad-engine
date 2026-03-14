@@ -21,9 +21,9 @@ console = Console()
 _PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 OFFERS = [
-    "Free SAT practice test",
-    "1-on-1 expert tutoring",
-    "Score improvement guarantee",
+    "Free SAT diagnostic test",
+    "1-on-1 expert SAT tutoring",
+    "SAT scholarship value calculator",
 ]
 
 TONES = ["urgent", "empathetic", "confident"]
@@ -31,17 +31,30 @@ TONES = ["urgent", "empathetic", "confident"]
 CAMPAIGN_GOALS = ["awareness", "conversion"]
 
 
+DEFAULT_SEGMENTS = [
+    "athlete_family",
+    "suburban_optimizer",
+    "immigrant_navigator",
+    "cultural_investor",
+    "system_optimizer",
+    "neurodivergent_advocate",
+    "burned_returner",
+    "stressed_students",
+    "comparison_shoppers",
+]
+
+
 def generate_brief_matrix(config: Config | None = None) -> list[AdBrief]:
     """Create a combinatorial matrix of AdBriefs.
 
-    3 segments x 2 goals x 3 offers x 3 tones = 54 briefs.
+    9 segments x 2 goals x 3 offers x 3 tones = 162 briefs (full matrix).
     If *config* is provided, audience segment IDs are read from it;
-    otherwise the three default segments are used.
+    otherwise the nine default segments are used.
     """
     if config is not None:
         segments = [seg.id for seg in config.brand.audience_segments]
     else:
-        segments = ["anxious_parents", "stressed_students", "comparison_shoppers"]
+        segments = list(DEFAULT_SEGMENTS)
 
     briefs = [
         AdBrief(

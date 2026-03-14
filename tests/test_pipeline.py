@@ -97,9 +97,9 @@ def test_run_pipeline_passes_first_try(mock_generate, mock_evaluate, config, sam
     from iterate.feedback import run_pipeline
 
     brief = AdBrief(
-        audience_segment="anxious_parents",
+        audience_segment="suburban_optimizer",
         campaign_goal="conversion",
-        specific_offer="Free SAT practice test",
+        specific_offer="Free SAT diagnostic test",
     )
 
     record = run_pipeline(brief, config)
