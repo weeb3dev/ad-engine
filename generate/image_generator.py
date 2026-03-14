@@ -54,6 +54,24 @@ def _estimate_image_cost(
     return text_cost + image_cost
 
 
+_NO_TEXT_STYLES = {"ugc_style"}
+_AI_TEXT_STYLES = {"infographic", "typography_checklist", "comic_panel"}
+_HERO_STYLES = {"hero_photo"}
+_SKIP_PIL_OVERLAY = _NO_TEXT_STYLES | _AI_TEXT_STYLES
+
+_VT_NAVY = (27, 42, 74)
+_VT_PINK = (233, 78, 140)
+
+
+def _load_font(size: int) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
+    try:
+        return ImageFont.truetype(
+            "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", size,
+        )
+    except (OSError, IOError):
+        return ImageFont.load_default()
+
+
 def apply_text_overlay(
     image: Image.Image,
     headline: str,
@@ -64,13 +82,7 @@ def apply_text_overlay(
     img = image.copy().convert("RGBA")
     overlay = Image.new("RGBA", img.size, (0, 0, 0, 0))
     draw = ImageDraw.Draw(overlay)
-
-    try:
-        font = ImageFont.truetype(
-            "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", font_size,
-        )
-    except (OSError, IOError):
-        font = ImageFont.load_default()
+    font = _load_font(font_size)
 
     bbox = draw.textbbox((0, 0), headline, font=font)
     text_w, text_h = bbox[2] - bbox[0], bbox[3] - bbox[1]
@@ -91,6 +103,57 @@ def apply_text_overlay(
     draw.text((x, y), headline, fill="white", font=font)
 
     return Image.alpha_composite(img, overlay).convert("RGB")
+
+
+def apply_hero_overlay(
+    image: Image.Image,
+    headline: str,
+    font_size: int = 42,
+) -> Image.Image:
+    """VT hero-photo overlay: navy headline on light gradient at top of image."""
+    img = image.copy().convert("RGBA")
+    img_w, img_h = img.size
+    gradient_h = int(img_h * 0.28)
+
+    gradient = Image.new("RGBA", (img_w, gradient_h), (0, 0, 0, 0))
+    gd = ImageDraw.Draw(gradient)
+    for row in range(gradient_h):
+        alpha = int(210 * (1.0 - row / gradient_h))
+        gd.line([(0, row), (img_w, row)], fill=(255, 255, 255, alpha))
+    top_crop = img.crop((0, 0, img_w, gradient_h))
+    img.paste(Image.alpha_composite(top_crop, gradient), (0, 0))
+
+    draw = ImageDraw.Draw(img)
+    font = _load_font(font_size)
+
+    max_text_w = int(img_w * 0.85)
+    words = headline.split()
+    lines: list[str] = []
+    current_line = ""
+    for word in words:
+        test = f"{current_line} {word}".strip()
+        bbox = draw.textbbox((0, 0), test, font=font)
+        if bbox[2] - bbox[0] <= max_text_w:
+            current_line = test
+        else:
+            if current_line:
+                lines.append(current_line)
+            current_line = word
+    if current_line:
+        lines.append(current_line)
+
+    line_height = int(font_size * 1.3)
+    total_text_h = line_height * len(lines)
+    y_start = max(20, (gradient_h - total_text_h) // 2)
+
+    for i, line in enumerate(lines):
+        bbox = draw.textbbox((0, 0), line, font=font)
+        line_w = bbox[2] - bbox[0]
+        x = (img_w - line_w) // 2
+        y = y_start + i * line_height
+        draw.text((x, y), line, fill=_VT_NAVY, font=font)
+
+    return img.convert("RGB")
 
 
 @observe(name="generate-ad-image")
@@ -155,13 +218,15 @@ def generate_ad_image(
                     f"No image returned after {max_attempts} attempts"
                 )
 
-            NO_TEXT_STYLES = {"ugc_style"}
-
             overlay_mode = "programmatic"
             if config.image_generation:
                 overlay_mode = config.image_generation.text_overlay_mode
 
-            if overlay_mode == "programmatic" and style not in NO_TEXT_STYLES:
+            if style in _SKIP_PIL_OVERLAY:
+                pass
+            elif style in _HERO_STYLES:
+                image_result = apply_hero_overlay(image_result, ad.headline)
+            elif overlay_mode == "programmatic":
                 image_result = apply_text_overlay(image_result, ad.headline)
 
             metadata: dict[str, Any] = {

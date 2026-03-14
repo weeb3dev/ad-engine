@@ -57,6 +57,8 @@ def build_full_image_prompt(
     )
 
     NO_TEXT_STYLES = {"ugc_style"}
+    AI_TEXT_STYLES = {"infographic", "typography_checklist", "comic_panel"}
+    HERO_STYLES = {"hero_photo"}
 
     overlay_mode = "programmatic"
     if config and config.image_generation:
@@ -66,6 +68,15 @@ def build_full_image_prompt(
         headline_instruction = (
             "Do NOT render any text, captions, or overlays in the image. "
             "The image must contain zero text of any kind."
+        )
+    elif style in AI_TEXT_STYLES:
+        style_modifier = style_modifier.format(headline=ad.headline)
+        headline_instruction = ""
+    elif style in HERO_STYLES:
+        headline_instruction = (
+            "Leave the top 25-30% of the image as a clean bright area "
+            "(white or very light gradient) with no subjects or clutter. "
+            "Do NOT render any text in the image — text will be overlaid separately."
         )
     elif overlay_mode == "ai":
         headline_instruction = t["headline_instruction_ai"].format(

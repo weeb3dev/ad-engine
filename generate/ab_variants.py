@@ -27,7 +27,7 @@ from generate.models import AdBrief, Config, GeneratedAd, ImageVariant
 console = Console()
 
 _TIEBREAK_PREFERENCE: dict[str, str] = {
-    "conversion": "photorealistic",
+    "conversion": "hero_photo",
     "awareness": "ugc_style",
 }
 

@@ -63,13 +63,17 @@ image_generation:
   default_aspect_ratio: "1:1"                  # feed ads; "9:16" for Stories
   default_resolution: "1K"                     # 512 for drafts, 1K for production, 2K/4K for high-res
   thinking_level: "minimal"                    # "minimal" (faster/cheaper) or "high" (better quality)
-  variants_per_ad: 2                           # image variants per text ad
+  variants_per_ad: 4                           # image variants per text ad (8 styles available)
   text_overlay_mode: "programmatic"            # "programmatic" (PIL, pixel-perfect) or "ai" (in-image, experimental)
   style_approaches:
     - "photorealistic"
     - "ugc_style"
     - "illustration"
     - "minimal_graphic"
+    - "hero_photo"
+    - "infographic"
+    - "typography_checklist"
+    - "comic_panel"
 
 visual_evaluation:
   model: "gemini-2.5-flash"                    # multimodal judge (see orchestration rationale)

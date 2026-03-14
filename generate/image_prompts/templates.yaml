@@ -37,6 +37,38 @@ style_modifiers:
     Bold graphic design. Large sans-serif typography as the focal point,
     solid or soft gradient background in warm blue tones, minimal imagery. Clean and modern.
     Think Apple or Nike simplicity applied to education.
+  hero_photo: >-
+    Polished lifestyle photography with structured ad composition. Warm natural lighting,
+    real student or parent-student subject at a desk or kitchen table with study materials.
+    Leave the top third of the image as a clean, bright area (white or very light) for headline
+    text to be overlaid. The subject should occupy the lower two-thirds. Shallow depth of field,
+    modern home environment, approachable and aspirational. A smartphone showing a calendar or
+    study app may appear as a secondary visual element. Professional but not sterile.
+  infographic: >-
+    Clean graphic design with informational visual elements. Use a light gray or off-white
+    background with a calendar grid, timeline, or schedule layout as the main visual structure.
+    Include a prominent purple (#8B6BAE) sticky note or card element overlaid on the calendar
+    with white bold text showing a key stat or number. Use a pink (#E94E8C) circle or highlight
+    to accent an important date. Dark navy (#1B2A4A) bold sans-serif headline text at the top.
+    No photography, no people — purely designed graphic elements. Clean, data-forward, modern.
+    Include the text '{headline}' as the main headline rendered in dark navy at the top of the image.
+  typography_checklist: >-
+    Pure typography-forward design on a light lavender/lilac (#EDE5F4) background with a subtle
+    curved wave or organic shape element. The entire creative is bold dark navy (#1B2A4A)
+    sans-serif text arranged in a stepped checklist or stacked statement format — each line is
+    a short punchy phrase. After each line, include a small colored checkmark accent in rotating
+    colors: teal (#4BC8C1), purple (#8B6BAE), pink (#E94E8C), yellow (#F5C842). Minimal
+    decoration — the text IS the design. Small "Varsity Tutors" branding text at the bottom.
+    Include the text '{headline}' formatted as the checklist content.
+  comic_panel: >-
+    Comic book editorial illustration style. Split the image into two side-by-side vertical
+    panels with bold blue (#2B5EA7) borders. Left panel shows a confident, happy cartoon student
+    (clean modern illustration, not clip art) in a bright setting. Right panel shows the same or
+    similar student looking confused or stressed with a large question mark. Use comic book
+    visual conventions: halftone dot textures, thought bubbles, slight paper texture. Bold dark
+    text overlaid across the center spanning both panels as a punchy question or statement.
+    Bright, saturated colors. Relatable "before and after" or contrast narrative.
+    Include the text '{headline}' as the bold center overlay text.
 
 placement_instructions:
   feed_square: >-
