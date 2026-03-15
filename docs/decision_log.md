@@ -121,3 +121,53 @@ Entries are written as decisions are made, not retroactively.
 - **Decision:** Use the cheapest model that meets each task's capability bar. Upgrade only where there's a measurable quality gap (visual eval, tier 3 escalation).
 - **Cost per multimodal ad:** ~$0.005 text gen + ~$0.008 text eval + ~$0.005 text improvement + ~$0.134 image gen (2 variants at 1K) + ~$0.008 visual eval = **~$0.16/ad**. Image generation is the dominant cost driver at ~84%.
 - **Outcome:** The escalation model is now configurable via `config.models.escalation` (defaults to `gemini-2.5-flash`). When the improvement loop reaches tier 3, `improve_ad()` switches to the escalation model with its own cost tracking. This replaces the previous placeholder that only changed the system prompt.
+
+---
+
+### Decision: Visual dimension weighting and threshold
+- **Date:** 2026-03-14
+- **Context:** Need to decide how to weight the 4 visual quality dimensions (brand_consistency, engagement_potential, text_image_coherence, technical_quality) and where to set the pass/fail threshold for image evaluation.
+- **Options:** (A) Equal weights (25% each) with the same 7.25 threshold as text. (B) Front-load technical_quality (40%) since AI artifact detection is the most objective dimension. (C) Weight by business impact: brand_consistency and engagement_potential highest (they determine whether the ad converts), text_image_coherence next (reinforces copy), technical_quality lowest (necessary but not sufficient).
+- **Decision:** Option C — 0.30 / 0.30 / 0.25 / 0.15 weights with a 7.0 threshold.
+- **Rationale:** Brand consistency and scroll-stopping engagement are the two things that make an ad *work* on Meta — a technically flawless but boring image still fails. Text-image coherence matters because the copy and creative must tell a unified story. Technical quality is weighted lowest because Nano Banana 2 generally produces clean images; when it fails (distorted hands, melted text) the score is so low it drags the aggregate down regardless of weight. The 7.0 visual threshold meets the project's minimum quality requirement while remaining slightly lower than text (7.25) — appropriate because visual evaluation is inherently noisier (±1 point variance across runs).
+- **Outcome:** The 7.0 threshold filters out genuinely weak images while not over-penalizing the variance in visual scoring. The combined score (0.6 × text + 0.4 × visual) provides an additional quality gate — a weak image still drags down an otherwise strong text ad.
+
+---
+
+### Decision: Combined score formula (0.6 text + 0.4 visual)
+- **Date:** 2026-03-14
+- **Context:** A multimodal ad has both a text aggregate score and a visual aggregate score. Need a single combined score for ranking, filtering, and pass/fail decisions.
+- **Options:** (A) Equal weighting 50/50 — treats copy and creative as equally important. (B) Text-heavy 70/30 — copy is the primary driver, image is supplementary. (C) Balanced-but-text-leading 60/40 — copy matters more but image significantly impacts engagement.
+- **Decision:** Option C — `combined_score = 0.6 × text_aggregate + 0.4 × visual_aggregate`.
+- **Rationale:** For Meta paid social ads, copy drives the click-through decision more than the creative — users read the primary text and headline before deciding to click. However, the image is what stops the thumb-scroll in the first place, so it can't be marginal. At 50/50, visual evaluation noise (±1 point variance) would cause strong text ads to fail unpredictably. At 70/30, the image becomes almost irrelevant — a mediocre image with great copy always passes. 60/40 means a genuinely bad image (visual score ~4) can fail an otherwise passing text ad (text score ~7.5: combined = 0.6×7.5 + 0.4×4.0 = 6.1), which is the desired behavior.
+- **Outcome:** The combined pass threshold uses 7.25 (same as text). With 60/40 weighting, an ad needs roughly text ≥ 7.5 and visual ≥ 7.0 to pass, or text ≥ 8.0 and visual ≥ 6.0. This feels right — it doesn't let terrible images through but doesn't penalize the inherent noisiness of visual scoring either.
+
+---
+
+### Decision: Style selection tiebreaker (hero_photo for conversion, ugc_style for awareness)
+- **Date:** 2026-03-14
+- **Context:** When multiple image variants score within 0.5 points of each other, the system needs a principled way to pick the winner instead of relying on score noise. The tiebreaker should reflect which style is likely to perform better in the real world for the given campaign goal.
+- **Options:** (A) Always pick the highest score regardless of style (no tiebreaker). (B) Prefer photorealistic for all goals (highest perceived quality). (C) Match style to campaign goal: conversion → hero_photo (authority, clear visual hierarchy), awareness → ugc_style (authentic, relatable).
+- **Decision:** Option C — `_TIEBREAK_PREFERENCE = {"conversion": "hero_photo", "awareness": "ugc_style"}` with a `_TIEBREAK_DELTA = 0.5`.
+- **Rationale:** hero_photo uses a gradient overlay with navy VT branding that conveys authority and directs the eye toward the headline — good for driving a specific action. ugc_style mimics casual smartphone photos that feel authentic and native to the feed — good for building familiarity and trust at the top of funnel. The 0.5 threshold ensures the tiebreaker only fires when scores are genuinely close; if one variant clearly outscores another, the score wins regardless.
+- **Outcome:** This is an assumption based on Meta advertising best practices, not validated by real CTR data. The system has no A/B test integration to verify whether hero_photo actually outperforms ugc_style on conversion campaigns. Flagging as speculative — would need real-world performance data to validate or revise.
+
+---
+
+### Decision: Programmatic text overlay as default (PIL over AI-rendered text)
+- **Date:** 2026-03-14
+- **Context:** Ad images need headline text overlaid. AI image models (Nano Banana 2 included) frequently produce unreliable text in images — misspellings, warped letters, illegible fonts, missing characters. Need a reliable fallback.
+- **Options:** (A) Always let the AI render text in the image (`text_overlay_mode: "ai"`). (B) Always composite text programmatically with PIL after image generation (`text_overlay_mode: "programmatic"`). (C) Hybrid: default to programmatic, but let specific styles that benefit from integrated text use AI rendering.
+- **Decision:** Option C — `text_overlay_mode: "programmatic"` as the default, with style-specific overrides. Three categories: `_NO_TEXT_STYLES` (ugc_style — no overlay at all, looks more authentic), `_AI_TEXT_STYLES` (infographic, typography_checklist, comic_panel — these styles need text integrated into the visual design), `_HERO_STYLES` (hero_photo — gets a custom navy-on-gradient PIL overlay instead of the default white-on-dark).
+- **Rationale:** Programmatic overlay gives pixel-perfect text every time — no misspellings, readable at any size, consistent font. The cost is that the text looks "pasted on" rather than integrated into the image. For most styles (photorealistic, illustration, minimal_graphic) this is acceptable because the text is a UI element, not part of the art. For infographic/typography_checklist/comic_panel, text is part of the visual concept, so AI rendering is necessary even though it's less reliable. For ugc_style, any text overlay breaks the casual phone-photo aesthetic.
+- **Outcome:** The hero_photo overlay (`apply_hero_overlay`) uses a white-to-transparent gradient at the top of the image with navy (`_VT_NAVY = (27, 42, 74)`) text — matching VT brand colors while maintaining readability. This gives hero-style ads a distinct premium look compared to the default black-background overlay.
+
+---
+
+### Decision: 8 style approaches with style-specific overlay logic
+- **Date:** 2026-03-14
+- **Context:** The v2 build guide specified 4 styles (photorealistic, ugc_style, illustration, minimal_graphic). After initial testing, expanded to 8 to cover more creative directions and ad formats.
+- **Options:** (A) Keep 4 styles — simpler, faster batch runs. (B) Expand to 8 styles — more creative variety but higher cost and longer runs. (C) 8 styles available but default `variants_per_ad: 4` to limit cost per ad.
+- **Decision:** Option C — 8 styles defined in `templates.yaml`, `variants_per_ad: 4` in config.
+- **Rationale:** The 4 new styles fill real creative gaps: hero_photo produces aspirational "hero shot" images common in premium tutoring ads. infographic works for data-driven messaging ("200+ point improvement"). typography_checklist works for list-based value props. comic_panel adds a distinctive visual format that stands out in a feed dominated by photos. Having 8 styles available with a configurable cap means we can test all styles in exploration runs (`variants_per_ad: 8`) but keep costs reasonable in production batches (`variants_per_ad: 4`).
+- **Outcome:** At `variants_per_ad: 4`, image generation costs ~$0.268/ad (4 × $0.067 at 1K). At 8 variants it doubles to ~$0.536/ad. The 4-variant default keeps per-ad cost at ~$0.29 total (text + images + eval) while still providing meaningful style diversity. The style list in config is ordered by general effectiveness, so the first 4 (photorealistic, ugc_style, illustration, minimal_graphic) are the default set.

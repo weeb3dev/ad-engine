@@ -44,6 +44,15 @@
 - **Model escalation adds cost on tier 3.** Tier 3 of the improvement strategy now switches from `gemini-3.1-flash-lite-preview` to `gemini-2.5-flash` ($0.30/$2.50 per 1M tokens vs $1.25/$10.00). This is a genuine model upgrade but only triggers on attempt 3 — most ads resolve by tier 1-2, so the cost impact across a batch is small.
 - **Self-evaluation bias spans two model tiers.** With escalation, the improvement loop can use either flash-lite or 2.5-flash, but both are in the Gemini family. The evaluator (also flash-lite) may still be lenient toward output from a sibling model. Cross-family evaluation (e.g., Claude or GPT-4 as judge) remains the strongest mitigation.
 
+## v2: Multi-Modal
+
+- **Image quality variance.** Nano Banana 2 output is inconsistent across runs. Some images are polished and ad-ready; others have AI artifacts — distorted hands, extra fingers, melted text, or uncanny facial expressions. There's no way to predict which calls will produce artifacts.
+- **Text rendering in images.** AI-generated text overlay is unreliable (misspellings, warped letters, illegible fonts), which is why programmatic PIL overlay is the default. But PIL overlays look "pasted on" — they lack the visual integration that a skilled designer would achieve. The `_AI_TEXT_STYLES` (infographic, typography_checklist, comic_panel) accept this unreliability because their visual concepts require integrated text.
+- **Visual evaluation is noisier than text.** The same image scored by the same model can vary by ±1 point across runs. The lower visual threshold (7.0 vs 7.25 for text) reflects this, but it means the visual pass/fail signal is weaker. Visual judges disagree with human judgment more often than text judges do, especially on brand_consistency and engagement_potential which are inherently subjective.
+- **No real-world A/B testing.** The "best variant" is selected by LLM judgment (visual aggregate score), not by actual click-through rates or conversion data. The winning style for a given campaign goal may not be what performs best on Meta. The style tiebreaker (hero_photo for conversion, ugc_style for awareness) is based on advertising best practices, not validated by data from this system.
+- **Image generation is the cost bottleneck.** At ~$0.067/image (1K resolution), 4 variants per ad costs ~$0.268 for image generation alone — about 84% of the per-ad cost. Text gen+eval is ~$0.02 by comparison. The Batch API (50% cost reduction) and draft-then-upscale (generate at 512, upscale winner to 1K) are obvious optimizations not yet implemented.
+- **Self-evaluation bias compounds.** The Gemini model family generates images (Nano Banana 2) and evaluates them (2.5 Flash). While using a different model tier (2.5 Flash vs flash-lite) for visual eval helps, it's still Gemini judging Gemini output. A cross-provider visual judge (e.g., Claude's vision, GPT-4o) would provide a genuinely independent evaluation.
+
 ## What I'd Do Differently
 
 - **Use a different model family for evaluation.** The single biggest improvement would be breaking the self-evaluation loop. Even a cheap model from a different provider would add genuine diversity to the scoring.
@@ -53,3 +62,6 @@
 - **Invest more in the emotional_resonance rubric.** It's the weakest dimension by a wide margin (6.51 avg). The rubric likely needs more specific anchoring examples and clearer scoring criteria.
 - **Use a persistent database.** Replace `data/ad_library.json` with SQLite or Postgres so the ad library survives redeploys and supports querying.
 - **Add authentication.** Even basic API key auth would prevent the public URL from being an open credit-burning endpoint.
+- **Use an external image generation model.** Flux via Replicate or fal.ai would break the single-provider dependency and let us compare Gemini image quality against alternatives. This also eliminates the self-evaluation compounding problem if paired with a non-Gemini visual judge.
+- **Implement draft-then-upscale.** Generate all variants at 512 resolution ($0.045/image) for evaluation, then only upscale the winning variant to 1K/2K. This would cut image generation cost by ~33% for a 4-variant batch while producing the same final output quality.
+- **Add human-in-the-loop for image selection.** Visual quality is too subjective for fully autonomous selection. A lightweight approval step — show the top 2 variants, let a human pick — would catch the cases where the LLM judge picks a technically clean but creatively boring image over a more engaging one with minor imperfections.

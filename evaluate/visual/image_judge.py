@@ -215,7 +215,7 @@ def evaluate_ad_image(
     threshold = (
         config.visual_evaluation_config.threshold
         if config.visual_evaluation_config
-        else 6.5
+        else 7.0
     )
     agg_style = "green bold" if evaluation.passes_visual_threshold else "red bold"
     table.add_row(

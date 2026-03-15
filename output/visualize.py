@@ -61,7 +61,7 @@ VISUAL_DIMENSION_LABELS = {
     "text_image_coherence": "Text–Image Coherence",
     "technical_quality": "Technical Quality",
 }
-VISUAL_THRESHOLD = 6.5
+VISUAL_THRESHOLD = 7.0
 SEGMENT_COLORS = {
     "athlete_family": "#4C72B0",
     "suburban_optimizer": "#55A868",

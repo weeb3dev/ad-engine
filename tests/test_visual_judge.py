@@ -29,7 +29,7 @@ def test_visual_evaluation_aggregate():
 def test_visual_threshold_pass_fail():
     dim = lambda s: DimensionScore(score=s, rationale="Test.", confidence="high")
 
-    # All 5s -> aggregate = 5.0 (well below 6.5)
+    # All 5s -> aggregate = 5.0 (well below 7.0)
     low = VisualEvaluation(
         brand_consistency=dim(5),
         engagement_potential=dim(5),
@@ -38,7 +38,7 @@ def test_visual_threshold_pass_fail():
     )
     assert low.passes_visual_threshold is False
 
-    # All 7s -> aggregate = 7.0 (above 6.5)
+    # All 7s -> aggregate = 7.0 (exactly at 7.0 threshold)
     high = VisualEvaluation(
         brand_consistency=dim(7),
         engagement_potential=dim(7),

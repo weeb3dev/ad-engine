@@ -149,7 +149,7 @@ class VisualEvaluation(BaseModel):
     @computed_field
     @property
     def passes_visual_threshold(self) -> bool:
-        return self.visual_aggregate_score >= 6.5
+        return self.visual_aggregate_score >= 7.0
 
     @computed_field
     @property
@@ -271,7 +271,7 @@ class ImageGenerationConfig(BaseModel):
 
 class VisualEvaluationConfig(BaseModel):
     model: str
-    threshold: float = 6.5
+    threshold: float = 7.0
     dimensions: dict[str, VisualDimensionConfig]
 
 

@@ -89,7 +89,7 @@ image_generation:
 
 visual_evaluation:
   model: "gemini-2.5-flash"                    # multimodal judge (see orchestration rationale)
-  threshold: 6.5                               # lower than text — image eval is noisier
+  threshold: 7.0                               # visual quality floor per project requirements
   dimensions:
     brand_consistency:
       weight: 0.30
