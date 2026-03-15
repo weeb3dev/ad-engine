@@ -1071,56 +1071,101 @@ v1's tier 3 improvement strategy ("model_escalation") was a placeholder. Now we 
 
 ## Phase V2-10: Tests for v2
 
-**Goal:** Add 8+ new tests covering image generation, visual evaluation, and A/B variants.
+**Goal:** Add 18 new tests across 5 test files covering image prompt building, image generator utilities, visual evaluation, A/B variant selection, and multimodal pipeline logic. None of these should call the real Gemini API — mock everything.
 
-### Cursor Prompt — v2 Tests
+### Updated Test Architecture
 
-> **Paste this into Cursor chat:**
->
-> ```
-> Add v2 tests to the tests/ directory. We need at least 8 new tests.
-> None of these should call the real Gemini API — mock everything.
->
-> tests/test_image_generator.py (3 tests):
-> - test_build_image_prompt_contains_headline:
->   Call build_image_prompt (or build_full_image_prompt) with a GeneratedAd
->   that has headline "Expert SAT Prep". Assert the prompt string contains
->   "Expert SAT Prep".
-> - test_build_image_prompt_audience_mapping:
->   Call with audience_segment "anxious_parents". Assert the prompt contains
->   parent/family/home-related terms.
-> - test_build_image_prompt_style_mapping:
->   Call with style "photorealistic". Assert the prompt contains photography
->   terms like "natural lighting" or "DSLR" or "depth of field".
->
-> tests/test_visual_judge.py (3 tests):
-> - test_get_visual_rubric_returns_string:
->   Call get_visual_rubric("brand_consistency"). Assert non-empty string.
-> - test_visual_evaluation_aggregate:
->   Create a VisualEvaluation with known scores:
->   brand_consistency=8, engagement=7, coherence=6, technical=9.
->   Expected: 0.30*8 + 0.30*7 + 0.25*6 + 0.15*9 = 2.4+2.1+1.5+1.35 = 7.35.
->   Verify visual_aggregate_score == 7.35.
-> - test_visual_threshold:
->   Create VisualEvaluation with aggregate 6.0 → passes_visual_threshold is False.
->   Create one with 7.0 → passes_visual_threshold is True.
->
-> tests/test_ab_variants.py (2 tests):
-> - test_select_best_variant:
->   Create 3 mock ImageVariant objects with visual_aggregate_scores 6.0, 7.5, 7.0.
->   Verify select_best_variant returns the one scoring 7.5.
-> - test_select_best_variant_tiebreaker:
->   Create 2 mock ImageVariant objects scoring 7.5 and 7.3 (within 0.5).
->   One is "photorealistic", one is "ugc_style".
->   For campaign_goal="conversion", verify "photorealistic" wins.
->   For campaign_goal="awareness", verify "ugc_style" wins.
->
-> Use pytest fixtures in tests/conftest.py — add new fixtures for:
-> - sample_visual_evaluation: VisualEvaluation with all scores at 7
-> - sample_image_variant: ImageVariant with known values
->
-> Mock the Gemini client using unittest.mock.patch on config.loader.get_gemini_client.
-> ```
+Post-V2-9 the codebase has grown significantly beyond the original 4-style, 3-audience plan:
+
+- **8 style approaches:** `photorealistic`, `ugc_style`, `illustration`, `minimal_graphic`, `hero_photo`, `infographic`, `typography_checklist`, `comic_panel`
+- **Style-specific overlay logic:** `_NO_TEXT_STYLES` (ugc_style skips overlay), `_AI_TEXT_STYLES` (infographic/typography_checklist/comic_panel embed headline via prompt), `_HERO_STYLES` (hero_photo gets navy-on-gradient PIL overlay)
+- **9 audience segments:** `athlete_family`, `suburban_optimizer`, `immigrant_navigator`, `cultural_investor`, `system_optimizer`, `neurodivergent_advocate`, `burned_returner`, `stressed_students`, `comparison_shoppers`
+- **Tiebreaker:** conversion prefers `hero_photo` (not `photorealistic`), awareness prefers `ugc_style`
+- **Threshold:** text quality threshold raised to 7.25 (visual threshold remains 6.5)
+- **Prompt builder has 5 branches:** NO_TEXT_STYLES, AI_TEXT_STYLES, HERO_STYLES, ai overlay mode, programmatic overlay mode
+
+### Shared Fixtures — `tests/conftest.py`
+
+Add these v2 fixtures alongside the existing v1 fixtures:
+
+```python
+from generate.models import DimensionScore, ImageVariant, VisualEvaluation
+
+@pytest.fixture
+def sample_visual_evaluation() -> VisualEvaluation:
+    dim = lambda: DimensionScore(score=7, rationale="Solid visual.", confidence="high")
+    return VisualEvaluation(
+        brand_consistency=dim(),
+        engagement_potential=dim(),
+        text_image_coherence=dim(),
+        technical_quality=dim(),
+    )
+
+@pytest.fixture
+def sample_image_variant(sample_visual_evaluation) -> ImageVariant:
+    return ImageVariant(
+        variant_id="test_v0",
+        style="photorealistic",
+        placement="feed_square",
+        image_path="data/images/test_v0_photorealistic.png",
+        visual_evaluation=sample_visual_evaluation,
+        generation_cost_usd=0.067,
+        evaluation_cost_usd=0.008,
+        generation_time_s=5.0,
+    )
+
+@pytest.fixture
+def sample_multimodal_brief() -> AdBrief:
+    return AdBrief(
+        audience_segment="suburban_optimizer",
+        campaign_goal="conversion",
+        tone="empathetic",
+        specific_offer="Free SAT diagnostic test",
+    )
+```
+
+### `tests/test_image_prompts.py` (6 tests)
+
+Tests for `generate/image_prompts/prompt_builder.py`:
+
+1. `test_prompt_contains_audience_scene` — Each of the 9 segments produces a prompt with segment-relevant terms (e.g. `"athlete_family"` → "athlete" or "sports").
+2. `test_prompt_photorealistic_style` — `style="photorealistic"` → prompt contains "DSLR" or "depth of field" or "natural lighting".
+3. `test_prompt_ugc_no_text_instruction` — `style="ugc_style"` → prompt contains "Do NOT render any text".
+4. `test_prompt_hero_style_leave_top_clear` — `style="hero_photo"` → prompt contains "top" and ("clean" or "bright").
+5. `test_prompt_ai_text_styles_include_headline` — `style="infographic"` with headline "Expert SAT Prep" → prompt contains "Expert SAT Prep" (formatted into the style_modifier template).
+6. `test_prompt_programmatic_no_text` — `style="photorealistic"` with programmatic overlay mode → prompt contains "Do NOT render any text".
+
+### `tests/test_image_generator.py` (4 tests)
+
+Tests for `generate/image_generator.py` (utilities only, no API calls):
+
+1. `test_save_ad_image` — Create a 10x10 PIL Image, call `save_ad_image()`, verify file exists at `{output_dir}/{ad_id}_v{idx}_{style}.png`. Clean up with `tmp_path`.
+2. `test_estimate_image_cost` — Call `_estimate_image_cost("1K", 1000, 500)` → verify math: `(1000*0.50 + 500*3.00)/1_000_000 + 0.067`.
+3. `test_placement_aspect_ratio_mapping` — Verify `_PLACEMENT_ASPECT_RATIOS` maps `feed_square→"1:1"`, `stories_vertical→"9:16"`, `feed_landscape→"16:9"`.
+4. `test_skip_overlay_sets` — Verify `_SKIP_PIL_OVERLAY` contains `ugc_style`, `infographic`, `typography_checklist`, `comic_panel`; `_HERO_STYLES` contains `hero_photo`.
+
+### `tests/test_visual_judge.py` (3 tests)
+
+Tests for `evaluate/visual/rubrics.py` and `generate/models.py`:
+
+1. `test_get_visual_rubric_returns_string` — `get_visual_rubric("brand_consistency")` returns non-empty string containing "Brand Consistency".
+2. `test_visual_evaluation_aggregate` — Scores brand=8, engagement=7, coherence=6, technical=9 → aggregate = `0.30*8 + 0.30*7 + 0.25*6 + 0.15*9 = 7.35`.
+3. `test_visual_threshold_pass_fail` — Aggregate ~6.0 → `passes_visual_threshold` is False; aggregate ~7.0 → True.
+
+### `tests/test_ab_variants.py` (3 tests)
+
+Tests for `generate/ab_variants.py`:
+
+1. `test_select_best_variant_highest_score` — 3 variants scoring 6.0, 7.5, 7.0 → returns the 7.5 variant.
+2. `test_select_best_variant_tiebreaker_conversion` — Two variants within 0.5: `hero_photo` at 7.3 and `ugc_style` at 7.5 → `campaign_goal="conversion"` picks `hero_photo`.
+3. `test_select_best_variant_empty_raises` — Empty list → `ValueError`.
+
+### `tests/test_multimodal_pipeline.py` (2 tests)
+
+Tests for `iterate/multimodal_pipeline.py`:
+
+1. `test_combined_score_formula` — Verify `_TEXT_WEIGHT` is 0.6 and `_VISUAL_WEIGHT` is 0.4; `0.6*8.0 + 0.4*7.0 = 7.6`.
+2. `test_is_rate_limit_error` — Verify detection of 429, "resource exhausted", and "rate limit" strings; non-rate-limit errors return False.
 
 ### Run All Tests
 
@@ -1128,7 +1173,7 @@ v1's tier 3 improvement strategy ("model_escalation") was a placeholder. Now we 
 # Run v1 + v2 tests together
 pytest tests/ -v
 
-# Expected: 23+ tests (15 from v1 + 8 from v2), all passing
+# Expected: ~33 tests (15 from v1 + 18 from v2), all passing
 ```
 
 ---
